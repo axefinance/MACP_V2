@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!-- Your app title -->
+    <title>My App</title>
+    <!-- Path to Framework7 iOS CSS theme styles-->
+    <link rel="stylesheet" href="framework7/dist/css/framework7.ios.min.css">
+    <!-- Path to Framework7 iOS related color styles -->
+    <link rel="stylesheet" href="framework7/dist/css/framework7.ios.colors.min.css">
+    <!-- Path to your custom app styles-->
+    <link rel="stylesheet" href="framework7/dist/css/my-app.css">
+      <link href="css/Style-paper-buttons.css" rel="stylesheet" type="text/css">
+      <!-- Important For Edit Text Design (Saif) -->
+    <script charset="utf-8" src="ressources/appframework/appframework.ui.min.js"></script>
+  </head>
+ 
+  <body>
+    <div class="statusbar-overlay"></div>
+    <div class="panel-overlay"></div>
+    <div class="panel panel-left panel-reveal">
+      <div class="content-block">
+        <p>Left panel content goes here</p>
+      </div>
+    </div>
+    <!-- Views -->
+    <div class="views">
+      <div class="view view-main">
+        <!-- Top Navbar-->
+        <div class="navbar">
+          <div class="navbar-inner">
+               <div class="center sliding">Authentification</div>
+            <div class="right">
+                <a href="WSConfigurationScreen.html" class="link icon-only"><img src="ressources/img/Settings_24px.png"></a> 
+            </div>
+          </div>
+        </div>
+        <div class="pages navbar-through toolbar-through">
+          <!-- Page, "data-page" contains page name -->
+          <div data-page="index" class="page">
+            <!-- Scrollable page content -->
+            <div class="page-content">
+                  
+       <div style="text-align:center">
+                        <br>
+                        <br>
+                        <p></p>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br> </div>
+                    <div class="list-block">
+                            <ul>        
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                        <div class="item-inner">
+
+                                            <div class="item-input">
+                                                <input id="userName" onfocus="disableUppercaseKey()"  type="text"  value="Administrator"    placeholder="Username" id="userName">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="item-content">
+                                        <div class="item-media"><i class="icon icon-form-password"></i></div>
+                                        <div class="item-inner">
+                                            <div class="item-input">
+                                                <form   autocomplete="off" >    <input id="password" oninput="disableUppercaseKey()" type="password" value="azerty1234*"  spellcheck="false"    ></form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+    
+<center>
+                        <a href="#" id="cancel" onclick="navigator.app.exitApp();">
+                            <button class="paper-button colored raised-button paper-shadow-top-z-1" style="width: 150px;height: 40px;">Cancel<div class="ripple"></div></button></a>&nbsp;
+                        <a href="#indexmenu" id="HomeLogin">
+                            <button onClick="  myApp.showIndicator(); setTimeout(function() {onClickLoginButton(); myApp.hideIndicator();   }, 100); " class="paper-button colored raised-button paper-shadow-top-z-1" style="width: 150px;
+  height: 40px;">Login
+  <div class="ripple"></div>
+     </button></a>
+                    </center>
+                </div>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!-- Path to Framework7 Library JS-->
+    <script type="text/javascript" src="framework7/dist/js/framework7.min.js"></script>
+    <!-- Path to your app js-->
+  </body>
+  
+    
+</html>  

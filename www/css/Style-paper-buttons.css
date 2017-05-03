@@ -1,0 +1,349 @@
+    $blue: #4285f4;
+        $white: #fff;
+        $black: #000;
+        $gray: #ccc;
+        $button-width: 160px;
+        /* Buttons */
+        .paper-button {
+            position: relative;
+            padding: 4px 0;
+            margin: 1em;
+            width: $button-width;
+            overflow: hidden;
+            user-select: none;
+            color: $black;
+            text-transform: uppercase;
+            border-radius: 3px;
+            outline-color: $gray;
+            &:hover {
+                cursor: pointer;
+            }
+            .ripple {
+                position: absolute;
+                width: $button-width * 2;
+                height: $button-width * 2;
+                background-color: rgba($gray, 0.5);
+                left: 0;
+                top: 0;
+                border-radius: 50%;
+                margin-left: - $button-width;
+                margin-top: - $button-width;
+                transform: scaleX(0) scaleY(0);
+                z-index: 9000;
+            }
+        }
+        .item-title.label{
+    width:initial !important;
+    padding-right: 5px;
+}
+
+.requiredItem .item-title{
+    color : #E94B4A !important;
+}
+
+
+.requiredIcon:before {
+    font-family: FontAwesome !important;
+    content: "\f071";
+    color: #E94B4A !important;
+    font-size: 25px;
+    position: absolute;
+    top : 10%;
+    right: 30px;
+}
+
+
+
+
+.tabs90{
+    width : 98px;
+    height: 25px;
+
+}
+.tabs150{
+    width : 152px;
+    height: 25px;
+
+
+}
+.tabs200{
+    width : 202px;
+    height: 25px;
+
+}
+.tabs250{
+    width : 250px;
+    height: 25px;
+
+}
+.tabs300{
+    width : 300px;
+    height: 25px;
+
+}
+.tabs350{
+    width : 350px;
+    height: 25px;
+
+}
+
+#divWrap .Tabs{
+    /*display:none; Add display to remove reserved DOM space*/
+    opacity:0;
+    display: none;
+    position : absolute;width: 100% !important;
+}
+
+
+#divWrap .Active{
+    opacity:1 !important;
+        display: block !important;
+
+}
+.selectedTab{
+      background: #1A3F62 !important;
+  
+}
+
+.tabsMenu {
+    white-space: nowrap;
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.menuTabButton
+{
+    border: 0;
+    background: #419EF7;
+    box-shadow:none; 
+    border-radius: 25px !important;
+    color : white;
+    padding: 5px ; 
+    border-radius: 0px;
+    margin-right: 2.5px;
+    margin-left: 3px;
+
+}
+
+
+.duplicateButton:before{
+    font-family: FontAwesome !important;
+    color: #fff !important;
+    content : "\f0c5";
+    font-size:20px;
+}
+ 
+
+.editButton:before{
+    font-family: FontAwesome !important;
+    color: #fff !important;
+    content : "\f044";
+    font-size:20px;
+}
+ 
+.deleteButton:before{
+    font-family: FontAwesome !important;
+    color: #fff !important;
+    content : "\f014";
+    font-size:20px;
+}
+.homeIcon:before{
+    font-family: FontAwesome !important;
+    color: #fff !important;
+    content : "\f015";
+    font-size:25px;
+}
+ 
+
+.navbarGlobeIcon:before{
+    font-family: FontAwesome !important;
+    color: #2196f3 !important;
+    content : "\f0ac";
+    font-size:25px;
+    margin-right: 8px;
+
+}
+.navbarWestMenuIcon:after{
+    font-family: FontAwesome !important;
+    color: #2196f3 !important;
+    content : "\f0c9";
+    font-size:25px;
+}
+.navbarUserIcon:before{
+    font-family: FontAwesome !important;
+    color: #2196f3 !important;
+    content : "\f007";
+    font-size:25px;
+    margin-right: 8px;
+
+}
+.navbarWSConfigIcon:before{
+    font-family: FontAwesome !important;
+    color: #2196f3 !important;
+    content : "\f013 ";
+    font-size:25px;
+}
+.passwordIcon:before{
+    font-family: FontAwesome !important;
+    color: #2196f3 !important;
+    content : "\f084  ";
+    font-size:25px;
+}
+.ipAddressIcon:before{
+    font-family: FontAwesome !important;
+    color: #2196f3 !important;
+    content : "\f1fa   ";
+    font-size:25px;
+}
+.portIcon:before{
+    font-family: FontAwesome !important;
+    color: #2196f3 !important;
+    content : "\f1e6";
+    font-size:25px;
+}
+
+.navbarButton {
+    display: block;
+    background: #ECECEC;
+    padding: 0px 10px 0px 10px;
+    text-align: center;
+    border-radius: 50px;
+} 
+
+
+.required{
+    color : red;
+}
+
+.tablet-50{
+    margin-right: 10px !important;
+    width : 48% !important;
+}
+
+.tablet-66{
+    margin-right: 10px !important;
+    width : 75% !important;
+} 
+.tablet-33{
+    margin-right: 0px !important;
+    width : 22% !important;
+}
+.list-block li:last-child .item-inner::after, .list-block li:last-child li:last-child .item-inner::after{
+  display: initial !important; 
+}
+
+.list-block-padding{ 
+  padding-bottom: 20px !important; 
+  padding-top: 10px !important;
+}
+.noPadding-left
+{
+    padding: 0px !important;
+} 
+.fa  
+{
+   color: #2196f3 !important;
+}
+        .paper-button button,
+        .paper-button input[type="submit"] {
+            background: inherit;
+            border: none;
+            display: block;
+            width: 100%;
+            height: 100%;
+            font-family: 'Roboto';
+            font-size: 1em;
+            color: $black;
+            text-transform: uppercase;
+        }
+        
+        .paper-button.colored,
+        .paper-button.colored button {
+            color: $blue;
+        }
+        
+        .paper-button .ripple {
+            background-color: rgba($gray, 0.5);
+        }
+        
+        .paper-button.raised-button.colored .ripple {
+            background-color: rgba($white, 0.5);
+        }
+        
+        .paper-button.raised-button .ripple {
+            background-color: rgba($gray, 0.5);
+        }
+        
+        .paper-button.raised-button.colored {
+            background-color: $blue;
+        }
+        
+        .paper-button .raised-button {
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+        }
+        
+        .paper-button.raised-button.colored {
+            background: #4285f4;
+            color: #fff;
+        }
+        
+        .paper-button[disabled] {
+            background-color: #EAEAEA !important;
+            color: #A8A8A8 !important;
+            cursor: auto;
+        }
+        
+        .paper-button:hover {
+            background-color: #EAEAEA !important;
+        }
+        
+        .paper-button.raised-button.colored:hover {
+            background-color: #3367d6 !important;
+        }
+        
+        button.paper-button {
+            border: 0;
+            font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
+            font-size: 1em;
+            line-height: 25px;
+            background-color: $white;
+        }
+        
+        .paper-button input[type="submit"] {
+            outline-color: $gray;
+        }
+        
+        .paper-button.colored.raised-button input[type="submit"] {
+            color: $white;
+        }
+        /** Shadows **/
+        
+       
+        /*Demo specific*/
+        
+        .paper-button.colored.raised-button .custom-ripple {
+            background-color: yellow;
+        }
+
+.fullHeight{
+    height: 100%;
+}
+.selectedRow{
+    background: #cccccc;
+}
+.gridRow{    
+-moz-user-select: none;        
+-webkit-user-select: none;        
+user-select: none;
+}
+.disabledButton{
+    border-color: #c5c5c5 !important;
+    background: #c5c5c5 !important;
+    color : #fff !important;
+}
+ 
+.displayNone{
+    display: none !important;
+}
