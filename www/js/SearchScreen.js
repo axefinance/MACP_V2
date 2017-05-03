@@ -1,6 +1,4 @@
-
-        
- var SearchScreen_JSFlag;    
+var SearchScreen_JSFlag;    
 
 $$('.search-form-to-data').on('click', function(){
     var i;
