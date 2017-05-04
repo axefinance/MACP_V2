@@ -23,7 +23,7 @@ function manageAuthentifaction(result)
                  myApp.hidePreloader(); 
                   break;
               case "ok":
-                 {
+                 {  
                   sessionStorage.setItem("userId", result['user_id']);
                   sessionStorage.setItem('userName', result['user_name']);
                   sessionStorage.setItem('userShortName', result['user_shortName']);   
