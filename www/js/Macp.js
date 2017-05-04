@@ -205,7 +205,7 @@ myApp.onPageInit('searchScreen', function (page) {
     console.log("Init search screen");
     HomeBackButton.style.visibility="visible";    
     createLanguagesList('searchScreen');
-    createLogoutPopover('searchScreen');
+    createLogoutPopover('searchScreen');  
     myApp.params.swipePanel=false;
     pageTitleElement=document.getElementById("title_searchScreen");
     console.log(pageTitleElement);
