@@ -1,8 +1,8 @@
 
 
 function saveConfiguration() {
-    ip = document.getElementById('ip').value,
-    port = document.getElementById('port').value;
+    ip = document.getElementById('WSip').value;
+    port = document.getElementById('WSport').value;
     updateFromDevice(ip,port);
     mainView.router.back();                            
  }  
@@ -31,6 +31,6 @@ $$('.WS-confirm-ok-cancel').on('click', function () {
       },
       function () {
       }
-    );
+    );   
     */
 });          

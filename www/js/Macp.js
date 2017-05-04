@@ -109,7 +109,7 @@ function reInitHomePage(){
         "\"windowHeight\":\""+(window.innerHeight-90)+"\"}";
      $.ajax({             
         type: 'POST',                               
-        url: url,                                  
+        url: url,                                    
         contentType: "text/plain",                                      
         dataType: "json",                               
         data: data,      
@@ -191,8 +191,9 @@ function onDeviceReady() {
     verifDeviceConfig();        
 }).trigger();   */                    
 myApp.onPageInit('WSConfigurationScreen', function (page) {
-    
     myApp.params.swipePanel=false;    
+    document.getElementById('WSip').value=sessionStorage.getItem('Ip_config');
+    document.getElementById('WSport').value=sessionStorage.getItem('Ip_port');
    loadJSFile("js/WSConfigurationScreen.js");
 });   
 myApp.onPageInit('homePage', function (page) {   
