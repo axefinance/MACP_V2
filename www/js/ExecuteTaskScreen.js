@@ -26,6 +26,7 @@ function stopWorkflow(){
             if(data.status==="ok")
                 {
                     myApp.hidePreloader(); 
+                    HomeBackButton.style.visibility="hidden";   
                     mainView.router.back({force:true,pageName:"homePage"});
                     mainView.history=["#homePage"];
                     leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
