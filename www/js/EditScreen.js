@@ -540,15 +540,7 @@ function UpdateItem(parameters){
         data: data,             
         success: function(data) {     
             myApp.hidePreloader();
-            if(data.status==="ok")
-                {
-                    
-                    myApp.alert("successful");
-                }
-            else
-                {
-                      myApp.alert("error saving");
-                }
+            myApp.alert(data.message);
         },
         error: function(e) { 
             console.log(e.message);  
@@ -557,7 +549,7 @@ function UpdateItem(parameters){
             myApp.alert("error occured");
    
                              
-        }                           
+        }                               
     });    
 } 
 function downloadAsset(fileName) {
