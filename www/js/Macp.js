@@ -204,7 +204,7 @@ myApp.onPageInit('homePage', function (page) {
 myApp.onPageInit('searchScreen', function (page) {
     console.log("Init search screen");
     HomeBackButton.style.visibility="visible";    
-    createLanguagesList('searchScreen');
+   // createLanguagesList('searchScreen');
     createLogoutPopover('searchScreen');  
     myApp.params.swipePanel=false;
     pageTitleElement=document.getElementById("title_searchScreen");
@@ -217,7 +217,7 @@ myApp.onPageInit('searchScreen', function (page) {
   
 }); 
 myApp.onPageInit('editScreen', function (page) {
-    createLanguagesList('editScreen');
+   // createLanguagesList('editScreen');
     createLogoutPopover('editScreen');
     myApp.params.swipePanel=false;
     myApp.showPreloader();
@@ -231,7 +231,7 @@ myApp.onPageInit('editScreen', function (page) {
 }); 
 myApp.onPageInit('newInputScreen', function (page) {
     HomeBackButton.style.visibility="visible"; 
-    createLanguagesList('newInputScreen'); 
+   // createLanguagesList('newInputScreen'); 
     createLogoutPopover('newInputScreen');
     myApp.params.swipePanel=false;   
     pageTitleElement=document.getElementById("title_newInputScreen");
@@ -242,7 +242,7 @@ myApp.onPageInit('newInputScreen', function (page) {
 });                
 myApp.onPageInit('searchResultScreen', function (page) {
     HomeBackButton.style.visibility="visible";
-    createLanguagesList('searchResultScreen'); 
+ //   createLanguagesList('searchResultScreen'); 
     createLogoutPopover('searchResultScreen');  
     myApp.params.swipePanel=false;
     pageTitleElement=document.getElementById("title_searchResultScreen");
@@ -255,7 +255,7 @@ myApp.onPageInit('searchResultScreen', function (page) {
 });  
 myApp.onPageInit('executeTaskScreen', function (page) {
     HomeBackButton.style.visibility="visible";
-    createLanguagesList('executeTaskScreen'); 
+   // createLanguagesList('executeTaskScreen'); 
     createLogoutPopover('executeTaskScreen');      
     myApp.params.swipePanel=false;
     pageTitleElement=document.getElementById("title_executeTaskScreen");
@@ -429,7 +429,7 @@ function GetHomePage(url) {
              sessionStorage.setItem("Languages",data.Languages);
              var languages=sessionStorage.getItem('Languages');
              languagesList = JSON.parse(languages); 
-             createLanguagesList('homePage');
+             //createLanguagesList('homePage');
              createLogoutPopover('homePage'); 
              GetHomePageScripts();
              myApp.hidePreloader();
