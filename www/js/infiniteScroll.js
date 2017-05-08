@@ -16,27 +16,27 @@ $$('.infinite-scroll').on('infinite', function () {
     
   // Emulate 1s loading     
   setTimeout(function () {
-    // Reset loading flag
+    // Reset loading flag  
     loading = false;
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetNextSearchResult';
     if (lastIndex >= totalRowNumber) {
       myApp.detachInfiniteScroll($$('.infinite-scroll'));
       $$('.infinite-scroll-preloader').remove();
       return;
-    }    
+    }      
       
       var data="{"+    
         "\"item\":\""+currentItem+"\","+
-        "\"userid\":\"1\"," +
+        "\"userid\":\""+sessionStorage.getItem("userId")+"\"," +
         "\"searchParams\":"+searchParams+","+
         "\"start\":\""+lastIndex+"\","+
         "\"limit\":\"10\","+      
         "\"windowWidth\":\""+window.innerWidth+"\","+
         "\"windowHeight\":\""+(window.innerHeight-70)+"\"}"; 
-    console.log("SearchParams",data);      
-    $.ajax({           
-        type: 'POST',           
-        url: url,                                   
+    console.log("SearchParams",data);        
+    $.ajax({             
+        type: 'POST',             
+        url: url,                                     
         contentType: "text/plain",                            
         dataType: "json",                               
         async: false,                              

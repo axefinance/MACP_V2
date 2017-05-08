@@ -94,7 +94,7 @@ function saveNewInput(parameters)
                 }
             else  
                 {
-                      myApp.alert("error saving");
+                      myApp.alert(data.message);
                 }
         },
         error: function(e) { 
