@@ -2,8 +2,12 @@
 function onClickLoginButton(){
       try {
           var login = document.getElementById('userName').value;
-          myApp.showPreloader();
           var password = document.getElementById('password').value;
+          if(login==="")
+              login='""';
+          if(password==="")
+              password='""';
+          myApp.showPreloader();
            var url ='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/Authentication/' + login + '/' + password;
           parseDataGet(url);   
           }
@@ -19,7 +23,7 @@ function manageAuthentifaction(result)
                  myApp.hidePreloader(); 
                   break;
               case "ok":
-                 {
+                 {  
                   sessionStorage.setItem("userId", result['user_id']);
                   sessionStorage.setItem('userName', result['user_name']);
                   sessionStorage.setItem('userShortName', result['user_shortName']);   

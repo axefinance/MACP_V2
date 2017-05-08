@@ -109,7 +109,7 @@ function reInitHomePage(){
         "\"windowHeight\":\""+(window.innerHeight-90)+"\"}";
      $.ajax({             
         type: 'POST',                               
-        url: url,                                  
+        url: url,                                    
         contentType: "text/plain",                                      
         dataType: "json",                               
         data: data,      
@@ -191,8 +191,9 @@ function onDeviceReady() {
     verifDeviceConfig();        
 }).trigger();   */                    
 myApp.onPageInit('WSConfigurationScreen', function (page) {
-    
     myApp.params.swipePanel=false;    
+    document.getElementById('WSip').value=sessionStorage.getItem('Ip_config');
+    document.getElementById('WSport').value=sessionStorage.getItem('Ip_port');
    loadJSFile("js/WSConfigurationScreen.js");
 });   
 myApp.onPageInit('homePage', function (page) {   
@@ -204,7 +205,7 @@ myApp.onPageInit('searchScreen', function (page) {
     console.log("Init search screen");
     HomeBackButton.style.visibility="visible";    
     createLanguagesList('searchScreen');
-    createLogoutPopover('searchScreen');
+    createLogoutPopover('searchScreen');  
     myApp.params.swipePanel=false;
     pageTitleElement=document.getElementById("title_searchScreen");
     console.log(pageTitleElement);
@@ -238,7 +239,7 @@ myApp.onPageInit('newInputScreen', function (page) {
     myApp.showPreloader();
     setTemplate_HeaderData('newInputScreen');
     setTimeout(function() {loadNewInputPage(); }, 1000) ;
-});              
+});                
 myApp.onPageInit('searchResultScreen', function (page) {
     HomeBackButton.style.visibility="visible";
     createLanguagesList('searchResultScreen'); 
@@ -246,7 +247,7 @@ myApp.onPageInit('searchResultScreen', function (page) {
     myApp.params.swipePanel=false;
     pageTitleElement=document.getElementById("title_searchResultScreen");
     pageTitleElement.textContent=pageTitleContent;
-    setTemplate_HeaderData('searchResultScreen'); 
+    setTemplate_HeaderData('searchResultScreen');   
      myApp.showPreloader();
       var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetSearchResultPage';
     console.log("URL",url);
@@ -268,8 +269,6 @@ myApp.onPageInit('executeTaskScreen', function (page) {
 function setTemplate_HeaderData(pScreen){
     document.getElementById("userName_label"+"_"+pScreen).textContent=sessionStorage.getItem('userName');
      document.getElementById("lng_label"+"_"+pScreen).textContent=sessionStorage.getItem('language');
-    console.log(document.getElementById("userName_label"+"_"+pScreen));
-     console.log(document.getElementById("lng_label"+"_"+pScreen));
 };  
 function loadsearchScreen(){
     GetSearchPage('http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetSearchScreen/'+currentItem);
@@ -490,7 +489,7 @@ function logoutAction(){
 function lunchSearchResult(url){           
      var data="{"+    
         "\"item\":\""+currentItem+"\","+
-        "\"userid\":\"1\"," +
+        "\"userid\":\""+sessionStorage.getItem("userId")+"\"," +
         "\"searchParams\":"+searchParams+","+
         "\"start\":\"0\","+
         "\"limit\":\"30\","+      
