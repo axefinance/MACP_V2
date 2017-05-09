@@ -4,6 +4,9 @@ var fileUploadedName;
 var fileData;
 var fileUploadedData;
 var isDuplicate;
+var Parameters;
+var errorMsg;
+var SuccessMsg;
 function loadRelatedItemPopup(id,isDuplicateAction)
 { 
        relatedItemId=id;
@@ -125,8 +128,7 @@ function deleteItem(id,culture){
             });     
 }
 
-function menuTabClick(divID,butDiv,screenEngine)
-{         
+function menuTabClick(divID,butDiv,screenEngine){         
     divId=divID;
     engine=screenEngine;
     $("button").siblings(".selectedTab").removeClass('selectedTab');                
@@ -202,8 +204,7 @@ $.ajax({
 }
   
 
-function managePdfReaderInAndroid(documentName,base64)
-{
+function managePdfReaderInAndroid(documentName,base64){
      var folderpath = cordova.file.externalRootDirectory;
    var contentType = "application/pdf";
     savebase64AsPDF(folderpath,documentName+"_"+itemId+".pdf",base64,contentType);
@@ -347,19 +348,18 @@ $$('.edit-mainData-form-to-data').on('click', function(){
 });
 
 
-function mainData_SaveEvent()
-{
+function mainData_SaveEvent(){
      var formData = myApp.formToData('#my-mainData-form');
         parameters=JSON.stringify(formData);   
         UpdateItem(parameters);
 }
 
-function attachement_SaveEvent()
-{
+function attachement_SaveEvent(){
     setTimeout( uploadAttachementFile(),1000);
 }
 
 function testclick(msg){
+    SuccessMsg=msg;
     var i;
     var indexToSelect=1;
     var isValid = true;
@@ -422,14 +422,61 @@ function testclick(msg){
     }else
     {
         var formData = myApp.formToData('#my-relatedItemPopup-form');
-        parameters=JSON.stringify(formData);        
-        setTimeout(function() { UpdateRelatedItem(parameters,msg); }, 1000) ;
+        Parameters=JSON.stringify(formData);        
+        setTimeout(function() { UpdateRelatedItemEvent(msg); }, 1000) ;
 
        
     }
 }
 
-function UpdateRelatedItem(parameters,msg){
+function UpdateRelatedItemEvent(msg){ 
+    SuccessMsg=msg;
+    var updateId = relatedItemId;    
+    if(isDuplicate==="isDuplicate")
+        updateId=0;
+     var data="{"+  
+        "\"mainItemId\":\""+itemId+"\","+
+        "\"relatedItemId\":\""+updateId+"\","+
+        "\"screenName\":\""+divId+"\","+ 
+        "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +
+        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
+        "\"parameters\":"+Parameters+"}";  
+     myApp.showPreloader();
+     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveRelatedItemEvent';
+
+     $.ajax({             
+        type: 'POST',           
+        url: url,                  
+        contentType: "text/plain",                           
+        dataType: "json",                            
+        data: data,             
+        success: function(data) {     
+            
+            if(data.status==="ok")
+                {
+                  myApp.closeModal(".popup",true); 
+                  myApp.hidePreloader();  
+                  manageSaveRelatedItemResponse(data);                         
+                }
+            else 
+                { 
+                    myApp.hidePreloader();
+                    myApp.alert("error saving");
+                }
+        },
+        error: function(e) {         
+             
+            console.log(e.message);  
+            verifconnexion = false;        
+            myApp.hidePreloader();
+            myApp.alert("error occured"); 
+      
+                             
+        }                           
+    }); 
+}
+
+function UpdateRelatedItem(){ 
     var updateId = relatedItemId;    
     if(isDuplicate==="isDuplicate")
         updateId=0;
@@ -438,7 +485,8 @@ function UpdateRelatedItem(parameters,msg){
         "\"relatedItemId\":\""+updateId+"\","+
         "\"screenName\":\""+divId+"\","+ 
         "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
-        "\"parameters\":"+parameters+"}";  
+        "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," + 
+        "\"parameters\":"+Parameters+"}";  
      myApp.showPreloader();
      var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveRelatedItem';
 
@@ -452,13 +500,117 @@ function UpdateRelatedItem(parameters,msg){
             
             if(data.status==="ok")
                 {
-                    myApp.hidePreloader();
-                        myApp.alert(msg, function () {
+                 
+                  myApp.hidePreloader();
+                        myApp.alert(SuccessMsg, function () {
                         loadScreen(divId);
-
                         });
- myApp.closeModal(".popup",true);
-                                           
+                                         
+                }
+            else 
+                { 
+                    myApp.hidePreloader();
+                    myApp.alert("error saving");
+                }
+        },
+        error: function(e) {         
+             
+            console.log(e.message);  
+            verifconnexion = false;        
+            myApp.hidePreloader();
+            myApp.alert("error occured"); 
+      
+                             
+        }                           
+    }); 
+}
+
+function manageSaveRelatedItemResponse(data){
+     console.log(data.behavior);
+     if(data.behavior!=null)
+     {
+       
+            switch(data.behavior)
+                {
+                    case "blockingAlert" :
+                        {
+                            myApp.alert(data.message,"Exception");
+                            break;
+                        }
+                    case "optionalAlert" :
+                        {
+                              myApp.confirm(data.message, "Exception", function () {
+                                        UpdateRelatedItem();
+                                         });
+                            break;
+                        }
+                    case "deviationAlert" :
+                        {
+                             errorMsg=data.message;
+                             myApp.popup('<div class="popup" style="width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" ><div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">'+data.message+'</br></br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="saveProcessEngineComment_enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="saveBeforeUpdateRelatedItem_DeviationComment()" id="saveProcessEngineCommentButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
+                            break;
+                        }
+                }
+     }
+    else
+    {
+              myApp.hidePreloader();
+                        myApp.alert(SuccessMsg, function () {
+                        loadScreen(divId);
+                        });
+              myApp.closeModal(".popup",true);
+    }
+}
+
+
+function saveProcessEngineComment_enabledButton(textarea){
+   
+    var saveProcessEngineCommentButton=document.getElementById("saveProcessEngineCommentButton");
+    if(textarea.value.length!=0)
+        {
+            saveProcessEngineCommentButton.className ="button button-fill active";
+        }
+    else
+    {
+        saveProcessEngineCommentButton.className ="button button-fill disabled";
+    }
+    
+      
+};
+
+
+function saveBeforeUpdateRelatedItem_DeviationComment()
+{
+    var comment=document.getElementById("deviationComment").value;
+    var updateId = relatedItemId;    
+    if(isDuplicate==="isDuplicate")
+        updateId=0;
+    var data="{"+    
+        "\"screenName\":\""+divId+"\","+
+        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
+        "\"mainItemId\":\""+itemId+"\","+
+        "\"relatedItemId\":\"0\"," +
+        "\"comment\":\""+comment+"\"," +
+        "\"errorMsg\":\""+errorMsg+"\"," +  
+        "\"parameters\":"+Parameters+"}"; 
+     myApp.showPreloader();
+     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveBeforeUpdateRelatedItem_LogDeviation';
+
+     $.ajax({             
+        type: 'POST',           
+        url: url,                  
+        contentType: "text/plain",                           
+        dataType: "json",                            
+        data: data,             
+        success: function(data) {     
+            
+            if(data.status==="ok")
+                {
+                  myApp.hidePreloader();
+                  myApp.closeModal();    
+                  myApp.alert(SuccessMsg, function () {
+                  loadScreen(divId);
+                  });                  
                 }
             else 
                 { 
