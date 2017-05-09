@@ -7,4 +7,4 @@ function editItem(id,reference,targettab){
     itemRef=reference;
     targetTab=targettab;
     mainView.router.load({url: "editScreen.html" ,reload:false,ignoreCache:true});  
-}    
+}      
