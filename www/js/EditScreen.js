@@ -4,6 +4,10 @@ var fileUploadedName;
 var fileData;
 var fileUploadedData;
 var isDuplicate;
+var Parameters;
+var errorMsg;
+var SuccessMsg;
+var SuccesMsgTitle;
 var isUpdateAttachment = false;
 
 function loadRelatedItemPopup(id, isDuplicateAction) {
@@ -41,10 +45,11 @@ function loadRelatedItemPopup(id, isDuplicateAction) {
 		  },
 		  error: function (e) {
               myApp.hidePreloader();
-			 myApp.alert("error occured");
+              myApp.alert("error occured","Error");       
 		  }
 	   });
     }
+
 }
 
 
@@ -62,6 +67,47 @@ function manageAttechementElement() {
 		reader.readAsDataURL(file);
 	}
 
+
+function loadScreen(divID)     {    
+     var data="{"+             
+        "\"screenName\":\""+divId+"\","+ 
+        "\"mainItemId\":\""+itemId+"\"," +
+        "\"screenEngine\":\""+engine+"\","+
+        "\"screenWidth\":\""+window.innerWidth+"\"," +
+        "\"screenHeight\":\""+window.innerHeight+"\"}"; 
+       myApp.showPreloader(); 
+            $.ajax({    
+                    type: "POST", 
+                    url: "http://"+sessionStorage.getItem('Ip_config')+":"+sessionStorage.getItem('Ip_port')+"/MobileAPI.svc/GetLoadEditTabFrame",
+                    contentType: "text/plain",                          
+                    dataType: "json",                      
+                    data: data, 
+                    success: function(data) { 
+                        document.getElementById(divID).innerHTML=data.content; 
+                        myApp.hidePreloader();
+                        switch(engine)
+                            {
+                                case ("attachment") :
+                                    {
+                                     myApp.accordionOpen(".accordion-item");
+                                     manageAttechementElement();
+                                     break;
+                                    }
+                                case ("classicre") :
+                                case ("classicms") :
+                                    {
+                                    document.getElementById(divID).innerHTML=data.content;       
+                                    myApp.hidePreloader();
+                                    break;
+                                     }
+                            }
+ 
+                    },   
+                    error: function(e) {
+                       myApp.hidePreloader();
+                       myApp.alert("error occured","Error"); 
+                    }   
+            });             
 }
 
 
@@ -112,36 +158,39 @@ function deleteRelatedItem(id, culture, confirmationMessage) {
 	});
 }
 
-function deleteItem(id, culture) {
-	var data = "{" +
-		"\"screenName\":\"" + divId + "\"," +
-		"\"itemId\":\"" + id + "\"," +
-		"\"beforeCheck\":\"false\"," +
-		"\"remoteAddress\":\"\"," +
-		"\"culture\":\"" + sessionStorage.getItem("language") + "\"," +
-		"\"userId\":\"" + sessionStorage.getItem("userId") + "\"," +
-		"\"spName\":\"\"," +
-		"\"groupingSetShortname\":\"\"," +
-		"\"mcData\":\"\"}";
-	myApp.showPreloader();
-	$.ajax({
-		type: "POST",
-		url: "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/DeleteItem",
-		contentType: "text/plain",
-		dataType: "json",
-		data: data,
-		success: function (data) {
-			myApp.hidePreloader();
-			myApp.alert(data.status, function () {
-				loadScreen(divId);
-			});
-		},
-		error: function (e) {
-			myApp.hidePreloader();
-			myApp.alert("error occured");
-		}
-	});
+
+function deleteItem(id,culture){
+         var data="{"+             
+        "\"screenName\":\""+divId+"\","+
+        "\"itemId\":\""+id+"\"," +
+        "\"beforeCheck\":\"false\"," +
+        "\"remoteAddress\":\"\","+
+        "\"culture\":\""+sessionStorage.getItem("language")+"\"," +
+        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
+        "\"spName\":\"\","+
+        "\"groupingSetShortname\":\"\","+            
+        "\"mcData\":\"\"}"; 
+       myApp.showPreloader();
+            $.ajax({  
+                    type: "POST", 
+                    url: "http://"+sessionStorage.getItem('Ip_config')+":"+sessionStorage.getItem('Ip_port')+"/MobileAPI.svc/DeleteItem",
+                    contentType: "text/plain",                          
+                    dataType: "json",                      
+                    data: data, 
+                    success: function(data) {                            
+                        myApp.hidePreloader();
+                        myApp.alert(data.status, function () {                        
+                            loadScreen(divId);      
+                        });
+                    },    
+                    error: function(e) {
+                        myApp.hidePreloader();
+                       myApp.alert("error occured","Error");  
+                    }   
+            });     
 }
+
+
 
 function menuTabClick(divID, butDiv, screenEngine) {
 	divId = divID;
@@ -221,6 +270,7 @@ function managePdfReaderInAndroid(documentName, base64) {
 	var folderpath = cordova.file.externalRootDirectory;
 	var contentType = "application/pdf";
 	savebase64AsPDF(folderpath, documentName + "_" + itemId + ".pdf", base64, contentType);
+
 }
 
 function b64toBlob(b64Data, contentType, sliceSize) {
@@ -354,6 +404,8 @@ function attachement_SaveEvent() {
 }
 
 function testclick(msg) {
+    SuccessMsg=msg;
+   SuccesMsgTitle= msgTitle;
 	var i;
 	var indexToSelect = 1;
 	var isValid = true;
@@ -400,12 +452,13 @@ function testclick(msg) {
 		var formData = myApp.formToData('#my-relatedItemPopup-form');
 		parameters = JSON.stringify(formData);
 		setTimeout(function () {
-			UpdateRelatedItem(parameters, msg);
+			UpdateRelatedItemEvent();
 		}, 1000);
 
 
 	}
 }
+  
 
 function UpdateRelatedItem(parameters, msg) {
 	var updateId = relatedItemId;
@@ -543,14 +596,11 @@ function editFileDetail(name, type, status, description, rejectionComment, expir
 			return $(this).text() == subFolder;
 		}).attr('selected', 'selected');
 	}
+
     
     
 }
 
-
-function fileDetail1(buttonListMenu) {
- myApp.alert(buttonListMenu);
-}
 function fileDetail(name, type, status, description, rejectionComment, expiryDate, dateFormat, folder, subFolder,buttonListMenu) {
     
 	var buttonsGroup = []; 
@@ -581,26 +631,6 @@ function fileDetail(name, type, status, description, rejectionComment, expiryDat
         
 	   buttonsGroup.push(valueToPush);
     }
-   
-  
-/*	var buttons = [{
-		text: name,
-		label: true
-
-	}, {
-		text: 'Preview',
-		bold: true,
-		
-	}, {
-		text: 'Edit',
-		bold: true,
-        onClick: function () {
-			editFileDetail(name, type, status, description, rejectionComment, expiryDate, dateFormat, folder, subFolder);
-		}
-	}, {
-		text: 'Delete',
-		color: 'red'
-	}, ];*/
 	myApp.actions(buttonsGroup);
 }
 
@@ -633,6 +663,210 @@ function UpdateItem(buttons) {
 
 		}
 	});
+
+
+function UpdateRelatedItemEvent(){ 
+    var updateId = relatedItemId;    
+    if(isDuplicate==="isDuplicate")
+        updateId=0;
+     var data="{"+  
+        "\"mainItemId\":\""+itemId+"\","+
+        "\"relatedItemId\":\""+updateId+"\","+
+        "\"screenName\":\""+divId+"\","+ 
+        "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +
+        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
+        "\"parameters\":"+Parameters+"}";  
+     myApp.showPreloader();
+     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveRelatedItemEvent';
+
+     $.ajax({             
+        type: 'POST',           
+        url: url,                  
+        contentType: "text/plain",                           
+        dataType: "json",                            
+        data: data,             
+        success: function(data) {     
+            
+            if(data.status==="ok")
+                {
+                  myApp.closeModal(".popup",true); 
+                  myApp.hidePreloader();  
+                  manageSaveRelatedItemResponse(data);                         
+                }
+            else 
+                { 
+                    myApp.hidePreloader();
+                    myApp.alert("error saving","Error");
+                }
+        },
+        error: function(e) {         
+             
+            console.log(e.message);  
+            verifconnexion = false;        
+            myApp.hidePreloader();
+            myApp.alert("error occured","Error"); 
+      
+                             
+        }                           
+    }); 
+}
+
+function UpdateRelatedItem(){ 
+    var updateId = relatedItemId;    
+    if(isDuplicate==="isDuplicate")
+        updateId=0;
+     var data="{"+  
+        "\"mainItemId\":\""+itemId+"\","+
+        "\"relatedItemId\":\""+updateId+"\","+
+        "\"screenName\":\""+divId+"\","+ 
+        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
+        "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," + 
+        "\"parameters\":"+Parameters+"}";  
+     myApp.showPreloader();
+     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveRelatedItem';
+
+     $.ajax({             
+        type: 'POST',           
+        url: url,                  
+        contentType: "text/plain",                           
+        dataType: "json",                            
+        data: data,             
+        success: function(data) {     
+            
+            if(data.status==="ok")
+                {
+                 
+                  myApp.hidePreloader();
+                        myApp.alert(SuccessMsg, function () {
+                        loadScreen(divId);
+                        });
+                                         
+                }
+            else 
+                { 
+                    myApp.hidePreloader();
+                    myApp.alert(data.message,data.messageTitle);
+                }
+        },
+        error: function(e) {         
+             
+            console.log(e.message);  
+            verifconnexion = false;        
+            myApp.hidePreloader();
+            myApp.alert("error occured","Error"); 
+      
+                             
+        }                           
+    }); 
+}
+
+function manageSaveRelatedItemResponse(data){
+     console.log(data.behavior);
+     if(data.behavior!=null)
+     {
+       
+            switch(data.behavior)
+                {
+                    case "blockingAlert" :
+                        {
+                            myApp.alert(data.message,"Exception");
+                            break;
+                        }
+                    case "optionalAlert" :
+                        {
+                              myApp.confirm(data.message, "Exception", function () {
+                                        UpdateRelatedItem();
+                                         });
+                            break;
+                        }
+                    case "deviationAlert" :
+                        {
+                             errorMsg=data.message;
+                             myApp.popup('<div class="popup" style="width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" ><div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">'+data.message+'</br></br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="saveProcessEngineComment_enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="saveBeforeUpdateRelatedItem_DeviationComment()" id="saveProcessEngineCommentButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
+                            break;
+                        }
+                }
+     }
+    else
+    {
+      
+              myApp.hidePreloader();
+                        myApp.alert(SuccessMsg,SuccesMsgTitle, function () {
+                        loadScreen(divId);
+                        });
+              myApp.closeModal(".popup",true);
+    }
+}
+
+
+
+
+
+  
+  function saveProcessEngineComment_enabledButton(textarea){
+   
+    var saveProcessEngineCommentButton=document.getElementById("saveProcessEngineCommentButton");
+    if(textarea.value.length!=0)
+        {
+            saveProcessEngineCommentButton.className ="button button-fill active";
+        }
+    else
+    {
+        saveProcessEngineCommentButton.className ="button button-fill disabled";
+    }
+    
+      
+};
+  
+function saveBeforeUpdateRelatedItem_DeviationComment()
+{
+    var comment=document.getElementById("deviationComment").value;
+    var updateId = relatedItemId;    
+    if(isDuplicate==="isDuplicate")
+        updateId=0;
+    var data="{"+    
+        "\"screenName\":\""+divId+"\","+
+        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
+        "\"mainItemId\":\""+itemId+"\","+
+        "\"relatedItemId\":\"0\"," +
+        "\"comment\":\""+comment+"\"," +
+        "\"errorMsg\":\""+errorMsg+"\"," +  
+        "\"parameters\":"+Parameters+"}"; 
+     myApp.showPreloader();
+     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveBeforeUpdateRelatedItem_LogDeviation';
+
+     $.ajax({             
+        type: 'POST',           
+        url: url,                  
+        contentType: "text/plain",                           
+        dataType: "json",                            
+        data: data,             
+        success: function(data) {     
+            
+            if(data.status==="ok")
+                {
+                  myApp.hidePreloader();
+                  myApp.closeModal();    
+                  myApp.alert(SuccessMsg,SuccesMsgTitle, function () {
+                  loadScreen(divId);
+                  });                  
+                }
+            else 
+                { 
+                    myApp.hidePreloader();
+                    myApp.alert(data.message,messageTitle);
+                }
+        },
+        error: function(e) {         
+             
+            console.log(e.message);  
+            verifconnexion = false;        
+            myApp.hidePreloader();
+            myApp.alert("error occured"); 
+      
+                             
+        }                           
+    }); 
 }
 
 function downloadAsset(fileName) {

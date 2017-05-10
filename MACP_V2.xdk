@@ -5,7 +5,7 @@
       "projectTypeName": "com.intel.xdk.projecttype.jsapp",
       "src": "jsapp/template-blank-cordova-project-lite/sample.zip",
       "projectGuid": "9688cde4-62ce-4677-a863-1ea43bf4ae30",
-      "lastModifiedDate": 1493827418214,
+      "lastModifiedDate": 1494241046708,
       "creationDate": 1493817986846
     },
     "sourceDirectory": "www",
@@ -159,8 +159,8 @@
         "certificateId_": "D7lrVvgaA06_susYcA-1rg2",
         "cordovaCLIVersion_": "6.2.0",
         "crosswalkVersion_": "19",
-        "appName_": "MACP",
-        "appID_": "xdk.intel.template",
+        "appName_": "mACP",
+        "appID_": "com.axefinance.axecreditportal.macp",
         "appAccess_": {
           "mode": "whitelist",
           "network": [
@@ -235,10 +235,10 @@
         ],
         "addlPermissions_": "",
         "excludedLibraries_": "",
-        "appVersion_": "0.0.1",
+        "appVersion_": "1.0",
         "appVersionCode_": "1",
-        "appDescription_": "Intel XDK template",
-        "appAuthor_": "Intel XDK",
+        "appDescription_": "mACP is the mobile application designed to run standard ACP features.",
+        "appAuthor_": "axefinance",
         "signed_": true
       },
       "iOS": {

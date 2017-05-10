@@ -19,7 +19,7 @@ function manageAuthentifaction(result)
        
     switch (result["status"]) {   
               case "error":
-                 myApp.alert(result["message"],'MACP');
+                 myApp.alert(result["message"],'mACP');
                  myApp.hidePreloader(); 
                   break;
               case "ok":
@@ -66,7 +66,7 @@ function parseDataGet(url) {
         error: function(e) {
            // if(e.status===0)
              myApp.hidePreloader();    
-              myApp.alert('Error occurs in the system');
+              myApp.alert('Error occurs in the system',"Error");
         }
     });
 
