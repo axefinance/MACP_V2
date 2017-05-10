@@ -19,6 +19,7 @@ var itemRef;
 var fromNewInput;
 var divId; 
 var engine;
+var TargetTab;
 
 
 var myApp=new Framework7({ swipeBackPage : false, statusbarOverlay:true, tapHold: true,swipePanel: 'left',fastClicksDelayBetweenClicks : 10 }) ;
@@ -123,7 +124,7 @@ GetHomePageScripts();
         },
         error: function(e) {
              myApp.hideIndicator();     
-              myApp.alert("error occured in the system");
+              myApp.alert("error occured in the system","Error");
         }
     });   
 };
@@ -293,7 +294,7 @@ function GetEditScreen(url,itemId){
      var data="{"+            
         "\"screenName\":\""+currentItem+"\","+
         "\"mainItemId\":\""+itemId+"\"," +
-        "\"targetTab\":\""+targetTab+"\"," +  
+        "\"targetTab\":\""+TargetTab+"\"," +  
         "\"screenEngine\":\"empty\","+
         "\"screenWidth\":\""+window.innerWidth+"\"," +
         "\"screenHeight\":\""+window.innerHeight+"\"}";  
@@ -321,7 +322,7 @@ function GetEditScreen(url,itemId){
                     },
                     error: function(e) {
                        myApp.hidePreloader();    
-                       myApp.alert("error occured");      
+                       myApp.alert("error occured","Error");      
                     }   
             });         
 };                 
@@ -339,7 +340,7 @@ function GetNewInputScreen(url){
                     },
                     error: function(e) {
                        myApp.hidePreloader();
-                       myApp.alert("error occured");
+                       myApp.alert("error occured","Error");
                           
                     }    
             });         
@@ -358,7 +359,7 @@ function GetSearchPage(url){
                     },
                     error: function(e) {
                         myApp.hidePreloader();
-                        myApp.alert("error occured");       
+                        myApp.alert("error occured","Error");       
 
                     }  
                  
@@ -436,7 +437,7 @@ function GetHomePage(url) {
         },
         error: function(e) {  
              myApp.hidePreloader();    
-              myApp.alert("error occured in the system");
+              myApp.alert("error occured in the system","Error");
         }
     });          
                
@@ -520,7 +521,7 @@ function lunchSearchResult(url){
             verifconnexion = false;  
             
             myApp.hidePreloader();
-            myApp.alert("error occured");
+            myApp.alert("error occured","Error");
  
                          
         }                           
@@ -577,7 +578,7 @@ function getWsConfiguration(){
             }, null);
 };
 function onError(tx, error) {
-   myApp.alert(error.message);
+   myApp.alert(error.message,"Error");
  };
 function saveWsConfiguration(ip,port){    
        db.transaction(function (t) {
@@ -596,7 +597,7 @@ function updateWsConfiguration(ip,port){
 function ExecuteTask(taskId,workflowName,targettab){
     TaskId=taskId;
     ExecutedWorkflowName=workflowName;
-    targetTab = targettab;
+    TargetTab = targettab;
     mainView.router.load({url: "executeTaskScreen.html",reload:true});
 }
 function GetExecuteTaskScreen(url){
@@ -609,7 +610,7 @@ function GetExecuteTaskScreen(url){
     var data="{"+  
         "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
         "\"taskId\":\""+TaskId+"\"," +
-        "\"targetTab\":\""+targetTab+"\"," +  
+        "\"targetTab\":\""+TargetTab+"\"," +  
         "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
         "\"interalEntites\":"+InternalEntities+","+
         "\"profilesList\":"+ProfilesList+","+      
@@ -647,7 +648,7 @@ function GetExecuteTaskScreen(url){
             else if(data.status==="item not found")
                 {
                      myApp.hidePreloader(); 
-                     myApp.alert("Item not found in database");
+                     myApp.alert("Item not found in database","Item not found");
                 }
             else                     
                 { 
@@ -659,7 +660,7 @@ function GetExecuteTaskScreen(url){
             console.log(e.message);  
             verifconnexion = false;        
             myApp.hidePreloader();
-            myApp.alert("error occured");                   
+            myApp.alert("error occured","Error");                   
         }                             
     });     
 }
