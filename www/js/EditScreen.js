@@ -175,7 +175,7 @@ function manageAttechementElement() {
                 document.getElementById("saveBlock").classList.remove("displayNone");
                 document.getElementById("editBlock").classList.remove("displayNone");
         }
-    }
+    } 
 
     $$('.startWF-From-Edit-Screen-form-to-data').on('click', function () {
 
@@ -349,7 +349,7 @@ function manageAttechementElement() {
 
     function mainData_SaveEvent() {
         var formData = myApp.formToData('#my-mainData-form');
-        parameters = JSON.stringify(formData);
+        Parameters = JSON.stringify(formData);
         UpdateItem(parameters);
     }
 
@@ -357,7 +357,7 @@ function manageAttechementElement() {
         setTimeout(uploadAttachementFile(), 1000);
     }
 
-    function testclick(msg) {
+    function testclick(msg,msgTitle) {
         SuccessMsg = msg;
         SuccesMsgTitle = msgTitle;
         var i;
@@ -404,7 +404,7 @@ function manageAttechementElement() {
             $(x[indexToSelect]).next().children().first().focus();
         } else {
             var formData = myApp.formToData('#my-relatedItemPopup-form');
-            parameters = JSON.stringify(formData);
+            Parameters = JSON.stringify(formData);
             setTimeout(function () {
                 UpdateRelatedItemEvent();
             }, 1000);
@@ -414,7 +414,7 @@ function manageAttechementElement() {
     }
 
 
-    function UpdateRelatedItem(parameters, msg) {
+    function UpdateRelatedItem(msg) {
         var updateId = relatedItemId;
         if (isDuplicate === "isDuplicate")
             updateId = 0;
@@ -423,7 +423,7 @@ function manageAttechementElement() {
             "\"relatedItemId\":\"" + updateId + "\"," +
             "\"screenName\":\"" + divId + "\"," +
             "\"userId\":\"" + sessionStorage.getItem("userId") + "\"," +
-            "\"parameters\":" + parameters + "}";
+            "\"parameters\":" + Parameters + "}";
         myApp.showPreloader();
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/SaveRelatedItem';
 
@@ -585,13 +585,13 @@ function manageAttechementElement() {
         myApp.actions(buttonsGroup);
     }
 
-    function UpdateItem(buttons) {
+    function UpdateItem() {
 
         var data = "{" +
             "\"mainItemId\":\"" + itemId + "\"," +
             "\"screenName\":\"" + currentItem + "\"," +
             "\"userId\":\"" + sessionStorage.getItem("userId") + "\"," +
-            "\"parameters\":" + parameters + "}";
+            "\"parameters\":" + Parameters + "}";
         myApp.showPreloader();
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/UpdateItem';
 
