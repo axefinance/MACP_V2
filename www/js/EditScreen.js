@@ -7,6 +7,7 @@ var isDuplicate;
 var Parameters;
 var errorMsg;
 var SuccessMsg;
+var SuccesMsgTitle;
 function loadRelatedItemPopup(id,isDuplicateAction)
 { 
        relatedItemId=id;
@@ -23,7 +24,7 @@ function loadRelatedItemPopup(id,isDuplicateAction)
                     }, 
                     error: function(e) {
                         myApp.hidePreloader();
-                       myApp.alert("error occured");       
+                       myApp.alert("error occured","Error");       
                     }        
             });   
 }
@@ -85,7 +86,7 @@ function loadScreen(divID)     {
                     },   
                     error: function(e) {
                        myApp.hidePreloader();
-                       myApp.alert("error occured"); 
+                       myApp.alert("error occured","Error"); 
                     }   
             });             
 }
@@ -123,7 +124,7 @@ function deleteItem(id,culture){
                     },    
                     error: function(e) {
                         myApp.hidePreloader();
-                       myApp.alert("error occured");  
+                       myApp.alert("error occured","Error");  
                     }   
             });     
 }
@@ -358,8 +359,9 @@ function attachement_SaveEvent(){
     setTimeout( uploadAttachementFile(),1000);
 }
 
-function testclick(msg){
+function testclick(msg,msgTitle){
     SuccessMsg=msg;
+   SuccesMsgTitle= msgTitle;
     var i;
     var indexToSelect=1;
     var isValid = true;
@@ -423,14 +425,13 @@ function testclick(msg){
     {
         var formData = myApp.formToData('#my-relatedItemPopup-form');
         Parameters=JSON.stringify(formData);        
-        setTimeout(function() { UpdateRelatedItemEvent(msg); }, 1000) ;
+        setTimeout(function() { UpdateRelatedItemEvent(); }, 1000) ;
 
        
     }
 }
 
-function UpdateRelatedItemEvent(msg){ 
-    SuccessMsg=msg;
+function UpdateRelatedItemEvent(){ 
     var updateId = relatedItemId;    
     if(isDuplicate==="isDuplicate")
         updateId=0;
@@ -461,7 +462,7 @@ function UpdateRelatedItemEvent(msg){
             else 
                 { 
                     myApp.hidePreloader();
-                    myApp.alert("error saving");
+                    myApp.alert("error saving","Error");
                 }
         },
         error: function(e) {         
@@ -469,7 +470,7 @@ function UpdateRelatedItemEvent(msg){
             console.log(e.message);  
             verifconnexion = false;        
             myApp.hidePreloader();
-            myApp.alert("error occured"); 
+            myApp.alert("error occured","Error"); 
       
                              
         }                           
@@ -510,7 +511,7 @@ function UpdateRelatedItem(){
             else 
                 { 
                     myApp.hidePreloader();
-                    myApp.alert("error saving");
+                    myApp.alert(data.message,data.messageTitle);
                 }
         },
         error: function(e) {         
@@ -518,7 +519,7 @@ function UpdateRelatedItem(){
             console.log(e.message);  
             verifconnexion = false;        
             myApp.hidePreloader();
-            myApp.alert("error occured"); 
+            myApp.alert("error occured","Error"); 
       
                              
         }                           
@@ -554,8 +555,9 @@ function manageSaveRelatedItemResponse(data){
      }
     else
     {
+      
               myApp.hidePreloader();
-                        myApp.alert(SuccessMsg, function () {
+                        myApp.alert(SuccessMsg,SuccesMsgTitle, function () {
                         loadScreen(divId);
                         });
               myApp.closeModal(".popup",true);
@@ -608,14 +610,14 @@ function saveBeforeUpdateRelatedItem_DeviationComment()
                 {
                   myApp.hidePreloader();
                   myApp.closeModal();    
-                  myApp.alert(SuccessMsg, function () {
+                  myApp.alert(SuccessMsg,SuccesMsgTitle, function () {
                   loadScreen(divId);
                   });                  
                 }
             else 
                 { 
                     myApp.hidePreloader();
-                    myApp.alert("error saving");
+                    myApp.alert(data.message,messageTitle);
                 }
         },
         error: function(e) {         

@@ -91,14 +91,14 @@ function saveNewInputEvent(parameters){
             }
             else  
             {
-                   myApp.alert(data.message);
+                   myApp.alert(data.message,data.message);
             }
         },
         error: function(e) { 
             console.log(e.message);  
             verifconnexion = false;        
              myApp.hidePreloader();
-            myApp.alert("error occured");                            
+            myApp.alert("error occured","Error");                            
         }                           
     });    
 }
@@ -119,20 +119,28 @@ function saveNewInput(parameters){
         contentType: "text/plain",                          
         dataType: "json",                            
         data: data,             
-        success: function(data) {     
+        success: function(data) {  
+            if(data.status==="ok")
+                {
             myApp.hidePreloader();
             itemId=data.itemId; 
             divId=data.itemId;
             itemRef=data.itemRef; 
-            targetTab=data.targetTab;  
+            TargetTab=data.targetTab;  
             mainView.router.load({url: "editScreen.html",reload:true});
             fromNewInput=true;
+                }
+            else
+                {
+                     myApp.hidePreloader();
+                    myApp.alert(data.message,data.messageTitle);
+                }
         },
         error: function(e) { 
             console.log(e.message);  
             verifconnexion = false;        
              myApp.hidePreloader();
-            myApp.alert("error occured");   
+            myApp.alert("error occured","Error");   
    
                                  
         }                           
@@ -174,6 +182,7 @@ function manageSaveInputResponse(data)
         {
              itemId=data.itemId; 
                     itemRef=data.itemRef;
+                    TargetTab=data.targetTab;
                     mainView.router.load({url: "editScreen.html",reload:true});
                     fromNewInput=true;
         }
@@ -217,20 +226,27 @@ function saveBeforeInsert_DeviationComment()
         dataType: "json",                            
         data: data,             
         success: function(data) {   
+       if(data.status==="ok")
+         {
             myApp.hidePreloader();
             itemId=data.itemId; 
             divId=data.itemId;
             itemRef=data.itemRef; 
             
-            targetTab=data.targetTab;  
+            TargetTab=data.targetTab;  
             mainView.router.load({url: "editScreen.html",reload:true});
             fromNewInput=true;
+        }
+    else{  
+            myApp.hidePreloader();
+                    myApp.alert(data.message,data.messageTitle);    
+        }
         },
         error: function(e) { 
             console.log(e.message);  
             verifconnexion = false;        
              myApp.hidePreloader();
-            myApp.alert("error occured");   
+            myApp.alert("error occured","Error");   
    
                                  
         }                           
