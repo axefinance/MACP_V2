@@ -585,7 +585,7 @@ function manageAttechementElement() {
         myApp.actions(buttonsGroup);
     }
 
-    function UpdateItem() {    
+    function UpdateItem() {
 
         var data = "{" +
             "\"mainItemId\":\"" + itemId + "\"," +
