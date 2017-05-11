@@ -6,9 +6,7 @@
     "projectDirectories": {}
   },
   "build-tab": {
-    "selectedTargets": [
-      "CORDOVA_ANDROID"
-    ]
+    "selectedTargets": []
   },
   "editorTab": {
     "currentEditorMode": 0

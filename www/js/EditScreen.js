@@ -350,7 +350,7 @@ function manageAttechementElement() {
     function mainData_SaveEvent() {
         var formData = myApp.formToData('#my-mainData-form');
         Parameters = JSON.stringify(formData);
-        UpdateItem(parameters);
+        UpdateItem();
     }
 
     function attachement_SaveEvent() {
