@@ -20,6 +20,7 @@ var fromNewInput;
 var divId; 
 var engine;
 var TargetTab;
+var InstructionGuide;
 
 
 var myApp=new Framework7({ swipeBackPage : false, statusbarOverlay:true, tapHold: true,swipePanel: 'left',fastClicksDelayBetweenClicks : 10 }) ;
@@ -534,7 +535,7 @@ function generateConnectedComboItems(idChild,screenTagName,val,child,entity){
 }; 
 function connectedComboOptions(url,idChild) {
     $.ajax({   
-                    type: "GET", 
+                    type: "GET",   
                     dataType:"json",
                     url:url,
                     success: function(data1) {      
@@ -597,7 +598,7 @@ function updateWsConfiguration(ip,port){
 function ExecuteTask(taskId,workflowName,targettab){
     TaskId=taskId;
     ExecutedWorkflowName=workflowName;
-    TargetTab = targettab;
+    TargetTab = targettab;       
     mainView.router.load({url: "executeTaskScreen.html",reload:true});
 }
 function GetExecuteTaskScreen(url){
@@ -618,8 +619,8 @@ function GetExecuteTaskScreen(url){
         "\"screenWidth\":\""+window.innerWidth+"\","+
         "\"screenHeight\":\""+(window.innerHeight-90)+"\"}";
   $.ajax({             
-        type: 'POST',                                
-        url: url,                  
+        type: 'POST',                                    
+        url: url,                    
         contentType: "text/plain",                           
         dataType: "json",                            
         data: data,             
@@ -643,7 +644,8 @@ function GetExecuteTaskScreen(url){
                     docMenu=(data.DocumentMenu);
                         loadJSFile("js/EditScreen.js");
                         loadJSFile("js/ExecuteTaskScreen.js");
-                    myApp.hidePreloader();      
+                    myApp.hidePreloader();
+                    manageInstructionGuideResponse(data);
                 }
             else if(data.status==="item not found")
                 {
@@ -658,10 +660,25 @@ function GetExecuteTaskScreen(url){
         error: function(e) {         
              
             console.log(e.message);  
-            verifconnexion = false;        
+            verifconnexion = false;                           
             myApp.hidePreloader();
             myApp.alert("error occured","Error");                   
         }                             
-    });     
+    });       
+}  
+       
+function manageInstructionGuideResponse(data)
+{
+    if(data.instructionGuide!=null)  
+    {
+         InstructionGuide=data.instructionGuide;   
+         showWorkflowInstructionGuide(); 
+        $('#executeTask-toolbarContent').append(data.instructionGuideButton); 
+    }
+}
+  
+function showWorkflowInstructionGuide()
+{  
+     myApp.popup('<div class="popup" style="width: 50% !important; height :50% !important; top: 25% !important; top:25% !important; left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" >' + InstructionGuide + '</div>', true); 
 }
 
