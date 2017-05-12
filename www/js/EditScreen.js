@@ -11,6 +11,100 @@ var SuccessMsg;
 var SuccesMsgTitle;
 var isUpdateAttachment = false;
 
+
+function generateAttachmentPicture(name, folder, subFolder){
+     myApp.showPreloader();
+        var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/GetDocumentAttachedStream';
+        var data = "{" +
+            "\"mainItemId\":\"" + itemId + "\"," +
+            "\"screenName\":\"" + divId + "\"," +
+            "\"fileName\":\"" + name + "\"," +
+            "\"folder\":\"" + folder + "\"," +
+            "\"subFolder\":\"" + subFolder + "\"}";
+        $.ajax({
+            type: 'POST',
+            url: url,
+            contentType: "text/plain",
+            dataType: "json",
+            data: data,
+            success: function (data) {
+                    myApp.hidePreloader();
+                    var str = name.split('.');
+                    var fileType = str[str.length-1];
+                    var fileHeader;
+                    switch (fileType.toLowerCase()){
+                        case "pdf" :
+                            fileHeader = "data:application/"+fileType+";base64,";
+                            if (device.manufacturer.toLowerCase() === "apple") {                    
+                                var ref = cordova.InAppBrowser.open("data:application/pdf;base64," + data.content, '_blank', 'location=no,closebuttoncaption=X,toolbarposition=top');
+                            } else {
+                                managePdfReaderInAndroid(name, data.content);
+                            }
+                            break; 
+                        case "docx" : 
+                            fileHeader = "data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,";
+                            if (device.manufacturer.toLowerCase() === "apple") {                    
+                                var ref = cordova.InAppBrowser.open(fileHeader + data.content, '_blank', 'location=no,closebuttoncaption=X,toolbarposition=top');
+                            } else {
+                                var folderpath = cordova.file.externalRootDirectory;
+                                savebase64AsPDF(folderpath, name, data.content, fileHeader);
+                            }
+                            break;
+                        case "png":
+                        case "jpg":
+                        case "jpeg":
+                        case "gif":                                                        
+                            fileHeader = "data:image/"+fileType+";base64,"                            
+                            myApp.popup('<div class="popup" style="width: 80% !important; top: 10% !important;left: 10% !important; margin-left: 0px !important; margin-top: 0px !important;  position:absoloute !important background : #f1f1f1 !important;" ><img src="' +fileHeader+ data.content + '"/></div>', true);                            
+                    }
+            },
+            error: function (e) {
+
+                console.log(e.message);
+                verifconnexion = false;
+                myApp.hidePreloader();
+                myApp.alert("error occured");
+            }
+        });
+}
+
+
+function deleteAttachmentDocument(name, folder, subFolder) {
+        myApp.showPreloader();
+        var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/DeleteAttachmentDocument';
+        var data = "{" +
+            "\"mainItemId\":\"" + itemId + "\"," +
+            "\"screenName\":\"" + divId + "\"," +
+            "\"fileName\":\"" + name + "\"," +
+            "\"folder\":\"" + folder + "\"," +
+            "\"subFolder\":\"" + subFolder + "\"," +
+            "\"userShortName\":\"" + setUser_ShortName(sessionStorage.getItem("userShortName")) + "\"}";
+        $.ajax({
+            type: 'POST',
+            url: url,
+            contentType: "text/plain",
+            dataType: "json",
+            data: data,
+            success: function (data) {
+                if (data.status === "ok") {
+                    myApp.hidePreloader();
+                    loadScreen(divId);
+                } else {
+                    myApp.hidePreloader();
+                    myApp.alert("error deleting");
+                }
+            },
+            error: function (e) {
+
+                console.log(e.message);
+                verifconnexion = false;
+                myApp.hidePreloader();
+                myApp.alert("error occured");
+            }
+        });
+
+    }
+
 function loadRelatedItemPopup(id, isDuplicateAction) {
     if (engine === "attachment") {
         isUpdateAttachment = false;
@@ -206,7 +300,7 @@ function manageAttechementElement() {
             data: data,
             success: function (data) {
                 if (device.manufacturer.toLowerCase() === "apple") {
-                    myApp.hidePreloader();
+                    myApp.hidePreloader();                                       
                     var ref = cordova.InAppBrowser.open("data:application/pdf;base64," + data.content, '_blank', 'location=no,closebuttoncaption=X,toolbarposition=top');
                 } else {
                     managePdfReaderInAndroid(documentName, data.content);
@@ -223,7 +317,7 @@ function manageAttechementElement() {
     function managePdfReaderInAndroid(documentName, base64) {
         var folderpath = cordova.file.externalRootDirectory;
         var contentType = "application/pdf";
-        savebase64AsPDF(folderpath, documentName + "_" + itemId + ".pdf", base64, contentType);
+        savebase64AsPDF(folderpath, documentName, base64, contentType);
 
     }
 
@@ -576,14 +670,29 @@ function manageAttechementElement() {
                 valueToPush["onClick"] = funcClick;
             }
             if (butType === "delete") {
-
+                var funcClick = function () { deleteAttachmentDocument(name, folder, subFolder)}
+                valueToPush["onClick"] = funcClick;
                 valueToPush["color"] = "red";
             }
-
+            if(butType === "preview")
+            {
+               /* var res = name.split(".");                
+                var fileType = res[res.length-1];
+                switch(fileType)
+                    case "png" : 
+                        var funcClick = function () { generateAttachmentPicture(name, folder, subFolder)}            
+                        break;
+                    case "pdf" : */
+                        var funcClick = function () { generateAttachmentPicture(name, folder, subFolder)}            
+                       // break;
+                
+                valueToPush["onClick"] = funcClick;             
+            }
             buttonsGroup.push(valueToPush);
         }
         myApp.actions(buttonsGroup);
     }
+
 
     function UpdateItem() {
 
