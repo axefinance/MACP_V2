@@ -2,7 +2,6 @@ var eligibilityObject;
 var deviatedMsg;
 var withValidatorControl;
 var requiredDocument;
-
 function stopWorkflow(){
    var comment=document.getElementById("stopWorkflowComment").value; 
     
@@ -26,6 +25,7 @@ function stopWorkflow(){
             if(data.status==="ok")
                 {
                     myApp.hidePreloader(); 
+                    extendedProperties=null;
                     HomeBackButton.style.visibility="hidden";   
                     mainView.router.back({force:true,pageName:"homePage"});
                     mainView.history=["#homePage"];
@@ -76,8 +76,63 @@ function saveDeviationComment_enabledButton(textarea){
       
 }; 
 $$('.end-task-form-to-data').on('click', function(){
-   endTaskEvent();
-});
+     var i;
+        var indexToSelect = 1;
+        var isValid = true;
+        var textBox;
+        var dateOnly;
+        var checkBox;
+        var comboBox;
+        textBox = $("#my-mainData-form div.requiredItem.textbox input");
+        dateOnly = $("#my-mainData-form div.requiredItem.dateonly input");
+        comboBox = $("#my-mainData-form div.requiredItem.combobox div.item-after");
+        checkBox = $("#my-mainData-form div.requiredItem.checkbox label.label-checkbox");
+        for (i = 0; i < textBox.length; i++) {
+            if (!isUpdateAttachment)
+                if ($(textBox[i]).val().replace(/\s/g, '') === "") {
+                    $(textBox[i]).closest("div.item-inner").addClass("requiredIcon");
+                    isValid = false;
+                } else {
+                    $(textBox[i]).closest("div.item-inner").removeClass("requiredIcon");
+                }
+        }
+
+        for (i = 0; i < dateOnly.length; i++) {
+
+            if ($(dateOnly[i]).val().replace(/\s/g, '') === "") {
+                $(dateOnly[i]).closest("div.item-inner").addClass("requiredIcon");
+                isValid = false;
+            } else {
+                $(dateOnly[i]).closest("div.item-inner").removeClass("requiredIcon");
+            }
+        }
+
+        for (i = 0; i < comboBox.length; i++) {
+
+            if ($(comboBox[i]).html().replace(/\s/g, '') === "") {
+                $(comboBox[i]).closest("div.item-inner").addClass("requiredIcon");
+                isValid = false;
+            } else {
+                $(comboBox[i]).closest("div.item-inner").removeClass("requiredIcon");
+            }
+        }
+
+        for (i = 0; i < checkBox.length; i++) {
+
+            if ($(checkBox[i]).find("input").is(":checked") == false) {
+                $(checkBox[i]).addClass("requiredIcon");
+                isValid = false;
+            } else {
+                $(checkBox[i]).removeClass("requiredIcon");
+            }
+        }
+        if (!isValid) {
+            $(x[indexToSelect]).next().children().first().focus();
+        } else {
+             endTaskEvent();
+        }
+    });
+
 function showcommentPopup(){
      myApp.popup('<div class="popup" style="width: 40% !important; height: 40% !important; top: 30% !important;left: 30% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" ><div class="content-block-title">'+stopWFMessage+'</div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="stopWorkflowComment" onkeyup="enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="stopWorkflow()" id="stopWfYesButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
 }  
@@ -91,9 +146,12 @@ function endTaskEvent(){
     var data="{"+       
         "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
         "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
+        "\"userName\":\""+sessionStorage.getItem('userName')+"\"," +
         "\"mainItemId\":\""+itemId+"\","+
+        "\"extendedProperties\":"+extendedProperties+","+
         "\"screenName\":\""+currentItem+"\","+
         "\"taskId\":\""+TaskId+"\","+
+        "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
         "\"parameters\":"+screenParameters+","+
         "\"poponWidth\":\""+popupWidth+"\"}";
   $.ajax({             
@@ -122,10 +180,15 @@ function endTaskEvent(){
                                         {
                                              manageRequiredDocument(data);
                                         }
+                                    else if(data.CollectQuestions!=null)
+                                        {
+                                            manageCollectQuestion(data.CollectQuestions);
+                                        }
                                     else 
                                         {
                                             myApp.hidePreloader(); 
-                                            HomeBackButton.style.visibility="hidden";       
+                                            HomeBackButton.style.visibility="hidden";
+                                            extendedProperties=null;
                                             mainView.router.back({force:true,pageName:"homePage"});
                                             mainView.history=["#homePage"];
                                             leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
@@ -138,7 +201,7 @@ function endTaskEvent(){
                 { 
                     myApp.hidePreloader();
                 }  
-        },
+        },  
         error: function(e) {         
             console.log(e.message);  
             verifconnexion = false;
@@ -146,9 +209,14 @@ function endTaskEvent(){
             myApp.alert("error occured in the system");
         }                                         
     });      
-}         
+}
+
+function manageCollectQuestion(CollectQuestion)
+{
+     myApp.popup('<div class="popup" style="width: 80% !important; height: 80% !important; top: 10% !important;left: 10% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" >'+CollectQuestion+'</div>', true);  
+}
 function manageControlValidatorBehavior(data){
-    if(data.message!=undefined)
+    if(data.message!=undefined)    
                             {
                                 var behavior=data.behavior;
                                 if(behavior==="blockingAlert")
@@ -169,9 +237,20 @@ function manageControlValidatorBehavior(data){
                             }
 }
 function checkRequiredDocument(){
-    myApp.showPreloader();
-    var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/CheckRequiredDocument';
-    var data="{\"taskId\":\""+TaskId+"\"}";
+     myApp.showPreloader();
+     var formData = myApp.formToData('#my-mainData-form');
+     var   screenParameters=JSON.stringify(formData); 
+     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/CheckRequiredDocument';
+     var data="{"+       
+        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
+        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
+        "\"userName\":\""+sessionStorage.getItem('userName')+"\"," +
+        "\"mainItemId\":\""+itemId+"\","+
+        "\"extendedProperties\":"+extendedProperties+","+
+        "\"screenName\":\""+currentItem+"\","+
+        "\"taskId\":\""+TaskId+"\","+
+        "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
+        "\"parameters\":"+screenParameters+"}";
     $.ajax({             
         type: 'POST',             
         url: url,                  
@@ -191,6 +270,7 @@ function checkRequiredDocument(){
                     else
                         {
                           myApp.hidePreloader(); 
+                            extendedProperties=null;
                             HomeBackButton.style.visibility="hidden";       
                             mainView.router.back({force:true,pageName:"homePage"});
                             mainView.history=["#homePage"];
@@ -213,12 +293,15 @@ function saveRequiredDocumentComent(){
     var data="{"+       
         "\"userId\":\""+sessionStorage.getItem("userId")+"\","+
         "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
+        "\"userName\":\""+sessionStorage.getItem('userName')+"\"," +
         "\"deviatedMsg\":\""+deviatedMsg+"\","+
         "\"requiredDocument\":\""+requiredDocument+"\","+
         "\"mainItemId\":\""+itemId+"\","+
         "\"screenName\":\""+currentItem+"\","+
         "\"taskId\":\""+TaskId+"\","+
+        "\"extendedProperties\":"+extendedProperties+","+
         "\"comment\":\""+comment+"\","+
+        "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
         "\"parameters\":"+screenParameters+"}";   
     
   $.ajax({             
@@ -239,6 +322,7 @@ function saveRequiredDocumentComent(){
                     else
                         {
                             myApp.hidePreloader(); 
+                            extendedProperties=null;
                             HomeBackButton.style.visibility="hidden";       
                             mainView.router.back({force:true,pageName:"homePage"});
                             mainView.history=["#homePage"];
@@ -269,11 +353,14 @@ function saveDeviationComment(){
      var data="{"+       
         "\"userId\":\""+sessionStorage.getItem("userId")+"\","+
         "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
+        "\"userName\":\""+sessionStorage.getItem('userName')+"\"," +
         "\"deviatedMsg\":\""+deviatedMsg+"\","+
         "\"requiredDocument\":\"\","+
         "\"mainItemId\":\""+itemId+"\","+
         "\"screenName\":\""+currentItem+"\","+
         "\"taskId\":\""+TaskId+"\","+
+         "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
+         "\"extendedProperties\":"+extendedProperties+","+
         "\"comment\":\""+comment+"\","+
         "\"parameters\":"+screenParameters+"}"; 
   $.ajax({             
@@ -297,7 +384,8 @@ function saveDeviationComment(){
                         }
                     else if(data.endTask!=undefined)
                         {
-                             HomeBackButton.style.visibility="hidden";       
+                             HomeBackButton.style.visibility="hidden";  
+                             extendedProperties=null;
                              mainView.router.back({force:true,pageName:"homePage"});
                              mainView.history=["#homePage"];
                              leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
@@ -340,12 +428,15 @@ function saveEligibilityComment(){
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveEligibilityComment';
     var data="{"+  
         "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
+        "\"userName\":\""+sessionStorage.getItem('userName')+"\"," +
         "\"mainItemId\":\""+itemId+"\","+
         "\"screenName\":\""+currentItem+"\","+
         "\"parameters\":"+screenParameters+","+
         "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
         "\"taskId\":\""+TaskId+"\","+
+        "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
         "\"eligibilityObject\":"+JSON.stringify(eligibilityObject)+","+
+        "\"extendedProperties\":"+extendedProperties+","+
         "\"withValidatorControl\":\""+withValidatorControl.toLowerCase()+"\","+
         "\"commentList\":"+JSON.stringify(getCommentsList())+"}";
   $.ajax({             
@@ -367,7 +458,8 @@ function saveEligibilityComment(){
                        manageRequiredDocument(data);
                     else
                         {
-                        HomeBackButton.style.visibility="hidden";       
+                        HomeBackButton.style.visibility="hidden";     
+                            extendedProperties=null;
                              mainView.router.back({force:true,pageName:"homePage"});
                              mainView.history=["#homePage"];
                              leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
@@ -399,6 +491,113 @@ function getCommentsList(){
     
     return commentlist;
 } 
+
+function saveCollectQuestionEvent(){   
+     var i;
+    var indexToSelect=1;
+    var isValid = true;
+    var  textBox = $("#Collect-Question-form div.requiredItem.textbox input");
+    for (i = 0; i < textBox.length; i++) 
+    {
+        if($(textBox[i]).val()==="")
+        {
+            $(textBox[i]).closest("div.item-inner").addClass("requiredIcon");
+            isValid=false;            
+        }
+        else
+        {
+            $(textBox[i]).closest("div.item-inner").removeClass("requiredIcon");
+        }
+    }
+    var dateOnly=$("#Collect-Question-form div.requiredItem.dateonly input" )
+    for (i = 0; i < dateOnly.length; i++) 
+    {
+        if($(dateOnly[i]).val()==="")
+        {
+            $(dateOnly[i]).closest("div.item-inner").addClass("requiredIcon");
+            isValid=false;
+        }
+        else
+        {
+            $(dateOnly[i]).closest("div.item-inner").removeClass("requiredIcon");
+        }
+    }
+    var comboBox=$("#Collect-Question-form div.requiredItem.combobox div.item-after" )
+    for (i = 0; i < comboBox.length; i++)
+    {
+        if($(comboBox[i]).html()==="")
+        {
+            $(comboBox[i]).closest("div.item-inner").addClass("requiredIcon");
+            isValid=false;
+        }
+        else
+        {
+            $(comboBox[i]).closest("div.item-inner").removeClass("requiredIcon");
+        }              
+    }    
+   
+    if(!isValid)
+    {
+       $(x[indexToSelect]).next().children().first().focus();
+    }else
+    {
+       saveCollectQuestion();
+       
+    }
+}
+
+function saveCollectQuestion(){ 
+    myApp.closeModal();
+    myApp.showPreloader();
+     var collectQuestionData = myApp.formToData('#Collect-Question-form');
+     var   collectQuestionParameters=JSON.stringify(collectQuestionData); 
+      var formData = myApp.formToData('#my-mainData-form');
+     var   screenParameters=JSON.stringify(formData); 
+    var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveCollectQuestionAndEndTask';
+    var data="{"+  
+        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
+        "\"userName\":\""+sessionStorage.getItem('userName')+"\"," +
+        "\"mainItemId\":\""+itemId+"\","+
+        "\"screenName\":\""+currentItem+"\","+
+        "\"parameters\":"+screenParameters+","+
+        "\"collectQuestionParameters\":"+collectQuestionParameters+","+
+        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
+        "\"taskId\":\""+TaskId+"\"}";
+  $.ajax({             
+        type: 'POST',               
+        url: url,                    
+        contentType: "text/plain",                           
+        dataType: "json",                              
+        data: data,             
+        success: function(data) {       
+            if(data.status==="ok")  
+                {
+                             myApp.hidePreloader(); 
+                             HomeBackButton.style.visibility="hidden";  
+                             extendedProperties=null;
+                             mainView.router.back({force:true,pageName:"homePage"});
+                             mainView.history=["#homePage"];
+                             leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
+                        
+                    
+                }    
+            else                       
+                { 
+                    myApp.hidePreloader();
+                     myApp.alert("error saving"); 
+                }
+        },
+        error: function(e) {         
+            console.log(e.message);  
+            verifconnexion = false;        
+            myApp.hidePreloader(); 
+            myApp.alert("error occured in the system");
+        }                                         
+    });      
+    
+    
+}
+
 
   
 
