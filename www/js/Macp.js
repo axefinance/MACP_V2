@@ -21,6 +21,8 @@ var divId;
 var engine;
 var TargetTab;
 var InstructionGuide;
+var WithCollectQuestion; 
+var extendedProperties=null;
 
 
 var myApp=new Framework7({ swipeBackPage : false, statusbarOverlay:true, tapHold: true,swipePanel: 'left',fastClicksDelayBetweenClicks : 10 }) ;
@@ -433,7 +435,7 @@ function GetHomePage(url) {
              languagesList = JSON.parse(languages); 
              //createLanguagesList('homePage');
              createLogoutPopover('homePage'); 
-             GetHomePageScripts();
+             GetHomePageScripts(); 
              myApp.hidePreloader();
         },
         error: function(e) {  
@@ -627,10 +629,13 @@ function GetExecuteTaskScreen(url){
         success: function(data) {       
             if(data.status==="ok")
                 {
+                    loadJSFile("js/EditScreen.js");
+                    loadJSFile("js/ExecuteTaskScreen.js");
                     document.getElementById("executeTaskContent").innerHTML=data.content;
                     itemId=data.itemId;
                     stopWFMessage=data.stopWFMessage;
                      eligibility=data.eligibility;
+                    WithCollectQuestion=data.WithCollectQuestion;
                      currentItem=data.screenName;
                      pageTitleElement=document.getElementById("title_executeTaskScreen");
                      pageTitleElement.textContent=data.itemShortName;
@@ -642,8 +647,7 @@ function GetExecuteTaskScreen(url){
                         divId = data.divId;
                         engine = data.screenEngine;    
                     docMenu=(data.DocumentMenu);
-                        loadJSFile("js/EditScreen.js");
-                        loadJSFile("js/ExecuteTaskScreen.js");
+                    extendedProperties=data.ExtendedProperties;    
                     myApp.hidePreloader();
                     manageInstructionGuideResponse(data);
                 }
@@ -653,7 +657,7 @@ function GetExecuteTaskScreen(url){
                      myApp.alert("Item not found in database","Item not found");
                 }
             else                     
-                { 
+                {   
                     myApp.hidePreloader();
                 }
         },
