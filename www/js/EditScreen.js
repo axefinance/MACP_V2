@@ -125,24 +125,33 @@ function loadRelatedItemPopup(id, isDuplicateAction) {
         $('#h__none__subfolder_name').closest(".combobox").attr('disabled', false);
     }
     else {
-        relatedItemId = id;
+     relatedItemId = id;
         isDuplicate = isDuplicateAction;
         myApp.showPreloader();
-        $.ajax({
-            type: "GET",
-            dataType: "json",
-            url: "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen/" + divId + "/" + itemId + "/" + id,
-            success: function (data) {
-                myApp.popup('<div class="popup" style="width: 80% !important; top: 10% !important;left: 10% !important; margin-left: 0px !important; margin-top: 0px !important;  position:absoloute !important background : #f1f1f1 !important;" >' + data.content + '</div>', true);
-                myApp.hidePreloader();
-            },
-            error: function (e) {
-                myApp.hidePreloader();
-                myApp.alert("error occured", "Error");
-            }
-        });
-    }
-
+        var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    
+            
+      var data="{"+    
+        "\"screenName\":\""+divId+"\","+
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
+        "\"mainItemId\":\""+itemId+"\","+
+        "\"relatedItemId\":\""+id+"\"}"; 
+    console.log("SearchParams",data);        
+    $.ajax({             
+        type: 'POST',             
+        url: url,                                     
+        contentType: "text/plain",                            
+        dataType: "json",                            
+        data: data,         
+        success: function(data) {              
+            myApp.popup('<div class="popup" style="width: 80% !important; top: 10% !important;left: 10% !important; margin-left: 0px !important; margin-top: 0px !important;  position:absoloute !important background : #f1f1f1 !important;" >' + data.content + '</div>', true);
+                myApp.hidePreloader();   
+        },
+        error: function(e) { 
+            myApp.hidePreloader();
+            myApp.alert("error occured", "Error");        
+        }           
+    });  
+}
 }
 
 function manageAttechementElement() {
@@ -161,6 +170,7 @@ function manageAttechementElement() {
 }
     function loadScreen(divID) {
         var data = "{" +
+          "\"userData\":"+sessionStorage.getItem("userData")+","+
            "\"screenName\":\"" + divId + "\"," +
            "\"mainItemId\":\"" + itemId + "\"," +
            "\"screenEngine\":\"" + engine + "\"," +
@@ -215,8 +225,7 @@ function manageAttechementElement() {
        "\"itemId\":\"" + id + "\"," +
        "\"beforeCheck\":\"false\"," +
        "\"remoteAddress\":\"\"," +
-       "\"culture\":\"" + sessionStorage.getItem("language") + "\"," +
-       "\"userId\":\"" + sessionStorage.getItem("userId") + "\"," +
+       "\"userData\":"+sessionStorage.getItem("userData")+","+
        "\"spName\":\"\"," +
        "\"groupingSetShortname\":\"\"," +
        "\"mcData\":\"\"}";
@@ -291,7 +300,7 @@ function manageAttechementElement() {
             "\"fileName\":\"" + documentName + "\"," +
             "\"format\":\"pdf\"," +
             "\"itemID\":\"" + itemId + "\"," +
-            "\"userId\":\"" + sessionStorage.getItem("userId") + "\"}";
+            "\"userData\":"+sessionStorage.getItem("userData")+"}";
         $.ajax({
             type: 'POST',
             url: url,
@@ -566,8 +575,7 @@ function manageAttechementElement() {
             "\"fileData\":\"" + fileUploadedData + "\"," +
             "\"folder\":\"" + $("#h__none__folder_name option:selected").text() + "\"," +
             "\"subFolder\":\"" + $("#h__none__subfolder_name option:selected").text() + "\"," +
-            "\"userId\":\"" + sessionStorage.getItem("userId") + "\"," +
-            "\"userShortName\":\"" + setUser_ShortName(sessionStorage.getItem("userShortName")) + "\"," +
+            "\"userData\":"+sessionStorage.getItem("userData")+"," +
             "\"parameters\":" + parameters + "}";
         $.ajax({
             type: 'POST',
@@ -699,7 +707,7 @@ function manageAttechementElement() {
         var data = "{" +
             "\"mainItemId\":\"" + itemId + "\"," +
             "\"screenName\":\"" + currentItem + "\"," +
-            "\"userId\":\"" + sessionStorage.getItem("userId") + "\"," +
+            "\"userData\":"+sessionStorage.getItem("userData")+"," +
             "\"parameters\":" + Parameters + "}";
         myApp.showPreloader();
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/UpdateItem';
@@ -734,7 +742,7 @@ function manageAttechementElement() {
                "\"relatedItemId\":\"" + updateId + "\"," +
                "\"screenName\":\"" + divId + "\"," +
                "\"ipAddress\":\"" + sessionStorage.getItem("Ip_config") + "\"," +
-               "\"userId\":\"" + sessionStorage.getItem("userId") + "\"," +
+               "\"userData\":"+sessionStorage.getItem("userData")+"," +
                "\"parameters\":" + Parameters + "}";
             myApp.showPreloader();
             var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/SaveRelatedItemEvent';
@@ -777,7 +785,7 @@ function manageAttechementElement() {
                "\"mainItemId\":\"" + itemId + "\"," +
                "\"relatedItemId\":\"" + updateId + "\"," +
                "\"screenName\":\"" + divId + "\"," +
-               "\"userId\":\"" + sessionStorage.getItem("userId") + "\"," +
+               "\"userData\":"+sessionStorage.getItem("userData")+"," +
                "\"ipAddress\":\"" + sessionStorage.getItem("Ip_config") + "\"," +
                "\"parameters\":" + Parameters + "}";
             myApp.showPreloader();
@@ -876,7 +884,7 @@ function manageAttechementElement() {
                 updateId = 0;
             var data = "{" +
                 "\"screenName\":\"" + divId + "\"," +
-                "\"userId\":\"" + sessionStorage.getItem("userId") + "\"," +
+                "\"userData\":"+sessionStorage.getItem("userData")+"," +
                 "\"mainItemId\":\"" + itemId + "\"," +
                 "\"relatedItemId\":\"0\"," +
                 "\"comment\":\"" + comment + "\"," +

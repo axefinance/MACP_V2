@@ -24,6 +24,8 @@ function manageAuthentifaction(result)
                   break;
               case "ok":
                  {  
+                   sessionStorage.setItem("userData",JSON.stringify(result.userData));  
+                     /*
                   sessionStorage.setItem("userId", result['user_id']);
                   sessionStorage.setItem('userName', result['user_name']);
                   sessionStorage.setItem('userShortName', result['user_shortName']);   
@@ -33,7 +35,8 @@ function manageAuthentifaction(result)
                   sessionStorage.setItem('ProfilesList',result['ProfilesList']);  
                   sessionStorage.setItem('AccessRightUserList',result['AccessRightUserList']);   
                   sessionStorage.setItem('GroupsList',result['GroupsList']);        
-                  sessionStorage.setItem('HomePageConfig',result['HomePageConfig']);         
+                  sessionStorage.setItem('HomePageConfig',result['HomePageConfig']);  
+                  */
                   mainView.router.load({url: 'homePage.html',ignoreCache: true,reload: true});
                      break;
                  }

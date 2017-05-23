@@ -72,7 +72,7 @@ $$('.newInput-form-to-data').on('click', function(){
 function saveNewInputEvent(parameters){
       var data="{"+    
         "\"screenName\":\""+currentItem+"\","+
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
         "\"parameters\":"+parameters+"}";  
      myApp.showPreloader();
@@ -108,7 +108,7 @@ function saveNewInput(parameters){
     
       var data="{"+    
         "\"screenName\":\""+currentItem+"\","+
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," + 
         "\"parameters\":"+parameters+"}";  
      myApp.showPreloader();
@@ -211,7 +211,7 @@ function saveBeforeInsert_DeviationComment()
        myApp.closeModal(); 
       var data="{"+    
         "\"screenName\":\""+currentItem+"\","+
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\"0\"," +
         "\"relatedItemId\":\"0\"," +
         "\"comment\":\""+comment+"\"," +
@@ -231,7 +231,7 @@ function saveBeforeInsert_DeviationComment()
             myApp.hidePreloader();
             itemId=data.itemId; 
             divId=data.itemId;
-            itemRef=data.itemRef; 
+            itemRef=data.itemRef;  
             
             TargetTab=data.targetTab;  
             mainView.router.load({url: "editScreen.html",reload:true});
