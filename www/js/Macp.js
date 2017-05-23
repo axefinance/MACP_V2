@@ -23,6 +23,7 @@ var TargetTab;
 var InstructionGuide;
 var WithCollectQuestion; 
 var extendedProperties=null;
+var isSwitchLanguage = false;
 
 var myApp=new Framework7({ swipeBackPage : false, statusbarOverlay:true, tapHold: true,swipePanel: 'left',fastClicksDelayBetweenClicks : 10 }) ;
 var db = openDatabase('mydb', '1.0', 'Test DB', 2 * 1024 * 1024);
@@ -73,10 +74,17 @@ function westMenuItem(item,title,screenName){
       mainView.router.load({url: screenName,reload:true});   
 };  
 myApp.onPageReinit('homePage', function (page) {
+    if(!isSwitchLanguage){
      document.getElementById("tasks").innerHTML=null;
      document.getElementById("toolbar").innerHTML=null;
      setTimeout(function() {reInitHomePage(); }, 100) ;
      console.log(mainView.history);
+    }else
+       {
+            isSwitchLanguage = false;
+            setTimeout(function() {loadTaskList(); }, 1000);
+           setTemplate_HeaderData("homePage");
+       }
 });  
 function reInitHomePage(){ 
    myApp.showPreloader();
@@ -164,7 +172,7 @@ myApp.onPageInit('homePage', function (page) {
 myApp.onPageInit('searchScreen', function (page) {
     console.log("Init search screen");
     HomeBackButton.style.visibility="visible";    
-   // createLanguagesList('searchScreen');
+    createLanguagesList('searchScreen');
     createLogoutPopover('searchScreen');  
     myApp.params.swipePanel=false;
     pageTitleElement=document.getElementById("title_searchScreen");
@@ -177,7 +185,7 @@ myApp.onPageInit('searchScreen', function (page) {
   
 }); 
 myApp.onPageInit('editScreen', function (page) {
-   // createLanguagesList('editScreen');
+    createLanguagesList('editScreen');
     createLogoutPopover('editScreen');
     myApp.params.swipePanel=false;
     myApp.showPreloader();
@@ -191,7 +199,7 @@ myApp.onPageInit('editScreen', function (page) {
 }); 
 myApp.onPageInit('newInputScreen', function (page) {
     HomeBackButton.style.visibility="visible"; 
-   // createLanguagesList('newInputScreen'); 
+    createLanguagesList('newInputScreen'); 
     createLogoutPopover('newInputScreen');
     myApp.params.swipePanel=false;   
     pageTitleElement=document.getElementById("title_newInputScreen");
@@ -202,7 +210,7 @@ myApp.onPageInit('newInputScreen', function (page) {
 });                
 myApp.onPageInit('searchResultScreen', function (page) {
     HomeBackButton.style.visibility="visible";
- //   createLanguagesList('searchResultScreen'); 
+    createLanguagesList('searchResultScreen'); 
     createLogoutPopover('searchResultScreen');  
     myApp.params.swipePanel=false;
     pageTitleElement=document.getElementById("title_searchResultScreen");
@@ -215,7 +223,7 @@ myApp.onPageInit('searchResultScreen', function (page) {
 });  
 myApp.onPageInit('executeTaskScreen', function (page) {
     HomeBackButton.style.visibility="visible";
-   // createLanguagesList('executeTaskScreen'); 
+    createLanguagesList('executeTaskScreen'); 
     createLogoutPopover('executeTaskScreen');      
     myApp.params.swipePanel=false;
     pageTitleElement=document.getElementById("title_executeTaskScreen");
@@ -385,7 +393,7 @@ function GetHomePage(url) {
              sessionStorage.setItem("Languages",data.Languages);
              var languages=sessionStorage.getItem('Languages');
              languagesList = JSON.parse(languages); 
-             //createLanguagesList('homePage');
+             createLanguagesList('homePage');
              createLogoutPopover('homePage'); 
              GetHomePageScripts(); 
              myApp.hidePreloader();
@@ -400,13 +408,13 @@ function GetHomePage(url) {
 function createLanguagesList(screen){
     $$('.create-language-links-'+screen).on('click', function () {
   var clickedLink = this;
-    var output="";
+    var output="";        
     for(var i=0 ; i< languagesList.LangsList.length ; i++)
         { 
             var display=languagesList.LangsList[i].display;
-            output=output+'<li><a href="#" class="item-link list-button">'+display  +'</li>';
+            output=output+'<li><a href="#" class="item-link list-button" onclick="switchLanguage(\''+languagesList.LangsList[i].property+'\')">'+display  +'</li>';
         }
-  var popoverHTML = '<div class="popover">'+
+  var popoverHTML = '<div id="language_popover" class="popover">'+
                       '<div class="popover-inner">'+
                         '<div class="list-block">'+
                           '<ul>'+
@@ -418,6 +426,44 @@ function createLanguagesList(screen){
   myApp.popover(popoverHTML, clickedLink); 
 });
 };  
+
+function switchLanguage(property)
+{
+    var userData = JSON.parse(sessionStorage.getItem("userData"));
+    myApp.showPreloader();
+    userData.culture_language = property;
+    sessionStorage.setItem("userData",JSON.stringify(userData));  
+    var updatedUserData = sessionStorage.getItem("userData");
+     var data="{\"userData\":"+updatedUserData+"}";  
+     $.ajax({             
+        type: 'POST',                             
+        url:'http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/UpdateUserLanguage',                                
+        contentType: "text/plain",                                    
+        dataType: "json",                               
+        data: data,    
+        success: function(data) {
+            myApp.closeModal("#language_popover",true);
+            if(mainView.history[0]==="#homePage")
+                {
+                   setTimeout(function() {loadTaskList(); }, 1000);
+                   setTemplate_HeaderData("homePage");                  
+                }
+            else
+                {
+             isSwitchLanguage = true;
+             HomeBackButton.style.visibility="hidden";  
+             mainView.router.back({force:true,pageName:"homePage"});
+             mainView.history=["#homePage"];
+             leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
+                }
+
+        },
+        error: function(e) {  
+             myApp.hidePreloader();    
+              myApp.alert("error occured in the system","Error");
+        }
+    });  
+}
 function createLogoutPopover(screen){
     $$('.create-profile-links-'+screen).on('click', function () {
   var clickedLink = this;
