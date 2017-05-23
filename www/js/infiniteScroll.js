@@ -27,7 +27,7 @@ $$('.infinite-scroll').on('infinite', function () {
       
       var data="{"+    
         "\"item\":\""+currentItem+"\","+
-        "\"userid\":\""+sessionStorage.getItem("userId")+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"searchParams\":"+searchParams+","+
         "\"start\":\""+lastIndex+"\","+
         "\"limit\":\"10\","+      
@@ -39,7 +39,7 @@ $$('.infinite-scroll').on('infinite', function () {
         url: url,                                     
         contentType: "text/plain",                            
         dataType: "json",                               
-        async: false,                              
+        async: false,                               
         data: data,         
         success: function(data) {              
             if(data.data==="")  

@@ -10,11 +10,10 @@ function stopWorkflow(){
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/StopWorkflow';
     var data="{"+       
         "\"taskId\":\""+TaskId+"\"," +
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\""+itemId+"\"," +    
         "\"comment\":\""+comment+"\"," +
-       "\"workflowName\":\""+ExecutedWorkflowName+"\"," +
-        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"}";
+       "\"workflowName\":\""+ExecutedWorkflowName+"\"}";
   $.ajax({             
         type: 'POST',           
         url: url,                  
@@ -144,9 +143,7 @@ function endTaskEvent(){
     popupWidth=Math.floor(popupWidth);
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/EndTaskButtonEvent';
     var data="{"+       
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
-        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
-        "\"userName\":\""+sessionStorage.getItem('userName')+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\""+itemId+"\","+
         "\"extendedProperties\":"+extendedProperties+","+
         "\"screenName\":\""+currentItem+"\","+
@@ -242,9 +239,7 @@ function checkRequiredDocument(){
      var   screenParameters=JSON.stringify(formData); 
      var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/CheckRequiredDocument';
      var data="{"+       
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
-        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
-        "\"userName\":\""+sessionStorage.getItem('userName')+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\""+itemId+"\","+
         "\"extendedProperties\":"+extendedProperties+","+
         "\"screenName\":\""+currentItem+"\","+
@@ -291,9 +286,7 @@ function saveRequiredDocumentComent(){
      var   screenParameters=JSON.stringify(formData); 
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveDeviationComment';
     var data="{"+       
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\","+
-        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
-        "\"userName\":\""+sessionStorage.getItem('userName')+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"deviatedMsg\":\""+deviatedMsg+"\","+
         "\"requiredDocument\":\""+requiredDocument+"\","+
         "\"mainItemId\":\""+itemId+"\","+
@@ -351,9 +344,7 @@ function saveDeviationComment(){
      var   screenParameters=JSON.stringify(formData); 
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveDeviationComment';
      var data="{"+       
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\","+
-        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
-        "\"userName\":\""+sessionStorage.getItem('userName')+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"deviatedMsg\":\""+deviatedMsg+"\","+
         "\"requiredDocument\":\"\","+
         "\"mainItemId\":\""+itemId+"\","+
@@ -427,12 +418,10 @@ function saveEligibilityComment(){
      var   screenParameters=JSON.stringify(formData); 
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveEligibilityComment';
     var data="{"+  
-        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
-        "\"userName\":\""+sessionStorage.getItem('userName')+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\""+itemId+"\","+
         "\"screenName\":\""+currentItem+"\","+
         "\"parameters\":"+screenParameters+","+
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
         "\"taskId\":\""+TaskId+"\","+
         "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
         "\"eligibilityObject\":"+JSON.stringify(eligibilityObject)+","+
@@ -555,13 +544,11 @@ function saveCollectQuestion(){
      var   screenParameters=JSON.stringify(formData); 
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveCollectQuestionAndEndTask';
     var data="{"+  
-        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
-        "\"userName\":\""+sessionStorage.getItem('userName')+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\""+itemId+"\","+
         "\"screenName\":\""+currentItem+"\","+
         "\"parameters\":"+screenParameters+","+
         "\"collectQuestionParameters\":"+collectQuestionParameters+","+
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
         "\"taskId\":\""+TaskId+"\"}";
   $.ajax({             
         type: 'POST',               

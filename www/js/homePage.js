@@ -129,8 +129,7 @@ for (i = 0; i < selectedRow.length; i++)
 }
 
     var data="{"+  
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +    
-        "\"HomePageConfig\":\""+sessionStorage.getItem("HomePageConfig")+"\","+      
+        "\"userData\":"+sessionStorage.getItem("userData")+","+    
         "\"selectedTaskId\":\""+selectedTaskId+"\","+
         "\"windowWidth\":\""+popupWidth+"\","+
         "\"windowHeight\":\""+popunHeight+"\"}";
@@ -162,9 +161,8 @@ function ReassignTasks(userShortName,confirmMessage)
     myApp.confirm(confirmMessage +" "+userShortName, 
       function () {
          var data="{"+  
-        "\"softwareUserShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +    
-        "\"selectedTaskId\":\""+selectedTaskId+"\","+
-        "\"userShortName\":\""+setUser_ShortName(userShortName)+"\"}";
+             "\"userData\":"+sessionStorage.getItem("userData")+","+        "\"selectedTaskId\":\""+selectedTaskId+"\","+
+             "\"userShortName\":\""+setUser_ShortName(userShortName)+"\"}";
        myApp.showPreloader();  
             $.ajax({ 
                     type: "POST", 
