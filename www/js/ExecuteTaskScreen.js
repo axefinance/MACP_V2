@@ -75,59 +75,12 @@ function saveDeviationComment_enabledButton(textarea){
       
 }; 
 $$('.end-task-form-to-data').on('click', function(){
-     var i;
-        var indexToSelect = 1;
-        var isValid = true;
-        var textBox;
-        var dateOnly;
-        var checkBox;
-        var comboBox;
-        textBox = $("#my-mainData-form div.requiredItem.textbox input");
-        dateOnly = $("#my-mainData-form div.requiredItem.dateonly input");
-        comboBox = $("#my-mainData-form div.requiredItem.combobox div.item-after");
-        checkBox = $("#my-mainData-form div.requiredItem.checkbox label.label-checkbox");
-        for (i = 0; i < textBox.length; i++) {
-            if (!isUpdateAttachment)
-                if ($(textBox[i]).val().replace(/\s/g, '') === "") {
-                    $(textBox[i]).closest("div.item-inner").addClass("requiredIcon");
-                    isValid = false;
-                } else {
-                    $(textBox[i]).closest("div.item-inner").removeClass("requiredIcon");
-                }
-        }
-
-        for (i = 0; i < dateOnly.length; i++) {
-
-            if ($(dateOnly[i]).val().replace(/\s/g, '') === "") {
-                $(dateOnly[i]).closest("div.item-inner").addClass("requiredIcon");
-                isValid = false;
-            } else {
-                $(dateOnly[i]).closest("div.item-inner").removeClass("requiredIcon");
-            }
-        }
-
-        for (i = 0; i < comboBox.length; i++) {
-
-            if ($(comboBox[i]).html().replace(/\s/g, '') === "") {
-                $(comboBox[i]).closest("div.item-inner").addClass("requiredIcon");
-                isValid = false;
-            } else {
-                $(comboBox[i]).closest("div.item-inner").removeClass("requiredIcon");
-            }
-        }
-
-        for (i = 0; i < checkBox.length; i++) {
-
-            if ($(checkBox[i]).find("input").is(":checked") == false) {
-                $(checkBox[i]).addClass("requiredIcon");
-                isValid = false;
-            } else {
-                $(checkBox[i]).removeClass("requiredIcon");
-            }
-        }
-        if (!isValid) {
+        var formId = "#my-mainData-form";
+        var isValidForm = requiredFormComponent(formId);
+        /*if (!isValid) {
             $(x[indexToSelect]).next().children().first().focus();
-        } else {
+        } else {*/
+    if(isValidForm){
              endTaskEvent();
         }
     });
@@ -482,53 +435,14 @@ function getCommentsList(){
 } 
 
 function saveCollectQuestionEvent(){   
-     var i;
-    var indexToSelect=1;
-    var isValid = true;
-    var  textBox = $("#Collect-Question-form div.requiredItem.textbox input");
-    for (i = 0; i < textBox.length; i++) 
-    {
-        if($(textBox[i]).val()==="")
-        {
-            $(textBox[i]).closest("div.item-inner").addClass("requiredIcon");
-            isValid=false;            
-        }
-        else
-        {
-            $(textBox[i]).closest("div.item-inner").removeClass("requiredIcon");
-        }
-    }
-    var dateOnly=$("#Collect-Question-form div.requiredItem.dateonly input" )
-    for (i = 0; i < dateOnly.length; i++) 
-    {
-        if($(dateOnly[i]).val()==="")
-        {
-            $(dateOnly[i]).closest("div.item-inner").addClass("requiredIcon");
-            isValid=false;
-        }
-        else
-        {
-            $(dateOnly[i]).closest("div.item-inner").removeClass("requiredIcon");
-        }
-    }
-    var comboBox=$("#Collect-Question-form div.requiredItem.combobox div.item-after" )
-    for (i = 0; i < comboBox.length; i++)
-    {
-        if($(comboBox[i]).html()==="")
-        {
-            $(comboBox[i]).closest("div.item-inner").addClass("requiredIcon");
-            isValid=false;
-        }
-        else
-        {
-            $(comboBox[i]).closest("div.item-inner").removeClass("requiredIcon");
-        }              
-    }    
+    var formId = "#Collect-Question-form";
+    var isValidForm = requiredFormComponent(formId); 
    
-    if(!isValid)
+  /*  if(!isValid)
     {
        $(x[indexToSelect]).next().children().first().focus();
-    }else
+    }else*/
+    if(isValidForm)
     {
        saveCollectQuestion();
        

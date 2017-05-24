@@ -93,6 +93,66 @@ function handleRequiredIcon(component,componentType,elementId,decimalprecision,g
     //$(component).siblings("div.item-inner").removeClass("requiredIcon");
     
 }
+
+function requiredFormComponent(formToDataId){
+       var i;
+    var indexToSelect=1;
+    var isValid = true;
+    var textBox=$(formToDataId).find("div.requiredItem.textbox input")
+    for (i = 0; i < textBox.length; i++) 
+    {
+        if($(textBox[i]).val()==="")
+        {
+            $(textBox[i]).closest("div.item-inner").addClass("requiredIcon");
+            isValid=false;            
+        }
+        else
+        {
+            $(textBox[i]).closest("div.item-inner").removeClass("requiredIcon");
+        }
+    }
+    var dateOnly=$("form div.requiredItem.dateonly input" )
+    for (i = 0; i < dateOnly.length; i++) 
+    {
+        if($(dateOnly[i]).val()==="")
+        {
+            $(dateOnly[i]).closest("div.item-inner").addClass("requiredIcon");
+            isValid=false;
+        }
+        else
+        {
+            $(dateOnly[i]).closest("div.item-inner").removeClass("requiredIcon");
+        }
+    }
+    var comboBox=$(".combobox.requiredItem .item-input")
+    for (i = 0; i < comboBox.length; i++)
+    {
+        if($(comboBox[i]).find("select").find("option:selected").val()==="")
+        {
+            $(comboBox[i]).addClass("requiredIcon");
+            isValid=false;
+        }
+        else
+        {
+            $(comboBox[i]).removeClass("requiredIcon");
+        }            
+    }
+    var checkBox=$("form div.requiredItem.checkbox label.label-checkbox")
+    for (i = 0; i < checkBox.length; i++)
+    {
+        if($(checkBox[i]).find("input").is(":checked")==false)
+        {
+            $(checkBox[i]).addClass("requiredIcon");
+            isValid=false;
+        }
+        else
+        {
+            $(checkBox[i]).removeClass("requiredIcon");
+        }
+    }
+    return isValid;
+   
+}
 /*
 function DateFormat(elementId,dateFormat)
 {
