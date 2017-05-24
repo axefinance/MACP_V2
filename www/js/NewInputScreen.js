@@ -2,7 +2,7 @@ var NewInputScreen_JSFlag;
 var errorMsg;
 
 $$('.newInput-form-to-data').on('click', function(){
-    var formId = "form";
+    var formId = "form"; 
     var isValidForm = requiredFormComponent(formId); 
    /* if(!isValid)
     {

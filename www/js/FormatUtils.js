@@ -95,7 +95,7 @@ function handleRequiredIcon(component,componentType,elementId,decimalprecision,g
 }
 
 function requiredFormComponent(formToDataId){
-       var i;
+       var i; 
     var indexToSelect=1;
     var isValid = true;
     var textBox=$(formToDataId).find("div.requiredItem.textbox input")
