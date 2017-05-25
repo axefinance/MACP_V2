@@ -76,7 +76,7 @@ function saveDeviationComment_enabledButton(textarea){
 }; 
 $$('.end-task-form-to-data').on('click', function(){
         var formId = "#my-mainData-form";
-        var isValidForm = requiredFormComponent(formId);
+        var isValidForm = requiredFormComponent(formId); 
         /*if (!isValid) {
             $(x[indexToSelect]).next().children().first().focus();
         } else {*/

@@ -12,4 +12,4 @@ $$('.search-form-to-data').on('click', function(){
         searchParams=JSON.stringify(formData);
         mainView.router.load({url: 'searchResultScreen.html',reload:false,ignoreCache:true});
     }
-});
+}); 

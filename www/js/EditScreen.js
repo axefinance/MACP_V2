@@ -388,7 +388,7 @@ function manageAttechementElement() {
         } else if (engine === "attachment") {
             formId = "#my-attachment-form";
         }
-         var isValidForm = requiredFormComponent(formId);
+         var isValidForm = requiredFormComponent(formId); 
 
        /* if (!isValid) {
             $(x[indexToSelect]).next().children().first().focus();
