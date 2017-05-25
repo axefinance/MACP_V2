@@ -12,6 +12,7 @@ var searchParams;
 var HomeBackButton;
 var docMenu;
 var eligibility;
+var relatedItemId;
 var stopWFMessage;
 var TaskId;
 var ExecutedWorkflowName;
@@ -236,7 +237,84 @@ myApp.onPageInit('executeTaskScreen', function (page) {
       var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetExecuteTaskScreen';
     console.log("URL",url);
     setTimeout(function() {GetExecuteTaskScreen(url); }, 1000) ;
-});    
+});
+myApp.onPageInit('relatedItemScreen', function (page) {
+    HomeBackButton.style.visibility="visible";
+    createLanguagesList('relatedItemScreen'); 
+    createLogoutPopover('relatedItemScreen');
+    setTemplate_HeaderData('relatedItemScreen');   
+    myApp.params.swipePanel=false;
+    pageTitleElement=document.getElementById("title_relatedItemScreen");
+    pageTitleElement.textContent=itemRef+" : "+ RelatedItemType;
+    setTimeout(function() {GetRelatedItemScreen(); }, 1000) ;
+    myApp.showPreloader();
+});
+myApp.onPageInit('pricingConditionScreen', function (page) {
+    HomeBackButton.style.visibility="visible";
+    createLanguagesList('pricingConditionScreen'); 
+    createLogoutPopover('pricingConditionScreen');    
+    setTemplate_HeaderData('pricingConditionScreen'); 
+    myApp.params.swipePanel=false;
+    pageTitleElement=document.getElementById("title_pricingConditionScreen");
+    pageTitleElement.textContent=itemRef+" : "+ RelatedItemType;
+    setTimeout(function() {GetPricingConditionScreen(); }, 1000) ;
+    myApp.showPreloader();
+});
+function GetPricingConditionScreen()
+{
+     var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    
+            
+      var data="{"+    
+        "\"screenName\":\""+divId+"\","+
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
+        "\"mainItemId\":\""+itemId+"\","+
+        "\"relatedItemId\":\""+relatedItemId+"\"}"; 
+    console.log("SearchParams",data);        
+    $.ajax({             
+        type: 'POST',             
+        url: url,                                     
+        contentType: "text/plain",                            
+        dataType: "json",                            
+        data: data,         
+        success: function(data) {  
+            document.getElementById("pricingConditionForm").innerHTML=data.content;
+            $('#pricingConditionScreen-toolbarContent').append(data.saveButton);
+            myApp.hidePreloader();    
+        },
+        error: function(e) { 
+            myApp.hidePreloader();
+            myApp.alert("error occured", "Error");        
+        }              
+    });  
+}
+function GetRelatedItemScreen()
+{
+     var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    
+            
+      var data="{"+    
+        "\"screenName\":\""+divId+"\","+
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
+        "\"mainItemId\":\""+itemId+"\","+
+        "\"relatedItemId\":\""+relatedItemId+"\"}"; 
+    console.log("SearchParams",data);        
+    $.ajax({             
+        type: 'POST',             
+        url: url,                                     
+        contentType: "text/plain",                            
+        dataType: "json",                            
+        data: data,         
+        success: function(data) {  
+            loadJSFile("js/RelatedItemScreen.js");
+            document.getElementById("relatedItemForm").innerHTML=data.content;
+            $('#relatedItem-toolbarContent').append(data.saveButton);
+            myApp.hidePreloader();
+        },
+        error: function(e) { 
+            myApp.hidePreloader();
+            myApp.alert("error occured", "Error");        
+        }           
+    });  
+}
 function setTemplate_HeaderData(pScreen){
     var user = JSON.parse(sessionStorage.getItem('userData'));
     document.getElementById("userName_label"+"_"+pScreen).textContent=user.user_name;
@@ -263,6 +341,7 @@ function loadEditScreen(itemId){
 function GetEditScreen(url,itemId){ 
      var data="{"+      
         "\"screenName\":\""+currentItem+"\","+
+        "\"screenParent\":\"\","+ 
         "\"userData\":"+sessionStorage.getItem("userData")+","+  
         "\"mainItemId\":\""+itemId+"\"," +
         "\"targetTab\":\""+TargetTab+"\"," +  
@@ -429,8 +508,7 @@ function createLanguagesList(screen){
 });
 };  
 
-function switchLanguage(property)
-{
+function switchLanguage(property){
     myApp.closeModal();
     var userData = JSON.parse(sessionStorage.getItem("userData"));
     myApp.showPreloader();
