@@ -398,66 +398,19 @@ function manageAttechementElement() {
     }
 
     $$('.edit-mainData-form-to-data').on('click', function () {
-        var i;
         var indexToSelect = 1;
-        var isValid = true;
-        var textBox;
-        var dateOnly;
-        var checkBox;
-        var comboBox;
         if (engine === "classicms") {
-            textBox = $("#my-mainData-form div.requiredItem.textbox input");
-            dateOnly = $("#my-mainData-form div.requiredItem.dateonly input");
-            comboBox = $("#my-mainData-form div.requiredItem.combobox div.item-after");
-            checkBox = $("#my-mainData-form div.requiredItem.checkbox label.label-checkbox");
+            formId = "#my-mainData-form";
+
         } else if (engine === "attachment") {
-            textBox = $("#my-attachment-form div.requiredItem.textbox input");
-            dateOnly = $("#my-attachment-form div.requiredItem.dateonly input");
-            comboBox = $("#my-attachment-form div.requiredItem.combobox div.item-after");
-            checkBox = $("#my-attachment-form div.requiredItem.checkbox label.label-checkbox");
+            formId = "#my-attachment-form";
         }
-        for (i = 0; i < textBox.length; i++) {
-            if (!isUpdateAttachment)
-                if ($(textBox[i]).val().replace(/\s/g, '') === "") {
-                    $(textBox[i]).closest("div.item-inner").addClass("requiredIcon");
-                    isValid = false;
-                } else {
-                    $(textBox[i]).closest("div.item-inner").removeClass("requiredIcon");
-                }
-        }
+         var isValidForm = requiredFormComponent(formId); 
 
-        for (i = 0; i < dateOnly.length; i++) {
-
-            if ($(dateOnly[i]).val().replace(/\s/g, '') === "") {
-                $(dateOnly[i]).closest("div.item-inner").addClass("requiredIcon");
-                isValid = false;
-            } else {
-                $(dateOnly[i]).closest("div.item-inner").removeClass("requiredIcon");
-            }
-        }
-
-        for (i = 0; i < comboBox.length; i++) {
-
-            if ($(comboBox[i]).html().replace(/\s/g, '') === "") {
-                $(comboBox[i]).closest("div.item-inner").addClass("requiredIcon");
-                isValid = false;
-            } else {
-                $(comboBox[i]).closest("div.item-inner").removeClass("requiredIcon");
-            }
-        }
-
-        for (i = 0; i < checkBox.length; i++) {
-
-            if ($(checkBox[i]).find("input").is(":checked") == false) {
-                $(checkBox[i]).addClass("requiredIcon");
-                isValid = false;
-            } else {
-                $(checkBox[i]).removeClass("requiredIcon");
-            }
-        }
-        if (!isValid) {
+       /* if (!isValid) {
             $(x[indexToSelect]).next().children().first().focus();
-        } else {
+        } else {*/
+        if(isValidForm){
             if (engine === "classicms") {
                 mainData_SaveEvent();
             } else if (engine === "attachment") {
@@ -477,7 +430,6 @@ function manageAttechementElement() {
         setTimeout(uploadAttachementFile(), 1000);
     }
 
-  
 
 
     function UpdateRelatedItem(msg) {
