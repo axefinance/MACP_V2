@@ -74,17 +74,21 @@ function westMenuItem(item,title,screenName){
       mainView.router.load({url: screenName,reload:true});   
 };  
 myApp.onPageReinit('homePage', function (page) {
-    if(!isSwitchLanguage){
+    if(!isSwitchLanguage)
+    {
      document.getElementById("tasks").innerHTML=null;
      document.getElementById("toolbar").innerHTML=null;
-     setTimeout(function() {reInitHomePage(); }, 100) ;
+     setTimeout(function() {reInitHomePage(); }, 100);
      console.log(mainView.history);
-    }else
-       {
-            isSwitchLanguage = false;
-            setTimeout(function() {loadTaskList(); }, 1000);
+    }
+    else
+    {
+           document.getElementById("tasks").innerHTML=null;
+           document.getElementById("toolbar").innerHTML=null;
+           isSwitchLanguage = false;
+           setTimeout(function() {loadTaskList(); }, 1000);
            setTemplate_HeaderData("homePage");
-       }
+    }
 });  
 function reInitHomePage(){ 
    myApp.showPreloader();
@@ -98,11 +102,10 @@ function reInitHomePage(){
         url: url,                                    
         contentType: "text/plain",                                      
         dataType: "json",                               
-        data: data,      
+        data: data,       
         success: function(data) {
             document.getElementById("tasks").innerHTML=data.TasksContent;
             document.getElementById("toolbar").innerHTML=data.toolbar;
-
             console.log("success");
              myApp.hidePreloader();
 GetHomePageScripts(); 
@@ -152,7 +155,7 @@ function onDeviceReady() {
      myApp.params.swipePanel=false;
     verifDeviceConfig();   
 } 
-/*myApp.onPageInit('home', function (page) { 
+/*myApp.onPageInit('home', function (page) {  
      HomeBackButton=document.getElementById("homeBackButton");
      myApp.params.swipePanel=false;
     verifConfig();
@@ -244,7 +247,6 @@ function loadsearchScreen(){
    
 };       
 function loadTaskList() {
-
      tasks=document.getElementById('tasks');
      var deviceWidth = window.innerWidth - 50;
       GetHomePage('http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/getHomePage');  
@@ -259,7 +261,7 @@ function loadEditScreen(itemId){
     GetEditScreen(url,itemId);
 }; 
 function GetEditScreen(url,itemId){ 
-     var data="{"+     
+     var data="{"+      
         "\"screenName\":\""+currentItem+"\","+
         "\"userData\":"+sessionStorage.getItem("userData")+","+  
         "\"mainItemId\":\""+itemId+"\"," +
@@ -429,6 +431,7 @@ function createLanguagesList(screen){
 
 function switchLanguage(property)
 {
+    myApp.closeModal();
     var userData = JSON.parse(sessionStorage.getItem("userData"));
     myApp.showPreloader();
     userData.culture_language = property;
@@ -442,9 +445,11 @@ function switchLanguage(property)
         dataType: "json",                               
         data: data,    
         success: function(data) {
-            myApp.closeModal("#language_popover",true);
+            
             if(mainView.history[0]==="#homePage")
                 {
+                   document.getElementById("tasks").innerHTML=null;
+                   document.getElementById("toolbar").innerHTML=null;
                    setTimeout(function() {loadTaskList(); }, 1000);
                    setTemplate_HeaderData("homePage");                  
                 }
@@ -609,13 +614,7 @@ function ExecuteTask(taskId,workflowName,targettab){
     TargetTab = targettab;       
     mainView.router.load({url: "executeTaskScreen.html",reload:true});
 }
-function GetExecuteTaskScreen(url){
-  var  ProfilesList=GenerateResponseArray(sessionStorage.getItem("ProfilesList"));   
-   var  GroupsList=GenerateResponseArray(sessionStorage.getItem("GroupsList"));     
-   var  InternalEntities=GenerateResponseArray(sessionStorage.getItem("InternalEntities"));
-     ProfilesList=JSON.stringify(ProfilesList); 
-   GroupsList =JSON.stringify(GroupsList); 
-   InternalEntities=JSON.stringify(InternalEntities);    
+function GetExecuteTaskScreen(url){  
     var data="{"+
         "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"taskId\":\""+TaskId+"\"," +
