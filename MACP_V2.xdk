@@ -5,7 +5,7 @@
       "projectTypeName": "com.intel.xdk.projecttype.jsapp",
       "src": "jsapp/template-blank-cordova-project-lite/sample.zip",
       "projectGuid": "9688cde4-62ce-4677-a863-1ea43bf4ae30",
-      "lastModifiedDate": 1494241046708,
+      "lastModifiedDate": 1496047093874,
       "creationDate": 1493817986846
     },
     "sourceDirectory": "www",
@@ -156,7 +156,7 @@
           "android-signed": true
         },
         "isActive_": true,
-        "certificateId_": "D7lrVvgaA06_susYcA-1rg2",
+        "certificateId_": "HYgELZ4pmU-2K0GAhOK-fg2",
         "cordovaCLIVersion_": "6.2.0",
         "crosswalkVersion_": "19",
         "appName_": "mACP",
