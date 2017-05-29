@@ -216,6 +216,12 @@ function manageAttechementElement() {
                             myApp.hidePreloader();
                             break;
                         }
+                    case ("wflifecycle"):
+                        {
+                            document.getElementById(divID).innerHTML = data.content;
+                            myApp.hidePreloader();
+                            break;
+                        }
                 }
 
             },
@@ -282,18 +288,27 @@ function manageAttechementElement() {
 
         $('#' + divID).addClass('Active');
         switch (screenEngine) {
-
+ 
             case "classicre":
                 document.getElementById("saveBlock").classList.add("displayNone");
                 document.getElementById("editBlock").classList.remove("displayNone");
+                document.getElementById("startWfBlock").classList.remove("displayNone");
                 break;
             case "classicms":
                 document.getElementById("editBlock").classList.add("displayNone");
                 document.getElementById("saveBlock").classList.remove("displayNone");
+                document.getElementById("startWfBlock").classList.remove("displayNone");
                 break;
             case "attachment":
                 document.getElementById("saveBlock").classList.remove("displayNone");
                 document.getElementById("editBlock").classList.remove("displayNone");
+                document.getElementById("startWfBlock").classList.remove("displayNone");
+                break;
+            case "wflifecycle":
+                document.getElementById("saveBlock").classList.add("displayNone");
+                document.getElementById("editBlock").classList.add("displayNone");
+                document.getElementById("startWfBlock").classList.add("displayNone");
+                break;
         }
     } 
 
@@ -308,14 +323,14 @@ function manageAttechementElement() {
         myApp.popup('<div id="documentMenuPopup" class="popup" style="width: 60% !important; top: 10% !important;left: 20% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" >' + docMenu + '</div>', true);
     }
 
-    function generateDocument(documentName, item) {
+    function generateDocument(documentName, item, fileType) {
         myApp.showPreloader();
         var url = "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/ExportReport";
 
         var data = "{" +
             "\"entityType\":\"" + item + "\"," +
             "\"fileName\":\"" + documentName + "\"," +
-            "\"format\":\"pdf\"," +
+            "\"format\":\""+fileType+"\"," +
             "\"itemID\":\"" + itemId + "\"," +
             "\"userData\":"+sessionStorage.getItem("userData")+"}";
         $.ajax({
@@ -323,7 +338,7 @@ function manageAttechementElement() {
             url: url,
             contentType: "text/plain",
             dataType: "json",
-            data: data,
+            data: data, 
             success: function (data) {
                 if (device.manufacturer.toLowerCase() === "apple") {
                     myApp.hidePreloader();                                       
