@@ -52,7 +52,16 @@
     right: 30px;
 }
 
-
+.popup-toolbar-button{
+    float:right !important;
+    margin : 6px 20px 6px 0px !important;
+    overflow-y:hidden;
+}
+.popup-toolbar-link{
+    float:right !important;
+    margin :1px 20px 1px 0px !important;
+    overflow-y:hidden;
+}
 
 
 .tabs90{

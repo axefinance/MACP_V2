@@ -179,10 +179,11 @@ function manageAttechementElement() {
 }
     function loadScreen(divID) {
         var data = "{" +
-          "\"userData\":"+sessionStorage.getItem("userData")+","+
+           "\"userData\":"+sessionStorage.getItem("userData")+","+
            "\"screenName\":\"" + divId + "\"," +
            "\"screenParent\":\"" + currentItem + "\"," + 
            "\"mainItemId\":\"" + itemId + "\"," +
+           "\"taskId\":\""+TaskId+"\"," +
            "\"screenEngine\":\"" + engine + "\"," +
            "\"screenWidth\":\"" + window.innerWidth + "\"," +
            "\"screenHeight\":\"" + window.innerHeight + "\"}";
@@ -277,17 +278,20 @@ function manageAttechementElement() {
         divId = divID;
         engine = screenEngine;
         isUpdateAttachment = false;
+        var selectedDivId ;
+        selectedDivId = $("div").siblings(".Active").attr("id");
         $("button").siblings(".selectedTab").removeClass('selectedTab');
         $('#' + butDiv).addClass('selectedTab');
         if (!($('#' + butDiv).hasClass('loaded'))) {
             $('#' + butDiv).addClass('loaded');
             loadScreen(divID);
         }
-
         $("div").siblings(".Active").removeClass('Active');
-
         $('#' + divID).addClass('Active');
-        switch (screenEngine) {
+        $('#'+divID+'_buttons').removeClass("displayNone");
+        $('#'+selectedDivId+'_buttons').addClass("displayNone");
+        
+     /*   switch (screenEngine) {
  
             case "classicre":
                 document.getElementById("saveBlock").classList.add("displayNone");
@@ -309,7 +313,7 @@ function manageAttechementElement() {
                 document.getElementById("editBlock").classList.add("displayNone");
                 document.getElementById("startWfBlock").classList.add("displayNone");
                 break;
-        }
+        }*/
     } 
 
     $$('.startWF-From-Edit-Screen-form-to-data').on('click', function () {
