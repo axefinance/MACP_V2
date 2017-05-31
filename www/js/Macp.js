@@ -189,6 +189,7 @@ myApp.onPageInit('searchScreen', function (page) {
   
 }); 
 myApp.onPageInit('editScreen', function (page) {
+    TaskId = 0;
     createLanguagesList('editScreen');
     createLogoutPopover('editScreen');
     myApp.params.swipePanel=false;
@@ -342,15 +343,16 @@ function GetEditScreen(url,itemId){
      var data="{"+      
         "\"screenName\":\""+currentItem+"\","+
         "\"screenParent\":\"\","+ 
+        "\"taskId\":\""+TaskId+"\"," +
         "\"userData\":"+sessionStorage.getItem("userData")+","+  
         "\"mainItemId\":\""+itemId+"\"," +
         "\"targetTab\":\""+TargetTab+"\"," +  
         "\"screenEngine\":\"empty\","+
         "\"screenWidth\":\""+window.innerWidth+"\"," +
         "\"screenHeight\":\""+window.innerHeight+"\"}";  
-      
+          
     $.ajax({ 
-                    type: "POST",  
+                    type: "POST",     
                     dataType:"json",  
                     url: url,    
                     contentType: "text/plain",                          
@@ -359,10 +361,7 @@ function GetEditScreen(url,itemId){
                     success: function(data) { 
                         console.log(data);
                         document.getElementById("editScreenForm").innerHTML=data.content;
-                        $('#edit-toolbarContent').append(data.StarWFButton);
-                        $('#edit-toolbarContent').append(data.DocumentGeneration);
-                        $('#edit-toolbarContent').append(data.Savebutton);
-                        $('#edit-toolbarContent').append(data.AddButton);
+                        $('#edit-toolbarContent').append(data.buttonsDiv);
                         divId = data.divId;
                         engine = data.screenEngine;                        
                         docMenu=(data.DocumentMenu);
@@ -391,7 +390,7 @@ function GetNewInputScreen(url){
                         document.getElementById("newInputForm").innerHTML=data.content;
                         document.getElementById("newInput-toolbarContent").innerHTML=data.button;
                         loadJSFile("js/NewInputScreen.js");
-                        loadJSFile("js/FormatUtils.js");
+                      //  loadJSFile("js/FormatUtils.js");
                          myApp.hidePreloader();
                     },
                     error: function(e) {
@@ -414,7 +413,7 @@ function GetSearchPage(url){
                     success: function(data) { 
                         document.getElementById("searchForm").innerHTML=data.content;
                         loadJSFile("js/SearchScreen.js");
-                        loadJSFile("js/FormatUtils.js");
+                      //  loadJSFile("js/FormatUtils.js");
                         loadJSFile("js/accounting.js");
                          myApp.hidePreloader();
                     },
@@ -718,11 +717,8 @@ function GetExecuteTaskScreen(url){
                      currentItem=data.screenName;
                      pageTitleElement=document.getElementById("title_executeTaskScreen");
                      pageTitleElement.textContent=data.itemShortName;
-                     $('#executeTask-toolbarContent').append(data.endTaskButton);
-                     $('#executeTask-toolbarContent').append(data.stopWorkflowButton);
-                     $('#executeTask-toolbarContent').append(data.SaveButton);
-                     $('#executeTask-toolbarContent').append(data.AddButton);
-                     $('#executeTask-toolbarContent').append(data.DocumentGeneration);
+              //       $('#executeTask-toolbarContent').append(data.endTaskButton);
+                     $('#executeTask-toolbarContent').append(data.buttonsDiv);
                         divId = data.divId;
                         engine = data.screenEngine;    
                     docMenu=(data.DocumentMenu);
