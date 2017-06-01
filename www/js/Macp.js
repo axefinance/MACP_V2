@@ -610,21 +610,23 @@ function lunchSearchResult(url){
         }                           
     });      
 };         
-function generateConnectedComboItems(idChild,screenTagName,val,child,entity){ 
+function generateConnectedComboItems(idChild,screenTagName,val,child,entity,sharedConfig,property){ 
     var url =  "http://"+sessionStorage.getItem('Ip_config')+":"+sessionStorage.getItem('Ip_port')+"/MobileAPI.svc/ConnectedComboOptions"; 
-    setTimeout(function() {connectedComboOptions(url,idChild,val,child,entity,screenTagName);},100);       
+    setTimeout(function() {connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property);},100);       
 
 }; 
-function connectedComboOptions(url,idChild,val,child,entity,screenTagName) {
+    function connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property) {
       var data="{"+    
         "\"userData\":"+sessionStorage.getItem("userData")+","+ 
         "\"parentValue\":\""+val.value+"\","+
+        "\"property\":\""+property+"\","+
         "\"screenTagName\":\""+screenTagName+"\","+
+        "\"sharedConfig\":\""+sharedConfig+"\","+
         "\"child\":\""+child+"\","+  
         "\"entity\":\""+entity+"\"}"; 
     $.ajax({   
         type: 'POST',           
-        url: url,                      
+        url: url,                       
         contentType: "text/plain",                          
         dataType: "json",                            
         data: data,
