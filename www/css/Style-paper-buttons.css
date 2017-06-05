@@ -6,7 +6,7 @@
         /* Buttons */
         .paper-button {
             position: relative;
-            padding: 4px 0;
+            padding: 4px 0;       
             margin: 1em;
             width: $button-width;
             overflow: hidden;
@@ -41,7 +41,9 @@
     color : #E94B4A !important;
 }
 
-
+.dataFont{
+    font-weight: bold !important;
+ }
 .requiredIcon:before {
     font-family: FontAwesome !important;
     content: "\f071";
