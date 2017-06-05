@@ -1,3 +1,6 @@
+var changeLangConfirmationMessage;
+var loggingOutWindowMessage;
+var loggingOutWindowTitle;
 var ip_config;
 var ip_port;
 var itemId;
@@ -21,7 +24,7 @@ var fromNewInput;
 var divId; 
 var engine;
 var TargetTab;
-var InstructionGuide;
+var InstructionGuide; 
 var WithCollectQuestion; 
 var extendedProperties=null;
 var isSwitchLanguage = false;
@@ -45,7 +48,17 @@ $$('.firstWS-confirm-ok-cancel').on('click', function () {
       }
     );
     
-});    
+});   
+
+ 
+function checkInternetConnection() {
+    // Handle the online event 
+    var networkState = navigator.connection.type; 
+    if (networkState !== Connection.NONE) 
+        return true;
+    return false;
+}
+
 function isScreenInCache(screenName){
     var history=mainView.history;
     console.log(screenName);
@@ -59,7 +72,7 @@ function isScreenInCache(screenName){
         }
     console.log("false");   
     return false;
-};
+}
 function westMenuItem(item,title,screenName){ 
     if(isScreenInCache(screenName))
         {
@@ -73,7 +86,7 @@ function westMenuItem(item,title,screenName){
       pageTitleContent=title;
       fromNewInput=false;
       mainView.router.load({url: screenName,reload:true});   
-};  
+}  
 myApp.onPageReinit('homePage', function (page) {
     if(!isSwitchLanguage)
     {
@@ -112,17 +125,18 @@ function reInitHomePage(){
 GetHomePageScripts(); 
         },
         error: function(e) {
-             myApp.hideIndicator();     
-              myApp.alert("error occured in the system","Error");
-        }
+            
+            myApp.hideIndicator();
+            errorMessage();
+        }         
     });   
-};
+}
 function saveFirstConfig(){
     ip = document.getElementById('ipFirstConfig').value,
     port = document.getElementById('portFirstConfig').value;
     saveWsConfiguration(ip,port);
     myApp.closeModal();
-};       
+}       
 function loadJSFile(screenName){           
             var js = document.createElement("script");
             js.type = "text/javascript";                
@@ -130,7 +144,7 @@ function loadJSFile(screenName){
             document.body.appendChild(js);
    
 
-};  
+}  
 function isScriptAlreadyIncluded(src){
     var scripts = document.getElementsByTagName("script");
     for(var i = 0; i < scripts.length; i++) 
@@ -142,18 +156,19 @@ function verifConfig(){
     ip_port=sessionStorage.getItem("Ip_port");
     if(ip_config===null || ip_port===null)
       myApp.loginScreen(); 
-};  
+}  
 function verifDeviceConfig(){
     manageDB();
     getWsConfiguration();
-};
+}
 var leftView=myApp.addView('.view-left',{
     domCache: true,dynamicNavbar:true
    });
 document.addEventListener("deviceready", onDeviceReady, true);
-function onDeviceReady() {
-         HomeBackButton=document.getElementById("homeBackButton");
-     myApp.params.swipePanel=false;
+function onDeviceReady() {         
+    HomeBackButton=document.getElementById("homeBackButton");
+    document.addEventListener("online", checkInternetConnection, false);
+    myApp.params.swipePanel=false;
     verifDeviceConfig();   
 } 
 /*myApp.onPageInit('home', function (page) {  
@@ -284,7 +299,7 @@ function GetPricingConditionScreen()
         },
         error: function(e) { 
             myApp.hidePreloader();
-            myApp.alert("error occured", "Error");        
+            errorMessage();   
         }              
     });  
 }
@@ -312,7 +327,7 @@ function GetRelatedItemScreen()
         },
         error: function(e) { 
             myApp.hidePreloader();
-            myApp.alert("error occured", "Error");        
+            errorMessage();
         }           
     });  
 }
@@ -320,25 +335,25 @@ function setTemplate_HeaderData(pScreen){
     var user = JSON.parse(sessionStorage.getItem('userData'));
     document.getElementById("userName_label"+"_"+pScreen).textContent=user.user_name;
      document.getElementById("lng_label"+"_"+pScreen).textContent=user.culture_language;
-};  
+}  
 function loadsearchScreen(){
     GetSearchPage('http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetSearchScreen');
    
-};       
+}       
 function loadTaskList() {
      tasks=document.getElementById('tasks');
      var deviceWidth = window.innerWidth - 50;
       GetHomePage('http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/getHomePage');  
-}; 
+} 
 function loadNewInputPage(){  
     currentItem=currentItem.toLowerCase();
     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetNewInputScreen';
     GetNewInputScreen(url);
-};  
+}  
 function loadEditScreen(itemId){
     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetEditScreen';
     GetEditScreen(url,itemId);
-}; 
+} 
 function GetEditScreen(url,itemId){ 
      var data="{"+      
         "\"screenName\":\""+currentItem+"\","+
@@ -356,7 +371,6 @@ function GetEditScreen(url,itemId){
                     dataType:"json",  
                     url: url,    
                     contentType: "text/plain",                          
-                    dataType: "json",                        
                     data: data,        
                     success: function(data) { 
                         console.log(data);
@@ -370,11 +384,11 @@ function GetEditScreen(url,itemId){
                         myApp.hidePreloader();
                     },
                     error: function(e) {
-                       myApp.hidePreloader();    
-                       myApp.alert("error occured","Error");      
+                        myApp.hidePreloader();               
+                        errorMessage();
                     }   
             });         
-};                 
+}                 
 function GetNewInputScreen(url){
      var data="{"+     
         "\"currentItem\":\""+currentItem+"\","+
@@ -384,7 +398,6 @@ function GetNewInputScreen(url){
                     dataType:"json",  
                     url: url,    
                     contentType: "text/plain",                          
-                    dataType: "json",                        
                     data: data,  
                     success: function(data) {     
                         document.getElementById("newInputForm").innerHTML=data.content;
@@ -394,12 +407,11 @@ function GetNewInputScreen(url){
                          myApp.hidePreloader();
                     },
                     error: function(e) {
-                       myApp.hidePreloader();
-                       myApp.alert("error occured","Error");
-                          
+                        myApp.hidePreloader();
+                        errorMessage();                         
                     }    
             });         
-};
+}
 function GetSearchPage(url){ 
      var data="{"+  
         "\"currentItem\":\""+currentItem+"\","+
@@ -419,12 +431,11 @@ function GetSearchPage(url){
                     },
                     error: function(e) {
                         myApp.hidePreloader();
-                        myApp.alert("error occured","Error");       
-
+                        errorMessage();
                     }  
                  
             });    
-};  
+}  
 function GetHomePageScripts(){
                  $.getScript("js/Macp.js");
              $("script[src='js/Macp.js']").remove();
@@ -438,21 +449,21 @@ function GetHomePageScripts(){
 function GenerateResponseArray(element){ 
    var res = element.split(",");
    var result = [];//Array
-    if(res.length!=0)
+    if(res.length!==0)
     {
     for (var i = 0; i < res.length; i++) 
       {
-          if(res[i]!="")
+          if(res[i]!=="")
             result.push(res[i]);
       }
     } 
     return result;        
-}; 
+} 
 function setUser_ShortName(userShortName){
     var res = userShortName.split('\\');
     return res[0]+'\\\\'+res[1]; 
     
-}; 
+} 
 function GetHomePage(url) {
    var data="{"+  
         "\"windowWidth\":\""+window.innerWidth+"\","+
@@ -464,27 +475,32 @@ function GetHomePage(url) {
         url: url,                                  
         contentType: "text/plain",                                    
         dataType: "json",                               
-        data: data,    
-        success: function(data) {
-
-             document.getElementById("tasks").innerHTML=data.TasksContent;
-             document.getElementById("westMenu").innerHTML=data.WestMenuContent;
-             document.getElementById("toolbar").innerHTML=data.toolbar;
-             sessionStorage.setItem("Languages",data.Languages);
-             var languages=sessionStorage.getItem('Languages');
-             languagesList = JSON.parse(languages); 
-             createLanguagesList('homePage');
-             createLogoutPopover('homePage'); 
-             GetHomePageScripts(); 
-             myApp.hidePreloader();
-        },
+        data: data,     
+        success: function(data) {            
+            document.getElementById("tasks").innerHTML=data.TasksContent;
+            document.getElementById("westMenu").innerHTML=data.WestMenuContent;
+            document.getElementById("toolbar").innerHTML=data.toolbar;
+            sessionStorage.setItem("Languages",data.Languages);
+            var languages=sessionStorage.getItem('Languages');
+            languagesList = JSON.parse(languages); 
+            changeLangConfirmationMessage = JSON.stringify(data.ChangeLangConfirmationMessage);
+            changeLangConfirmationMessage = changeLangConfirmationMessage.substr(1,changeLangConfirmationMessage.length-2);
+            loggingOutWindowMessage = JSON.stringify(data.LoggingOutWindowMessage);
+            loggingOutWindowMessage = loggingOutWindowMessage.substr(1,loggingOutWindowMessage.length-2);
+            loggingOutWindowTitle = JSON.stringify(data.LoggingOutWindowTitle);
+            loggingOutWindowTitle = loggingOutWindowTitle.substr(1,loggingOutWindowTitle.length-2);
+            createLanguagesList('homePage');
+            createLogoutPopover('homePage'); 
+            GetHomePageScripts(); 
+            myApp.hidePreloader();
+        }, 
         error: function(e) {  
-             myApp.hidePreloader();    
-              myApp.alert("error occured in the system","Error");
+            myApp.hidePreloader();                
+            errorMessage();
         }
     });          
                
-};                
+}                
 function createLanguagesList(screen){
     $$('.create-language-links-'+screen).on('click', function () {
   var clickedLink = this;
@@ -502,14 +518,18 @@ function createLanguagesList(screen){
                           '</ul>'+
                         '</div>'+
                       '</div>'+
-                    '</div>'
+                    '</div>';
   myApp.popover(popoverHTML, clickedLink); 
 });
-};  
+}  
 
 function switchLanguage(property){
     myApp.closeModal();
-    var userData = JSON.parse(sessionStorage.getItem("userData"));
+    
+      myApp.confirm(changeLangConfirmationMessage,
+     '',
+      function (value) {
+        var userData = JSON.parse(sessionStorage.getItem("userData"));
     myApp.showPreloader();
     userData.culture_language = property;
     sessionStorage.setItem("userData",JSON.stringify(userData));  
@@ -528,7 +548,7 @@ function switchLanguage(property){
                    document.getElementById("tasks").innerHTML=null;
                    document.getElementById("toolbar").innerHTML=null;
                    setTimeout(function() {loadTaskList(); }, 1000);
-                   setTemplate_HeaderData("homePage");                  
+                   setTemplate_HeaderData("homePage");                   
                 }
             else
                 {
@@ -540,11 +560,17 @@ function switchLanguage(property){
                 }
 
         },
-        error: function(e) {  
-             myApp.hidePreloader();    
-              myApp.alert("error occured in the system","Error");
+        error: function(e) {               
+            myApp.hidePreloader();    
+            errorMessage();    
         }
-    });  
+    }); 
+     },
+      function (value) {
+      }
+    );
+       
+    
 }
 function createLogoutPopover(screen){
     $$('.create-profile-links-'+screen).on('click', function () {
@@ -561,15 +587,25 @@ function createLogoutPopover(screen){
                           '</ul>'+
                         '</div>'+
                       '</div>'+
-                    '</div>'
+                    '</div>';
   myApp.popover(popoverHTML, clickedLink);
 });
-};          
+}          
+
 function logoutAction(){
-            sessionStorage.clear();        
+    myApp.closeModal();
+     myApp.confirm(loggingOutWindowMessage,
+     loggingOutWindowTitle,
+      function (value) {
+        sessionStorage.clear();        
         mainView.router.load({url: 'index.html'});
-        location.reload(true);
-};
+        location.reload(true);  
+     },
+      function (value) {
+      }
+    );
+       
+}
 function lunchSearchResult(url){           
      var data="{"+    
         "\"userData\":"+sessionStorage.getItem("userData")+","+ 
@@ -604,17 +640,16 @@ function lunchSearchResult(url){
             verifconnexion = false;  
             
             myApp.hidePreloader();
-            myApp.alert("error occured","Error");
- 
+            errorMessage();
                          
         }                           
     });      
-};         
+}         
 function generateConnectedComboItems(idChild,screenTagName,val,child,entity,sharedConfig,property){ 
     var url =  "http://"+sessionStorage.getItem('Ip_config')+":"+sessionStorage.getItem('Ip_port')+"/MobileAPI.svc/ConnectedComboOptions"; 
     setTimeout(function() {connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property);},100);       
 
-}; 
+} 
     function connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property) {
       var data="{"+    
         "\"userData\":"+sessionStorage.getItem("userData")+","+ 
@@ -634,29 +669,29 @@ function generateConnectedComboItems(idChild,screenTagName,val,child,entity,shar
                         document.getElementById(idChild).innerHTML=data.content;                                            
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-                        console.log(errorThrown+'  in processing!'+textStatus);
+                    errorMessage();
                     }                   
             });          
-};
+}
 function HomeBack(){
     HomeBackButton.style.visibility="hidden";       
     mainView.router.back({force:true,pageName:"homePage"});  
     mainView.history=["#homePage"];
     leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
-};   
+}   
 function manageDB(){
          var msg;
          db.transaction(function (tx) {
             tx.executeSql('CREATE TABLE IF NOT EXISTS WS (id unique, ip, port)');
             
          });
-};
+}
 function getWsConfiguration(){
     
     db.readTransaction(function (tx) {
             tx.executeSql('SELECT * FROM WS', [], function (tx, results) {
                var len = results.rows.length, i;
-                if(results.rows.length!=0)
+                if(results.rows.length!==0)
                     { 
                var 	ip=results.rows.item(0).ip;
                 var  port=results.rows.item(0).port;
@@ -669,24 +704,24 @@ function getWsConfiguration(){
                }
                });
             }, null);
-};
+}
 function onError(tx, error) {
    myApp.alert(error.message,"Error");
- };
+ }
 function saveWsConfiguration(ip,port){    
        db.transaction(function (t) {
        t.executeSql('INSERT INTO WS (id,ip,port) VALUES (1,"'+ip+'","'+port+'")');
   });  
     sessionStorage.setItem('Ip_config', ip);
     sessionStorage.setItem('Ip_port', port);
-};
+}
 function updateWsConfiguration(ip,port){
            db.transaction(function (t) {
        t.executeSql('Update WS SET ip="'+ip+'" , port="'+port+'" where id=1');
   });
        sessionStorage.setItem('Ip_config', ip);
     sessionStorage.setItem('Ip_port', port);   
-};
+}
 function ExecuteTask(taskId,workflowName,targettab){
     TaskId=taskId;
     ExecutedWorkflowName=workflowName;
@@ -743,12 +778,12 @@ function GetExecuteTaskScreen(url){
             console.log(e.message);  
             verifconnexion = false;                           
             myApp.hidePreloader();
-            myApp.alert("error occured","Error");                   
+            errorMessage();
         }                             
     });       
 }         
 function manageInstructionGuideResponse(data){
-    if(data.instructionGuide!=null)  
+    if(data.instructionGuide!==null)  
     {
          InstructionGuide=data.instructionGuide;   
          showWorkflowInstructionGuide(); 

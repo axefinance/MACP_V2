@@ -146,7 +146,8 @@ for (i = 0; i < selectedRow.length; i++)
                     }, 
                     error: function(e) {
                        myApp.hidePreloader();
-                       myApp.alert("error occured");       
+            errorMessage();
+
                     }   
             });   
 }
@@ -158,7 +159,7 @@ for (i = 0; i < selectedRow.length; i++)
 function ReassignTasks(userShortName,confirmMessage) 
 {   
     
-    myApp.confirm(confirmMessage +" "+userShortName, 
+    myApp.confirm(confirmMessage +" "+userShortName,'MACP' 
       function () {
          var data="{"+  
              "\"userData\":"+sessionStorage.getItem("userData")+","+        "\"selectedTaskId\":\""+selectedTaskId+"\","+
@@ -172,7 +173,7 @@ function ReassignTasks(userShortName,confirmMessage)
                     data: data, 
                     success: function(data) {                      
                         myApp.hidePreloader();
-                            myApp.alert(data.status, function () {
+                            myApp.alert(data.status,"MACP", function () {
                                 document.getElementById("tasks").innerHTML=null;
                                 document.getElementById("toolbar").innerHTML=null;
                                 setTimeout(function() {reInitHomePage(); }, 100) ;    
@@ -182,7 +183,8 @@ function ReassignTasks(userShortName,confirmMessage)
                     }, 
                     error: function(e) {
                         myApp.hidePreloader();
-                       myApp.alert("error occured");       
+            errorMessage();
+
                     }   
             }); 
       },

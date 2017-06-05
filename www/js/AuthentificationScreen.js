@@ -19,12 +19,13 @@ function manageAuthentifaction(result)
        
     switch (result["status"]) {   
               case "error":
-                 myApp.alert(result["message"],'mACP');
+                 myApp.alert(result["message"],'MACP');
                  myApp.hidePreloader(); 
                   break;
               case "ok":
                  {  
-                   sessionStorage.setItem("userData",JSON.stringify(result.userData));  
+                    sessionStorage.setItem("userData",JSON.stringify(result.userData));
+
                      /*
                   sessionStorage.setItem("userId", result['user_id']);
                   sessionStorage.setItem('userName', result['user_name']);
@@ -69,7 +70,7 @@ function parseDataGet(url) {
         error: function(e) {
            // if(e.status===0)
              myApp.hidePreloader();    
-              myApp.alert('Error occurs in the system',"Error");
+             errorMessage();    
         }
     });
 

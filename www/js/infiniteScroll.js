@@ -55,8 +55,8 @@ $$('.infinite-scroll').on('infinite', function () {
             console.log(e.message);  
             verifconnexion = false;        
             myApp.hidePreloader();
-            myApp.alert("error occured");  
-                    
+            errorMessage();
+                 
         }           
     });  
   }, 1000);

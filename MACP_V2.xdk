@@ -5,7 +5,7 @@
       "projectTypeName": "com.intel.xdk.projecttype.jsapp",
       "src": "jsapp/template-blank-cordova-project-lite/sample.zip",
       "projectGuid": "9688cde4-62ce-4677-a863-1ea43bf4ae30",
-      "lastModifiedDate": 1496047093874,
+      "lastModifiedDate": 1496654719052,
       "creationDate": 1493817986846
     },
     "sourceDirectory": "www",
@@ -89,7 +89,7 @@
         "selectedState": "Included",
         "checksum": "61c62eb",
         "dependsOn": [],
-        "topLevel": true,
+        "topLevel": false,
         "permissions": {},
         "description": "Cordova Compatibility Plugin",
         "data": {},
@@ -138,6 +138,29 @@
         "cordovaVersion": ">=3.1.0",
         "permissions": {},
         "description": "Cordova InAppBrowser Plugin",
+        "data": {},
+        "dependedBy": []
+      },
+      {
+        "id": "cordova-plugin-network-information",
+        "name": "Network Information",
+        "version": "1.2.1",
+        "originType": "cordova.io",
+        "origin": "cordova-plugin-network-information",
+        "gitref": "",
+        "paramvals": {},
+        "sourceLocation": "plugins/cordova-plugin-network-information",
+        "selectedState": "Included",
+        "checksum": "9d8331a4",
+        "dependsOn": [],
+        "topLevel": true,
+        "cordovaVersion": ">=3.1.0",
+        "permissions": {
+          "android:name": [
+            "android.permission.ACCESS_NETWORK_STATE"
+          ]
+        },
+        "description": "Cordova Network Information Plugin",
         "data": {},
         "dependedBy": []
       }

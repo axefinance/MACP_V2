@@ -35,8 +35,8 @@ function startWorkflow_ButtonAction(itemId){
         error: function(e) {         
             verifconnexion = false;  
              myApp.hidePreloader();
-            myApp.alert("error occured"); 
-        }                           
+            errorMessage();
+      }                           
     });    
 }        
       
@@ -82,7 +82,7 @@ function manageStartWorkFlowResponse(data){
                 }
             case "error" :
                 {
-                  myApp.alert("error in worflow");
+                  myApp.alert("error in workflow","Error");
                 }
         }
 }
@@ -128,8 +128,8 @@ function startWorkFlowItem(){
         error: function(e) {       
             console.log(e.message);      
               myApp.hidePreloader();
-            myApp.alert("error occured");             
-        }                                 
+            errorMessage();
+    }                                 
     });      
 }
 
@@ -173,7 +173,7 @@ function managerRequiredMitigantResponse(data){
         }
     else
         {
-            myApp.alert(data.message+"</br></br>"+data.requiredMitigant+"</br>") ; 
+            myApp.alert(data.message+"</br></br>"+data.requiredMitigant+"</br>","MACP") ; 
         }
 }
 
@@ -186,7 +186,7 @@ function manageRequiredDocumentResponse(data){
         }
     else
         {
-            myApp.alert(data.message+"</br></br>"+data.requiredDocument+"</br>") ; 
+            myApp.alert(data.message+"</br></br>"+data.requiredDocument+"</br>","MACP") ; 
         }
 }
 
@@ -270,8 +270,8 @@ function checkWorkflowEligibility(){
             console.log(e.message);  
             verifconnexion = false;        
             myApp.hidePreloader();
-            myApp.alert("error occured");                   
-        }                                         
+            errorMessage();
+       }                                         
     }); 
 
 }
@@ -329,8 +329,8 @@ function saveStartWFDeviationComment(){
             console.log(e.message);  
             verifconnexion = false;          
              myApp.hidePreloader();
-            myApp.alert("error occured");                     
-        }                                         
+            errorMessage();
+       }                                         
     });       
 }
     
@@ -368,7 +368,7 @@ function saveStartWorkflow_EligibilityComment(){
             console.log(e.message);  
             verifconnexion = false;        
              myApp.hidePreloader();
-            myApp.alert("error occured");                   
+            errorMessage();
         }                                         
     }); 
 }
@@ -406,15 +406,15 @@ function saveStartWorkflow_RequiredMitigantComent()
             else                         
                 { 
                     myApp.hidePreloader();
-                    myApp.alert("error occured");
+                    myApp.alert("error occured","Error");
                 }
         },  
         error: function(e) {           
             console.log(e.message);  
             verifconnexion = false;        
             myApp.hidePreloader();
-            myApp.alert("error occured");                     
-        }                                         
+            errorMessage();
+      }                                         
     }); 
 }
 
@@ -450,15 +450,15 @@ function saveStartWorkflow_RequiredDocumentComent(){
             else                         
                 { 
                     myApp.hidePreloader();
-                    myApp.alert("error occured");
+                    myApp.alert("error occured","Error");
                 }
         },  
         error: function(e) {           
             console.log(e.message);  
             verifconnexion = false;        
             myApp.hidePreloader();
-            myApp.alert("error occured");                     
-        }                                         
+            errorMessage();
+     }                                         
     }); 
 }
 

@@ -4,7 +4,7 @@ function saveConfiguration() {
     ip = document.getElementById('WSip').value;
     port = document.getElementById('WSport').value;
     updateFromDevice(ip,port);
-    mainView.router.back();                            
+    mainView.router.back();    
  }  
 
 
