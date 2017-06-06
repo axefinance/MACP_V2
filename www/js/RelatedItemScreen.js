@@ -1,18 +1,17 @@
 function testclick(msg,msgTitle) {
         SuccessMsg = msg;
         SuccesMsgTitle = msgTitle;
-        requiredFormComponent();
-        if (!isValid) {
+        var isValidForm = requiredFormComponent();
+     /*   if (!isValid) {
             $(x[indexToSelect]).next().children().first().focus();
-        } else {
-            var formData = myApp.formToData('#my-relatedItemPopup-form');
+        } else {*/
+    if(isValidForm)
+           { var formData = myApp.formToData('#my-relatedItemPopup-form');
             Parameters = JSON.stringify(formData);
             setTimeout(function () {
                 UpdateRelatedItemEvent();
             }, 1000);
-
-
-        }
+           }
     }
 
 function UpdateRelatedItemEvent() {
@@ -56,6 +55,7 @@ function UpdateRelatedItemEvent() {
 
                 }
             });
+
         }
 
 function UpdateRelatedItem() {
