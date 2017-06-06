@@ -350,7 +350,7 @@ function manageAttechementElement() {
     function mainData_SaveEvent() {
         var formData = myApp.formToData('#my-mainData-form');
         Parameters = JSON.stringify(formData);
-        UpdateItem();
+        UpdateItemEvent();
     }
 
     function attachement_SaveEvent() {
@@ -585,15 +585,16 @@ function manageAttechementElement() {
         myApp.actions(buttonsGroup);
     }
 
-    function UpdateItem() {
+    function UpdateItemEvent() {
 
         var data = "{" +
             "\"mainItemId\":\"" + itemId + "\"," +
             "\"screenName\":\"" + currentItem + "\"," +
             "\"userId\":\"" + sessionStorage.getItem("userId") + "\"," +
+            "\"ipAddress\":\"" + sessionStorage.getItem('Ip_config') + "\"," +
             "\"parameters\":" + Parameters + "}";
         myApp.showPreloader();
-        var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/UpdateItem';
+        var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/UpdateItemEvent';
 
         $.ajax({
             type: 'POST',
@@ -602,8 +603,11 @@ function manageAttechementElement() {
             dataType: "json",
             data: data,
             success: function (data) {
+                 if (data.status === "ok") {
                 myApp.hidePreloader();
-                myApp.alert(data.message);
+                manageUpdateItemResponse(data);
+                 }
+                
             },
             error: function (e) {
                 console.log(e.message);
@@ -615,6 +619,8 @@ function manageAttechementElement() {
             }
         });
     }
+
+
 
         function UpdateRelatedItemEvent() {
             var updateId = relatedItemId;
@@ -742,6 +748,69 @@ function manageAttechementElement() {
             }
         }
 
+  function UpdateItem() {
+
+        var data = "{" +
+            "\"mainItemId\":\"" + itemId + "\"," +
+            "\"screenName\":\"" + currentItem + "\"," +
+            "\"userId\":\"" + sessionStorage.getItem("userId") + "\"," +
+            "\"parameters\":" + Parameters + "}";
+        myApp.showPreloader();
+        var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/UpdateItem';
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            contentType: "text/plain",
+            dataType: "json",
+            data: data,
+            success: function (data) {
+                myApp.hidePreloader();
+                myApp.alert(data.message);
+            },
+            error: function (e) {
+                console.log(e.message);
+                verifconnexion = false;
+                myApp.hidePreloader();
+                myApp.alert("error occured");
+
+
+            }
+        });
+     }
+    function manageUpdateItemResponse(data) 
+    {
+            console.log(data.behavior);
+            if (data.behavior != null) {
+
+                switch (data.behavior) {
+                    case "blockingAlert":
+                        {
+                            myApp.alert(data.message, "Exception");
+                            break;
+                        }
+                    case "optionalAlert":
+                        {
+                            myApp.confirm(data.message, "Exception", function () {
+                                UpdateItem();
+                            });
+                            break;
+                        }
+                    case "deviationAlert":
+                        {
+                            errorMsg = data.message;
+                            myApp.popup('<div class="popup" style="width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" ><div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">' + data.message + '</br></br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="saveProcessEngineComment_enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="saveBeforeUpdateItem_DeviationComment()" id="saveProcessEngineCommentButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
+                            break;
+                        }
+                }
+            }
+            else {
+
+                myApp.hidePreloader();
+                myApp.alert(data.message);
+            }
+     }
+
 
 
 
@@ -778,18 +847,64 @@ function manageAttechementElement() {
 
             $.ajax({
                 type: 'POST',
-                url: url,
+                url: url,  
                 contentType: "text/plain",
                 dataType: "json",
                 data: data,
                 success: function (data) {
-
+  
                     if (data.status === "ok") {
                         myApp.hidePreloader();
                         myApp.closeModal();
                         myApp.alert(SuccessMsg, SuccesMsgTitle, function () {
                             loadScreen(divId);
                         });
+                    }
+                    else {
+                        myApp.hidePreloader();
+                        myApp.alert(data.message, messageTitle);
+                    }
+                },
+                error: function (e) {
+
+                    console.log(e.message);
+                    verifconnexion = false;
+                    myApp.hidePreloader();
+                    myApp.alert("error occured");
+
+
+                }
+            });
+        }
+
+         function saveBeforeUpdateItem_DeviationComment() {
+            var comment = document.getElementById("deviationComment").value;
+            var updateId = relatedItemId;
+            if (isDuplicate === "isDuplicate")
+                updateId = 0;
+            var data = "{" +
+                "\"screenName\":\"" + divId + "\"," +
+                "\"userId\":\"" + sessionStorage.getItem("userId") + "\"," +
+                "\"mainItemId\":\"" + itemId + "\"," +
+                "\"relatedItemId\":\"0\"," +
+                "\"comment\":\"" + comment + "\"," +
+                "\"errorMsg\":\"" + errorMsg + "\"," +
+                "\"parameters\":" + Parameters + "}";
+            myApp.showPreloader();
+            var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/SaveBeforeUpdateItem_LogDeviation';
+
+            $.ajax({
+                type: 'POST',
+                url: url,  
+                contentType: "text/plain",
+                dataType: "json",
+                data: data,
+                success: function (data) {
+  
+                    if (data.status === "ok") {
+                        myApp.hidePreloader();
+                        myApp.closeModal();
+                        myApp.alert(data.message);
                     }
                     else {
                         myApp.hidePreloader();
