@@ -38,7 +38,7 @@ function NumericFormat(elementId,groupSeparator)
     var element = document.getElementById(elementId); 
     var value=element.value;
     if(value!="")
-         {
+         {            
              var output;
              if(groupSeparator===",")
         output=accounting.formatNumber(value);
@@ -55,10 +55,14 @@ function percentageFormat(elementId,decimalprecision,decimalseparator)
     var value=element.value; 
      if(value!="")
          {
-     var output=accounting.formatMoney(value,"",decimalprecision,"",decimalseparator);
-     element.value= output;   
+             var output = parseFloat(value).toFixed(2).toString();             
+             if(decimalseparator ===",")
+                    output= output.replace(".",",");
+             else
+                 output= output.replace(",",".");
+            element.value= output;   
          }               
-};    
+};     
 
 function handleRequiredIcon(component,componentType,elementId,decimalprecision,groupseparator,decimalseparator)
 {
@@ -87,7 +91,8 @@ function handleRequiredIcon(component,componentType,elementId,decimalprecision,g
             $(component).closest("label.label-checkbox").removeClass("requiredIcon");
             break; 
     } 
-    //textbox
+    //textbox  
+    
 
     //combobox
     //$(component).siblings("div.item-inner").removeClass("requiredIcon");
@@ -98,7 +103,7 @@ function DateFormat(elementId,dateFormat)
 {
      var element = document.getElementById(elementId); 
      var output;
-     var value=element.value;
+     var value=element.value; 
     if(value!="")
         {
             var mydate = new Date(value);
