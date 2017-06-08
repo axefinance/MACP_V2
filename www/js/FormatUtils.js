@@ -81,20 +81,20 @@ function AmountFormat(elementId,decimalprecision,groupseparator,decimalseparator
     
 } 
 
-function NumericFormat(elementId,groupSeparator){
+function percentageFormat(elementId,decimalprecision,decimalseparator)
+{
     var element = document.getElementById(elementId); 
-    var value=element.value;
-    if(value!=="")
+    var value=element.value; 
+     if(value!="")
          {
-             var output;
-             if(groupSeparator===",")
-        output=accounting.formatNumber(value);
+             var output = parseFloat(value).toFixed(2).toString();             
+             if(decimalseparator ===",")
+                    output= output.replace(".",",");
              else
-          output=accounting.formatNumber(value,""," ");        
-    element.value= output;
-         }
-}           
-       
+                 output= output.replace(",",".");
+            element.value= output;   
+         }               
+}
 
 function percentageFormat(elementId,decimalprecision,decimalseparator){
     var element = document.getElementById(elementId); 
