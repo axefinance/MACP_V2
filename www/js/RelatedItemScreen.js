@@ -8,9 +8,9 @@ function testclick(msg,msgTitle) {
     if(isValidForm)
            { var formData = myApp.formToData('#my-relatedItemPopup-form');
             Parameters = JSON.stringify(formData);
-            setTimeout(function () {
+            
                 UpdateRelatedItemEvent();
-            }, 1000);
+          
            }
     }
 

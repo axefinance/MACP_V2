@@ -10,12 +10,10 @@ myApp.attachInfiniteScroll($$('.infinite-scroll'))
 // Attach 'infinite' event handler
 $$('.infinite-scroll').on('infinite', function () {
    
-   console.log("khalil1");
   if (loading) return;  
   loading = true;
     
   // Emulate 1s loading     
-  setTimeout(function () {
     // Reset loading flag  
     loading = false;
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetNextSearchResult';
@@ -59,5 +57,5 @@ $$('.infinite-scroll').on('infinite', function () {
                  
         }           
     });  
-  }, 1000);
+  
 });        

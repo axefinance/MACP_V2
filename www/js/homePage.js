@@ -176,7 +176,7 @@ function ReassignTasks(userShortName,confirmMessage)
                             myApp.alert(data.status,"MACP", function () {
                                 document.getElementById("tasks").innerHTML=null;
                                 document.getElementById("toolbar").innerHTML=null;
-                                setTimeout(function() {reInitHomePage(); }, 100) ;    
+                                reInitHomePage();
                                 myApp.closeModal('.popup', true);
                                 
                             });                        

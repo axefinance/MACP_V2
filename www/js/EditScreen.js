@@ -446,7 +446,7 @@ function manageAttechementElement() {
     }
 
     function attachement_SaveEvent() {
-        setTimeout(uploadAttachementFile(), 1000);
+        uploadAttachementFile();
     }
 
 
