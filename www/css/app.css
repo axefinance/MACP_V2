@@ -32,6 +32,10 @@ input, textarea  {
     -webkit-user-select: text ; -moz-user-select: text ; -ms-user-select: text ; user-select: text ;
 }
 
+.dataFont{
+        font-weight: bold !important;
+}
+
 body {
     /* margin: 0.5rem ; */
     background: white ; 

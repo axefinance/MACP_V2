@@ -1,57 +1,17 @@
 function testclick(msg,msgTitle) {
         SuccessMsg = msg;
         SuccesMsgTitle = msgTitle;
-        var i;
-        var indexToSelect = 1;
-        var isValid = true;
-        var textBox = $("#my-relatedItemPopup-form div.requiredItem.textbox input")
-
-        for (i = 0; i < textBox.length; i++) {
-            if ($(textBox[i]).val().replace(/\s/g, '') === "") {
-                $(textBox[i]).closest("div.item-inner").addClass("requiredIcon");
-                isValid = false;
-            } else {
-                $(textBox[i]).closest("div.item-inner").removeClass("requiredIcon");
-            }
-        }
-        var dateOnly = $("#my-relatedItemPopup-form div.requiredItem.dateonly input")
-        for (i = 0; i < dateOnly.length; i++) {
-            if ($(dateOnly[i]).val().replace(/\s/g, '') === "") {
-                $(dateOnly[i]).closest("div.item-inner").addClass("requiredIcon");
-                isValid = false;
-            } else {
-                $(dateOnly[i]).closest("div.item-inner").removeClass("requiredIcon");
-            }
-        }
-        var comboBox = $("#my-relatedItemPopup-form div.requiredItem.combobox div.item-after")
-        for (i = 0; i < comboBox.length; i++) {
-            if ($(comboBox[i]).html().replace(/\s/g, '') === "") {
-                $(comboBox[i]).closest("div.item-inner").addClass("requiredIcon");
-                isValid = false;
-            } else {
-                $(comboBox[i]).closest("div.item-inner").removeClass("requiredIcon");
-            }
-        }
-        var checkBox = $("#my-relatedItemPopup-form div.requiredItem.checkbox label.label-checkbox")
-        for (i = 0; i < checkBox.length; i++) {
-            if ($(checkBox[i]).find("input").is(":checked") == false) {
-                $(checkBox[i]).addClass("requiredIcon");
-                isValid = false;
-            } else {
-                $(checkBox[i]).removeClass("requiredIcon");
-            }
-        }
-        if (!isValid) {
+        var isValidForm = requiredFormComponent();
+     /*   if (!isValid) {
             $(x[indexToSelect]).next().children().first().focus();
-        } else {
-            var formData = myApp.formToData('#my-relatedItemPopup-form');
+        } else {*/
+    if(isValidForm)
+           { var formData = myApp.formToData('#my-relatedItemPopup-form');
             Parameters = JSON.stringify(formData);
             setTimeout(function () {
                 UpdateRelatedItemEvent();
             }, 1000);
-
-
-        }
+           }
     }
 
 function UpdateRelatedItemEvent() {
@@ -90,11 +50,12 @@ function UpdateRelatedItemEvent() {
                     console.log(e.message);
                     verifconnexion = false;
                     myApp.hidePreloader();
-                    myApp.alert("error occured", "Error");
+            errorMessage();
 
 
                 }
             });
+
         }
 
 function UpdateRelatedItem() {
@@ -122,7 +83,7 @@ function UpdateRelatedItem() {
                     if (data.status === "ok") {
 
                         myApp.hidePreloader();
-                        myApp.alert(SuccessMsg, function () {
+                        myApp.alert(SuccessMsg,"MACP", function () {
                             loadScreen(divId);
                              mainView.router.back({reloadPrevious:true});
                         });
@@ -138,7 +99,7 @@ function UpdateRelatedItem() {
                     console.log(e.message);
                     verifconnexion = false;
                     myApp.hidePreloader();
-                    myApp.alert("error occured", "Error");
+            errorMessage();
 
 
                 }
@@ -236,7 +197,7 @@ function saveBeforeUpdateRelatedItem_DeviationComment() {
                     console.log(e.message);
                     verifconnexion = false;
                     myApp.hidePreloader();
-                    myApp.alert("error occured");
+            errorMessage();
 
 
                 }

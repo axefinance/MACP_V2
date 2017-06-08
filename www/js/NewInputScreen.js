@@ -46,8 +46,8 @@ function saveNewInputEvent(parameters){
             console.log(e.message);  
             verifconnexion = false;        
              myApp.hidePreloader();
-            myApp.alert("error occured","Error");                            
-        }                           
+            errorMessage();
+     }                           
     });    
 }
 
@@ -88,8 +88,8 @@ function saveNewInput(parameters){
             console.log(e.message);  
             verifconnexion = false;        
              myApp.hidePreloader();
-            myApp.alert("error occured","Error");   
-   
+            errorMessage();
+
                                  
         }                           
     });    
@@ -194,8 +194,8 @@ function saveBeforeInsert_DeviationComment()
             console.log(e.message);  
             verifconnexion = false;        
              myApp.hidePreloader();
-            myApp.alert("error occured","Error");   
-   
+            errorMessage();
+
                                  
         }                           
     }); 

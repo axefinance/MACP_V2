@@ -1,8 +1,57 @@
 var ForematUtils_JSFlag;
 
+function goToNextField(event) {
+    {
+        var elements = $(".item-input");
+        for(i=elements.length-1; i>=0;i--)
+        if($(elements[i]).children().first().is(":focus"))
+        {
+            $(elements[i+1]).children().first().focus();
+        }
+    }
+}
+function errorMessage(){
+    if(!checkInternetConnection())                                                   
+        myApp.alert("please check your internet connection");
+    else                                          
+        myApp.alert("error occured","Error");                                
+}
 
-function calendarDateFormat(cssClass,idComponent,year,month,day)
-{
+function handleKeyboardButton(event){
+    var newPage = $(".newPage").length;
+    var keyCode = event.which || event.keyCode;
+    if(keyCode===13)        
+    {
+        if(newPage ==0 )
+        {
+            if($("#WSConfig").length==1)
+            {
+                saveConfiguration();
+                document.activeElement.blur();            
+            }
+            else
+                if($("#loginPage").length==1||$("#firstWSConfig").length==1/*||$("#WSConfig").length==1*/)
+                {
+                    //saveFirstConfig();
+                    onClickLoginButton();
+                    document.activeElement.blur();
+                }
+
+        } 
+        else
+            if($("#searchForm").length==1)
+            {
+                launchSearch();
+                document.activeElement.blur();
+            }
+            else
+                goToNextField(event) 
+ 
+    }
+    
+}
+
+function calendarDateFormat(cssClass,idComponent,year,month,day){
     if(month ===-1)
     {
 
@@ -21,33 +70,16 @@ myApp.calendar({
 }); }
 }
    
-function AmountFormat(elementId,decimalprecision,groupseparator,decimalseparator)
-{
+function AmountFormat(elementId,decimalprecision,groupseparator,decimalseparator){
     var element = document.getElementById(elementId); 
     var value=element.value;
-    if(value!="")
+    if(value!=="")
         {
     var output=accounting.formatMoney(value,"",decimalprecision,groupseparator,decimalseparator);
     element.value= output;
         }
     
-}; 
-
-function NumericFormat(elementId,groupSeparator)
-{
-    var element = document.getElementById(elementId); 
-    var value=element.value;
-    if(value!="")
-         {
-             var output;
-             if(groupSeparator===",")
-        output=accounting.formatNumber(value);
-             else
-          output=accounting.formatNumber(value,""," ");        
-    element.value= output;
-         }
-};           
-       
+} 
 
 function percentageFormat(elementId,decimalprecision,decimalseparator)
 {
@@ -55,13 +87,26 @@ function percentageFormat(elementId,decimalprecision,decimalseparator)
     var value=element.value; 
      if(value!="")
          {
+             var output = parseFloat(value).toFixed(2).toString();             
+             if(decimalseparator ===",")
+                    output= output.replace(".",",");
+             else
+                 output= output.replace(",",".");
+            element.value= output;   
+         }               
+}
+
+function percentageFormat(elementId,decimalprecision,decimalseparator){
+    var element = document.getElementById(elementId); 
+    var value=element.value; 
+     if(value!=="")
+         {
      var output=accounting.formatMoney(value,"",decimalprecision,"",decimalseparator);
      element.value= output;   
          }               
-};    
+}    
 
-function handleRequiredIcon(component,componentType,elementId,decimalprecision,groupseparator,decimalseparator)
-{
+function handleRequiredIcon(component,componentType,elementId,decimalprecision,groupseparator,decimalseparator){
     switch(componentType)
     {
         case "dateonly":
@@ -98,7 +143,7 @@ function requiredFormComponent(formToDataId){
        var i; 
     var indexToSelect=1;
     var isValid = true;
-    var textBox=$(formToDataId).find("div.requiredItem.textbox input")
+    var textBox=$(formToDataId).find("div.requiredItem.textbox input");
     for (i = 0; i < textBox.length; i++) 
     {
         if($(textBox[i]).val()==="")
@@ -111,7 +156,7 @@ function requiredFormComponent(formToDataId){
             $(textBox[i]).closest("div.item-inner").removeClass("requiredIcon");
         }
     }
-    var dateOnly=$("form div.requiredItem.dateonly input" )
+    var dateOnly=$("form div.requiredItem.dateonly input" );
     for (i = 0; i < dateOnly.length; i++) 
     {
         if($(dateOnly[i]).val()==="")
@@ -124,7 +169,7 @@ function requiredFormComponent(formToDataId){
             $(dateOnly[i]).closest("div.item-inner").removeClass("requiredIcon");
         }
     }
-    var comboBox=$(".combobox.requiredItem .item-input")
+    var comboBox=$(".combobox.requiredItem .item-input");
     for (i = 0; i < comboBox.length; i++)
     {
         if($(comboBox[i]).find("select").find("option:selected").val()==="")
@@ -137,10 +182,10 @@ function requiredFormComponent(formToDataId){
             $(comboBox[i]).removeClass("requiredIcon");
         }            
     }
-    var checkBox=$("form div.requiredItem.checkbox label.label-checkbox")
+    var checkBox=$("form div.requiredItem.checkbox label.label-checkbox");
     for (i = 0; i < checkBox.length; i++)
     {
-        if($(checkBox[i]).find("input").is(":checked")==false)
+        if($(checkBox[i]).find("input").is(":checked")===false)
         {
             $(checkBox[i]).addClass("requiredIcon");
             isValid=false;

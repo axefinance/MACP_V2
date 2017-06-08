@@ -63,7 +63,7 @@ function generateAttachmentPicture(name, folder, subFolder){
                 console.log(e.message);
                 verifconnexion = false;
                 myApp.hidePreloader();
-                myApp.alert("error occured");
+                errorMessage();  
             }
         });
 }
@@ -91,7 +91,7 @@ function deleteAttachmentDocument(name, folder, subFolder) {
                     loadScreen(divId);
                 } else {
                     myApp.hidePreloader();
-                    myApp.alert("error deleting");
+                    myApp.alert("error deleting","Error");
                 }
             },
             error: function (e) {
@@ -99,7 +99,7 @@ function deleteAttachmentDocument(name, folder, subFolder) {
                 console.log(e.message);
                 verifconnexion = false;
                 myApp.hidePreloader();
-                myApp.alert("error occured");
+                errorMessage();
             }
         });
 
@@ -156,8 +156,8 @@ function loadRelatedItemPopup(id, isDuplicateAction,relatedItemType) {
         },
         error: function(e) { 
             myApp.hidePreloader();
-            myApp.alert("error occured", "Error");        
-        }           
+            errorMessage();
+            }           
     });  
     */
 }
@@ -228,7 +228,7 @@ function manageAttechementElement() {
             },
             error: function (e) {
                 myApp.hidePreloader();
-                myApp.alert("error occured", "Error");
+                errorMessage();
             }
         });
         
@@ -262,13 +262,13 @@ function manageAttechementElement() {
             data: data,
             success: function (data) {
                 myApp.hidePreloader();
-                myApp.alert(data.status, function () {
+                myApp.alert(data.status,"MACP", function () {
                     loadScreen(divId);
                 });
             },
             error: function (e) {
-                myApp.hidePreloader();
-                myApp.alert("error occured", "Error");
+                myApp.hidePreloader();            
+                errorMessage();   
             }
         });
     }
@@ -352,8 +352,8 @@ function manageAttechementElement() {
                 }
             },
             error: function (e) {
-                myApp.hidePreloader();
-                myApp.alert("error occured");
+                myApp.hidePreloader();            
+                errorMessage();
             }
         });
     }
@@ -408,7 +408,7 @@ function manageAttechementElement() {
                     fileWriter.write(DataBlob);
 
                 }, function () {
-                    myApp.alert('Unable to save file in path ' + folderpath);
+                    myApp.alert('Unable to save file in path ' + folderpath,"Error");
                 });
             });
         });
@@ -474,7 +474,7 @@ function manageAttechementElement() {
 
                 if (data.status === "ok") {
                     myApp.hidePreloader();
-                    myApp.alert(msg, function () {
+                    myApp.alert(msg,"MACP", function () {
                         loadScreen(divId);
 
                     });
@@ -482,7 +482,7 @@ function manageAttechementElement() {
 
                 } else {
                     myApp.hidePreloader();
-                    myApp.alert("error saving");
+                    myApp.alert("error saving","Error");
                 }
             },
             error: function (e) {
@@ -490,7 +490,7 @@ function manageAttechementElement() {
                 console.log(e.message);
                 verifconnexion = false;
                 myApp.hidePreloader();
-                myApp.alert("error occured");
+                errorMessage();
 
 
             }
@@ -523,7 +523,7 @@ function manageAttechementElement() {
                     loadScreen(divId);
                 } else {
                     myApp.hidePreloader();
-                    myApp.alert("error saving");
+                    myApp.alert("error saving","Error");
                 }
             },
             error: function (e) {
@@ -531,7 +531,7 @@ function manageAttechementElement() {
                 console.log(e.message);
                 verifconnexion = false;
                 myApp.hidePreloader();
-                myApp.alert("error occured");
+                errorMessage();
             }
         });
 
@@ -654,15 +654,13 @@ function manageAttechementElement() {
             data: data,
             success: function (data) {
                 myApp.hidePreloader();
-                myApp.alert(data.message);
+                myApp.alert(data.message,"MACP");
             },
             error: function (e) {
                 console.log(e.message);
                 verifconnexion = false;
                 myApp.hidePreloader();
-                myApp.alert("error occured");
-
-
+                errorMessage();
             }
         });
     }

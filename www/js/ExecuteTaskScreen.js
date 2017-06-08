@@ -38,8 +38,9 @@ function stopWorkflow(){
         error: function(e) {         
             console.log(e.message);  
             verifconnexion = false;        
-            myApp.hidePreloader();   
-            myApp.alert("error occured"); 
+            myApp.hidePreloader();                   
+            errorMessage();
+
         }                             
     });     
 }      
@@ -157,7 +158,8 @@ function endTaskEvent(){
             console.log(e.message);  
             verifconnexion = false;
              myApp.hidePreloader();
-            myApp.alert("error occured in the system");
+            errorMessage();
+
         }                                         
     });      
 }
@@ -280,14 +282,15 @@ function saveRequiredDocumentComent(){
             else                         
                 { 
                     myApp.hidePreloader();
-                    myApp.alert("error saving"); 
+                    myApp.alert("error saving","Error"); 
                 }
         },  
         error: function(e) {           
             console.log(e.message);  
             verifconnexion = false;        
              myApp.hidePreloader();
-            myApp.alert("error occured in the system");                   
+            errorMessage();
+
         }                                         
     }); 
 }
@@ -325,7 +328,7 @@ function saveDeviationComment(){
                             if(data.deviation==="true")
                              manageRequiredDocument(data);
                             else
-                           myApp.alert(data.message+"</br></br>"+data.requiredDocuments+"</br></br>") ;     
+                           myApp.alert(data.message+"</br></br>"+data.requiredDocuments+"</br></br>","MACP") ;     
                         }
                     else if(data.endTask!=undefined)
                         {
@@ -339,14 +342,15 @@ function saveDeviationComment(){
             else                       
                 { 
                     myApp.hidePreloader();
-                    myApp.alert("error saving"); 
+                    myApp.alert("error saving","Error"); 
                 }
         },
         error: function(e) {         
             console.log(e.message);  
             verifconnexion = false;          
              myApp.hidePreloader();
-            myApp.alert("error occured in the system");                    
+            errorMessage();
+                
         }                                         
     });       
 }
@@ -362,7 +366,7 @@ function manageRequiredDocument(data){
          }
     else
         {
-        myApp.alert(data.message+"</br></br>"+data.requiredDocuments+"</br>") ; 
+        myApp.alert(data.message+"</br></br>"+data.requiredDocuments+"</br>","MACP") ; 
         }
 };
 function saveEligibilityComment(){
@@ -412,14 +416,15 @@ function saveEligibilityComment(){
             else                       
                 { 
                     myApp.hidePreloader();
-                     myApp.alert("error saving"); 
+                     myApp.alert("error saving","Error"); 
                 }
         },
         error: function(e) {         
             console.log(e.message);  
             verifconnexion = false;        
             myApp.hidePreloader(); 
-            myApp.alert("error occured in the system");
+            errorMessage();
+
         }                                         
     });      
 }
@@ -486,14 +491,15 @@ function saveCollectQuestion(){
             else                       
                 { 
                     myApp.hidePreloader();
-                     myApp.alert("error saving"); 
+                     myApp.alert("error saving","Error"); 
                 }
         },
         error: function(e) {         
             console.log(e.message);  
             verifconnexion = false;        
             myApp.hidePreloader(); 
-            myApp.alert("error occured in the system");
+            errorMessage();
+
         }                                         
     });      
     
