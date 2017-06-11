@@ -92,15 +92,15 @@ myApp.onPageReinit('homePage', function (page) {
     {
      document.getElementById("tasks").innerHTML=null;
      document.getElementById("toolbar").innerHTML=null;
-     setTimeout(function() {reInitHomePage(); }, 100);
+     reInitHomePage();
      console.log(mainView.history);
     }
     else
     {
            document.getElementById("tasks").innerHTML=null;
            document.getElementById("toolbar").innerHTML=null;
-           isSwitchLanguage = false;
-           setTimeout(function() {loadTaskList(); }, 1000);
+           isSwitchLanguage = false;           
+           loadTaskList(); 
            setTemplate_HeaderData("homePage");
     }
 });  
@@ -186,7 +186,7 @@ myApp.onPageInit('WSConfigurationScreen', function (page) {
 myApp.onPageInit('homePage', function (page) {   
      myApp.params.swipePanel=false;    
     setTemplate_HeaderData('homePage');
-   setTimeout(function() {loadTaskList(); }, 1000) ;
+   loadTaskList();
 });                  
 myApp.onPageInit('searchScreen', function (page) {
     console.log("Init search screen");
@@ -200,7 +200,7 @@ myApp.onPageInit('searchScreen', function (page) {
     console.log(pageTitleContent);
     myApp.showPreloader();
     setTemplate_HeaderData('searchScreen');  
-    setTimeout(function() {loadsearchScreen(); }, 1000) ;
+    loadsearchScreen();
   
 }); 
 myApp.onPageInit('editScreen', function (page) {
@@ -214,7 +214,7 @@ myApp.onPageInit('editScreen', function (page) {
     pageTitleElement=document.getElementById("title_editScreen");
     pageTitleElement.textContent=itemRef;
     setTemplate_HeaderData('editScreen');
-    setTimeout(function() {loadEditScreen(itemId); }, 1000) ;
+    loadEditScreen(itemId);
     
 }); 
 myApp.onPageInit('newInputScreen', function (page) {
@@ -226,7 +226,7 @@ myApp.onPageInit('newInputScreen', function (page) {
     pageTitleElement.textContent=pageTitleContent;
     myApp.showPreloader();
     setTemplate_HeaderData('newInputScreen');
-    setTimeout(function() {loadNewInputPage(); }, 1000) ;
+    loadNewInputPage();
 });                
 myApp.onPageInit('searchResultScreen', function (page) {
     HomeBackButton.style.visibility="visible";
@@ -239,7 +239,7 @@ myApp.onPageInit('searchResultScreen', function (page) {
      myApp.showPreloader();
       var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetSearchResultPage';
     console.log("URL",url);
-   setTimeout(function() {lunchSearchResult(url); }, 1000) ;
+   lunchSearchResult(url); 
 });  
 myApp.onPageInit('executeTaskScreen', function (page) {
     HomeBackButton.style.visibility="visible";
@@ -252,7 +252,7 @@ myApp.onPageInit('executeTaskScreen', function (page) {
      myApp.showPreloader();
       var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetExecuteTaskScreen';
     console.log("URL",url);
-    setTimeout(function() {GetExecuteTaskScreen(url); }, 1000) ;
+    GetExecuteTaskScreen(url);
 });
 myApp.onPageInit('relatedItemScreen', function (page) {
     HomeBackButton.style.visibility="visible";
@@ -262,7 +262,7 @@ myApp.onPageInit('relatedItemScreen', function (page) {
     myApp.params.swipePanel=false;
     pageTitleElement=document.getElementById("title_relatedItemScreen");
     pageTitleElement.textContent=itemRef+" : "+ RelatedItemType;
-    setTimeout(function() {GetRelatedItemScreen(); }, 1000) ;
+    GetRelatedItemScreen();
     myApp.showPreloader();
 });
 myApp.onPageInit('pricingConditionScreen', function (page) {
@@ -273,7 +273,7 @@ myApp.onPageInit('pricingConditionScreen', function (page) {
     myApp.params.swipePanel=false;
     pageTitleElement=document.getElementById("title_pricingConditionScreen");
     pageTitleElement.textContent=itemRef+" : "+ RelatedItemType;
-    setTimeout(function() {GetPricingConditionScreen(); }, 1000) ;
+    GetPricingConditionScreen(); 
     myApp.showPreloader();
 });
 function GetPricingConditionScreen()
@@ -547,7 +547,7 @@ function switchLanguage(property){
                 {
                    document.getElementById("tasks").innerHTML=null;
                    document.getElementById("toolbar").innerHTML=null;
-                   setTimeout(function() {loadTaskList(); }, 1000);
+                   loadTaskList();
                    setTemplate_HeaderData("homePage");                   
                 }
             else
@@ -647,7 +647,7 @@ function lunchSearchResult(url){
 }         
 function generateConnectedComboItems(idChild,screenTagName,val,child,entity,sharedConfig,property){ 
     var url =  "http://"+sessionStorage.getItem('Ip_config')+":"+sessionStorage.getItem('Ip_port')+"/MobileAPI.svc/ConnectedComboOptions"; 
-    setTimeout(function() {connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property);},100);       
+    connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property);
 
 } 
     function connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property) {
