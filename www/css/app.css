@@ -53,7 +53,7 @@ body {
 }
 
 
-	.fileUpload {
+.fileUpload {
     position: relative;
     overflow: hidden;
     margin: 10px;
