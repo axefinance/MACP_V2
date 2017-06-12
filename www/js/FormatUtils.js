@@ -1,5 +1,10 @@
 var ForematUtils_JSFlag;
 
+function createPopup(popupContainer,popupToolbar,top,left,width,height){
+     myApp.popup('<div class="popup macp-popup" style=" background : #f1f1f1 !important;top : '+top+' !important; left : '+left+' !important; width : '+width+' !important; height : '+height+' !important; " ><div class="popup-container">' +popupContainer+'</div><div  class="popup-toolbar">'+popupToolbar+'</div></div>', true);
+}
+
+
 var dateFormat = function () {
         var    token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
             timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,

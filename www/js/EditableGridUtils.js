@@ -28,7 +28,8 @@ function GetEditableGridPoponContent(sourcetag,spname,stringifyData){
             dataType: "json",
             data: data, 
             success: function (data) { 
-                   myApp.popup('<div class="popup" style="width: 80% !important; height: 80% !important; top: 10% !important;left: 10% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" >'+data.content+'<div  class="popup-toolbar">'+data.toolbar+'</div></div>', true);
+                createPopup(data.content,data.toolbar,"10%","10%","80%","80%");
+               //    myApp.popup('<div class="popup  macp-popup" style="width: 80% !important; height: 80% !important; top: 10% !important;left: 10% !important; background : #f1f1f1 !important;"><div class="popup-container">'+data.content+'</div><div  class="popup-toolbar">'+data.toolbar+'</div></div>', true);
                    myApp.hidePreloader();
             },
             error: function (e) {
@@ -62,10 +63,9 @@ var formData = myApp.formToData('#my-editableGridPopon-form');
           Ediatbelegrids[clickedEditableGridId].push(arr);
            myApp.closeModal();
     for(var j=0 ; j<Ediatbelegrids[[clickedEditableGridId]].length ;j++)
-        {
-        
-        var line="<li class='swipeout'><div class='swipeout-content item-content noPadding-left'><div class='item-inner gridRow'><div><table><tr>";
-        for(var i=0 ; i<arr.length ;i++)  
+        {       
+        var line="<li class='swipeout' style='background-color:#fff;border-radius: 15px !important;'><div class='swipeout-content item-content noPadding-left'><div class='item-inner gridRow'><div><table><tr>";
+        for(var i=0 ; i<arr.length ;i++)
         {
             line=line+" <td    style= 'font-size:small !important;width:"+ (window.innerWidth/clickedEditableGridColumnsCount)+"px !important; min-width:139px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+Ediatbelegrids[clickedEditableGridId][j][i]+"</td>";
         }
@@ -124,7 +124,7 @@ function deleteEditableGridRow(rowNumber){
     {
         
         var line="<li class='swipeout'><div class='swipeout-content item-content noPadding-left'><div class='item-inner gridRow'><div><table><tr>";
-        for(var i=0 ; i<arr.length ;i++)
+        for(var i=0 ; i<newEditableGridRows[j].length ;i++)
         {
             line=line+" <td    style= 'font-size:small !important;width:"+ (window.innerWidth/clickedEditableGridColumnsCount)+"px !important; min-width:139px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+Ediatbelegrids[clickedEditableGridId][j][i]+"</td>";
         }
