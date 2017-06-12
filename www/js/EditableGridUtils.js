@@ -41,44 +41,52 @@ function GetEditableGridPoponContent(sourcetag,spname,stringifyData){
         });
 } 
 function saveInGridOnPopon(){
+ var isValidForm = requiredFormComponent("#my-editableGridPopon-form"); 
+if (isValidForm)
+  {
     if(rowToEditIndex!==-1)
         {
-             newEditableGridRows.splice(rowToEditIndex, 1);
+             if(Ediatbelegrids[clickedEditableGridId]===undefined)
+              Ediatbelegrids[clickedEditableGridId]=[];
+              Ediatbelegrids[clickedEditableGridId].splice(rowToEditIndex, 1);
         }
 var formData = myApp.formToData('#my-editableGridPopon-form');
-var arr = [];
-var content="<div class='list-block tasksTableElement animated fadeIn ' style='max-width:100% !important; margin-top :-0.02cm !important;background-color:#ff7f7f;-webkit-box-shadow: -2px 9px 43px -5px rgba(0,0,0,0.26);-moz-box-shadow: -2px 9px 43px    -5px rgba(0,0,0,0.26);box-shadow: -1px 9px 43px -5px rgba(0,0,0,0.26); overflow-y: auto !important;    overflow-x: none !important; max-height:614px !important; '><ul style='padding-left: 0px !important;border-radius: 15px !important;'>";
- for(var x in formData){
-  arr.push(formData[x]);  
- }
-  newEditableGridRows.push(arr);   
-  myApp.closeModal();
-  for(var j=0 ; j<newEditableGridRows.length ;j++)
-    {
-        
+
+    
+    var arr = [];
+    var content="<div class='list-block tasksTableElement animated fadeIn ' style='max-width:100% !important; margin-top :-0.02cm !important;background-color:#ff7f7f;-webkit-box-shadow: -2px 9px 43px -5px rgba(0,0,0,0.26);-moz-box-shadow: -2px 9px 43px    -5px rgba(0,0,0,0.26);box-shadow: -1px 9px 43px -5px rgba(0,0,0,0.26); overflow-y: auto !important;    overflow-x: none !important; max-height:614px !important; '><ul style='padding-left: 0px !important;border-radius: 15px !important;'>";
+    for(var x in formData){
+        arr.push(formData[x]);  
+    }
+      if(Ediatbelegrids[clickedEditableGridId]===undefined)
+          Ediatbelegrids[clickedEditableGridId]=[];
+          Ediatbelegrids[clickedEditableGridId].push(arr);
+           myApp.closeModal();
+    for(var j=0 ; j<Ediatbelegrids[[clickedEditableGridId]].length ;j++)
+        {       
         var line="<li class='swipeout' style='background-color:#fff;border-radius: 15px !important;'><div class='swipeout-content item-content noPadding-left'><div class='item-inner gridRow'><div><table><tr>";
         for(var i=0 ; i<arr.length ;i++)
         {
-            line=line+" <td    style= 'font-size:small !important;width:"+ (window.innerWidth/clickedEditableGridColumnsCount)+"px !important; min-width:139px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+newEditableGridRows[j][i]+"</td>";
+            line=line+" <td    style= 'font-size:small !important;width:"+ (window.innerWidth/clickedEditableGridColumnsCount)+"px !important; min-width:139px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+Ediatbelegrids[clickedEditableGridId][j][i]+"</td>";
         }
         line=line+ "</tr></table></div></div></div><div class='swipeout-actions-right'><a href='#'     data-popup='.demo-popup' class='action1 bg-orange editButton' onclick='EditEditableGridRow("+j+");'></a><a href='#' data-popup='.demo-popup' class='action1 bg-red deleteButton' onclick='deleteEditableGridRow("+j+");'></a></div></li>";
         content=content+line;
-    }
+        }
     console.log(content);
     document.getElementById(clickedEditableGridId).innerHTML=content;
-    rowToEditIndex=-1;         
+    rowToEditIndex=-1;
 }
-function EditEditableGridRow(rowNumber)
-{
+}
+function EditEditableGridRow(rowNumber){
   rowToEditIndex=rowNumber;
   var table=$('#'+clickedEditableGridId+"_header").find(".tasksTableTD.tasksTableElement:not(.displayNone)");
      var obj = {};
      var arr=[];
-     for(var j=0; j<newEditableGridRows[rowNumber].length;j++)
+     for(var j=0; j<Ediatbelegrids[clickedEditableGridId][rowNumber].length;j++)
       {
             var entity=  table[j].getAttribute("name");
             console.log(entity);
-            obj[entity] = newEditableGridRows[rowNumber][j];
+            obj[entity] = Ediatbelegrids[clickedEditableGridId][rowNumber][j];
       }
      arr.push(obj); 
      var row={};
@@ -91,15 +99,15 @@ function GetGridData(gridId){
     var table=$('#'+gridId).find(".tasksTableTD.tasksTableElement:not(.displayNone)");
     console.log(table); 
      var arr=[];
-    for(var i=0;i<newEditableGridRows.length;i++)
+    for(var i=0;i<Ediatbelegrids[clickedEditableGridId].length;i++)
         {
            
             var obj = {};
-            for(var j=0; j<newEditableGridRows[i].length;j++)
+            for(var j=0; j<Ediatbelegrids[clickedEditableGridId][i].length;j++)
                 {
                     var entity=  table[j].getAttribute("name");
                     console.log(entity);
-                    obj[entity] = newEditableGridRows[i][j];
+                    obj[entity] = Ediatbelegrids[clickedEditableGridId][i][j];
                     console.log(obj);
                     
                 }
@@ -110,15 +118,15 @@ function GetGridData(gridId){
 }
 function deleteEditableGridRow(rowNumber){
     if (rowNumber > -1) {
-    newEditableGridRows.splice(rowNumber, 1);
+    Ediatbelegrids[clickedEditableGridId].splice(rowNumber, 1);
     var content="<div class='list-block tasksTableElement animated fadeIn ' style='max-width:100% !important; margin-top :-0.02cm !important;background-color:#ff7f7f;-webkit-box-shadow: -2px 9px 43px -5px rgba(0,0,0,0.26);-moz-box-shadow: -2px 9px 43px    -5px rgba(0,0,0,0.26);box-shadow: -1px 9px 43px -5px rgba(0,0,0,0.26); overflow-y: auto !important;    overflow-x: none !important; max-height:614px !important; '><ul style='padding-left: 0px !important;border-radius: 15px !important;'>";    
-    for(var j=0 ; j<newEditableGridRows.length ;j++)
+    for(var j=0 ; j<Ediatbelegrids[clickedEditableGridId].length ;j++)
     {
         
         var line="<li class='swipeout'><div class='swipeout-content item-content noPadding-left'><div class='item-inner gridRow'><div><table><tr>";
         for(var i=0 ; i<newEditableGridRows[j].length ;i++)
         {
-            line=line+" <td    style= 'font-size:small !important;width:"+ (window.innerWidth/clickedEditableGridColumnsCount)+"px !important; min-width:139px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+newEditableGridRows[j][i]+"</td>";
+            line=line+" <td    style= 'font-size:small !important;width:"+ (window.innerWidth/clickedEditableGridColumnsCount)+"px !important; min-width:139px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+Ediatbelegrids[clickedEditableGridId][j][i]+"</td>";
         }
         line=line+ "</tr></table></div></div></div><div class='swipeout-actions-right'><a href='#'     data-popup='.demo-popup' class='action1 bg-orange editButton' onclick='EditEditableGridRow("+j+");'></a><a href='#' data-popup='.demo-popup' class='action1 bg-red deleteButton' onclick='deleteEditableGridRow("+j+");'></a></div></li>";
         content=content+line;
