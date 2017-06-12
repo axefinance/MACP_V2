@@ -283,14 +283,16 @@ function GetRelatedItemScreen()
             
       var data="{"+    
         "\"screenName\":\""+divId+"\","+
+        "\"screenType\":\"relatedItemDetails\","+
         "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\""+itemId+"\","+
+        "\"screenWidth\":\""+window.innerWidth+"\","+          
         "\"relatedItemId\":\""+relatedItemId+"\"}"; 
     console.log("SearchParams",data);        
     $.ajax({             
         type: 'POST',             
         url: url,                                     
-        contentType: "text/plain",                            
+        contentType: "text/plain",                             
         dataType: "json",                            
         data: data,         
         success: function(data) {  
@@ -366,6 +368,7 @@ function GetEditScreen(url,itemId){
 function GetNewInputScreen(url){
      var data="{"+     
         "\"currentItem\":\""+currentItem+"\","+
+        "\"screenWidth\":\""+window.innerWidth+"\","+         
         "\"userData\":"+sessionStorage.getItem("userData")+"}";
     $.ajax({ 
                     type: "POST",  
