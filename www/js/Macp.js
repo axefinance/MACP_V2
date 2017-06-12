@@ -737,7 +737,6 @@ function GetExecuteTaskScreen(url){
                      currentItem=data.screenName;
                      pageTitleElement=document.getElementById("title_executeTaskScreen");
                      pageTitleElement.textContent=data.itemShortName;
-              //       $('#executeTask-toolbarContent').append(data.endTaskButton);
                      $('#executeTask-toolbarContent').append(data.buttonsDiv);
                         divId = data.divId;
                         engine = data.screenEngine;    
@@ -798,10 +797,7 @@ function GetPricingConditionScreen(){
         success: function(data) {  
             document.getElementById("pricingConditionForm").innerHTML=data.content;
             $('#pricingConditionScreen-toolbarContent').append(data.buttonsDiv);
-          //  $('#pricingConditionScreen-toolbarContent').append(data.saveButton);
             myApp.hidePreloader();    
-         /*     if(data.simulateButton!=null)
-            $('#pricingConditionScreen-toolbarContent').append(data.simulateButton); */
              loadJSFile("js/PricingConditionScreen.js");
              loadJSFile("js/amortizationInfiniteScroll.js");
             myApp.hidePreloader();  

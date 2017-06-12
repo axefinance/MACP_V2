@@ -251,7 +251,7 @@ function handleRequiredIcon(component,componentType,elementId,decimalprecision,g
         case "dateonly":
         case "textbox" :         
             $(component).closest("div.item-inner").removeClass("requiredIcon");
-            break;        
+            break;          
         case "combobox" :         
             $(component).siblings("div.item-inner").removeClass("requiredIcon");
             break;                
@@ -272,11 +272,25 @@ function handleRequiredIcon(component,componentType,elementId,decimalprecision,g
             break; 
     } 
     //textbox
-
+  
     //combobox
     //$(component).siblings("div.item-inner").removeClass("requiredIcon");
     
 }
+function NumericFormat(elementId,groupSeparator)
+{
+    var element = document.getElementById(elementId); 
+    var value=element.value;
+    if(value!="")
+         {            
+             var output;
+             if(groupSeparator===",")
+        output=accounting.formatNumber(value);
+             else
+          output=accounting.formatNumber(value,""," ");        
+    element.value= output;
+         }
+};     
 
 function requiredFormComponent(formToDataId){
        var i; 

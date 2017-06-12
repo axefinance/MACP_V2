@@ -13,7 +13,7 @@ var RelatedItemType;
 var clickedEditableGridId;
 var clickedEditableGridColumnsCount;
 var newEditableGridRows = [];
-
+var Ediatbelegrids = {};
 function generateAttachmentPicture(name, folder, subFolder){
      myApp.showPreloader();
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/GetDocumentAttachedStream';

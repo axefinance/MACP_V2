@@ -10,7 +10,7 @@ var transactionAmountEventFeesListObject=null;
 
 
 function simulateEvent(){
-  var isValidForm = requiredFormComponent("my-relatedItemPopup-form"); 
+  var isValidForm = requiredFormComponent("#my-relatedItemPopup-form"); 
   var stringify= getGridonPoponsData("#my-relatedItemPopup-form");
     if(isValidForm)
   GetAmortizationPopon(stringify);
