@@ -276,33 +276,7 @@ myApp.onPageInit('pricingConditionScreen', function (page) {
     GetPricingConditionScreen(); 
     myApp.showPreloader();
 });
-function GetPricingConditionScreen()
-{
-     var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    
-            
-      var data="{"+    
-        "\"screenName\":\""+divId+"\","+
-        "\"userData\":"+sessionStorage.getItem("userData")+","+
-        "\"mainItemId\":\""+itemId+"\","+
-        "\"relatedItemId\":\""+relatedItemId+"\"}"; 
-    console.log("SearchParams",data);        
-    $.ajax({             
-        type: 'POST',             
-        url: url,                                     
-        contentType: "text/plain",                            
-        dataType: "json",                            
-        data: data,         
-        success: function(data) {  
-            document.getElementById("pricingConditionForm").innerHTML=data.content;
-            $('#pricingConditionScreen-toolbarContent').append(data.saveButton);
-            myApp.hidePreloader();    
-        },
-        error: function(e) { 
-            myApp.hidePreloader();
-            errorMessage();   
-        }              
-    });  
-}
+
 function GetRelatedItemScreen()
 {
      var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    
@@ -322,7 +296,7 @@ function GetRelatedItemScreen()
         success: function(data) {  
             loadJSFile("js/RelatedItemScreen.js");
             document.getElementById("relatedItemForm").innerHTML=data.content;
-            $('#relatedItem-toolbarContent').append(data.saveButton);
+            $('#relatedItem-toolbarContent').append(data.buttonsDiv);
             myApp.hidePreloader();
         },
         error: function(e) { 
@@ -650,7 +624,9 @@ function generateConnectedComboItems(idChild,screenTagName,val,child,entity,shar
     connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property);
 
 } 
-    function connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property) {
+
+function connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property) {
+       var childs=idChild.split(",");
       var data="{"+    
         "\"userData\":"+sessionStorage.getItem("userData")+","+ 
         "\"parentValue\":\""+val.value+"\","+
@@ -658,6 +634,7 @@ function generateConnectedComboItems(idChild,screenTagName,val,child,entity,shar
         "\"screenTagName\":\""+screenTagName+"\","+
         "\"sharedConfig\":\""+sharedConfig+"\","+
         "\"child\":\""+child+"\","+  
+        "\"idChild\":\""+idChild+"\","+ 
         "\"entity\":\""+entity+"\"}"; 
     $.ajax({   
         type: 'POST',           
@@ -665,14 +642,20 @@ function generateConnectedComboItems(idChild,screenTagName,val,child,entity,shar
         contentType: "text/plain",                          
         dataType: "json",                            
         data: data,
-                    success: function(data) {      
-                        document.getElementById(idChild).innerHTML=data.content;                                            
+                    success: function(data) {
+                    
+                        
+                        for(var i=0;i<child.length;i++)
+                            {
+                                document.getElementById(childs[i]).innerHTML=data[childs[i]];
+                            }
+                                                                    
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-                    errorMessage();
+                        console.log(errorThrown+'  in processing!'+textStatus);
                     }                   
             });          
-}
+};
 function HomeBack(){
     HomeBackButton.style.visibility="hidden";       
     mainView.router.back({force:true,pageName:"homePage"});  
@@ -793,4 +776,42 @@ function manageInstructionGuideResponse(data){
 function showWorkflowInstructionGuide(){  
      myApp.popup('<div class="popup" style="width: 50% !important; height :50% !important; top: 25% !important; top:25% !important; left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" >' + InstructionGuide + '</div>', true); 
 }
+
+function GetPricingConditionScreen(){
+    var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    
+
+    var data="{"+    
+      "\"screenName\":\""+divId+"\","+
+      "\"screenType\":\"pricingCondition\","+
+      "\"userData\":"+sessionStorage.getItem("userData")+","+
+      "\"mainItemId\":\""+itemId+"\","+
+      "\"screenWidth\":\""+window.innerWidth+"\"," +
+      "\"relatedItemId\":\""+relatedItemId+"\"}"; 
+    console.log("SearchParams",data);        
+    $.ajax({              
+        type: 'POST',             
+        url: url,                                     
+        contentType: "text/plain",                            
+        dataType: "json",                            
+        dataType: "json",                               
+        data: data,         
+        success: function(data) {  
+            document.getElementById("pricingConditionForm").innerHTML=data.content;
+            $('#pricingConditionScreen-toolbarContent').append(data.buttonsDiv);
+          //  $('#pricingConditionScreen-toolbarContent').append(data.saveButton);
+            myApp.hidePreloader();    
+         /*     if(data.simulateButton!=null)
+            $('#pricingConditionScreen-toolbarContent').append(data.simulateButton); */
+             loadJSFile("js/PricingConditionScreen.js");
+             loadJSFile("js/amortizationInfiniteScroll.js");
+            myApp.hidePreloader();  
+            ManagePricingCnditionComponents();
+        },
+        error: function(e) { 
+            myApp.hidePreloader();
+        }              
+    });  
+}
+    
+
 

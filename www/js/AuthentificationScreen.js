@@ -24,26 +24,14 @@ function manageAuthentifaction(result)
                   break;
               case "ok":
                  {  
-                    sessionStorage.setItem("userData",JSON.stringify(result.userData));
-
-                     /*
-                  sessionStorage.setItem("userId", result['user_id']);
-                  sessionStorage.setItem('userName', result['user_name']);
-                  sessionStorage.setItem('userShortName', result['user_shortName']);   
-                  sessionStorage.setItem('language',result['culture_language']);
-                  sessionStorage.setItem('InternalEntities',result['InternalEntities']);
-                  sessionStorage.setItem('InternalEntitiesShortname',result['InternalEntitiesShortname']);
-                  sessionStorage.setItem('ProfilesList',result['ProfilesList']);  
-                  sessionStorage.setItem('AccessRightUserList',result['AccessRightUserList']);   
-                  sessionStorage.setItem('GroupsList',result['GroupsList']);        
-                  sessionStorage.setItem('HomePageConfig',result['HomePageConfig']);  
-                  */
-                  mainView.router.load({url: 'homePage.html',ignoreCache: true,reload: true});
+                   sessionStorage.setItem("userData",JSON.stringify(result.userData));  
+                   mainView.router.load({url: 'homePage.html',ignoreCache: true,reload: true});
+                   sessionStorage.setItem("dateFormat",result.dateFormat);
                      break;
                  }
                    
           }
-} 
+}  
   
                      
 
