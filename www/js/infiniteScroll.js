@@ -12,6 +12,7 @@ $$('.infinite-scroll').on('infinite', function () {
    
   if (loading) return;  
   loading = true;
+ setTimeout(function () {
     
   // Emulate 1s loading     
     // Reset loading flag  
@@ -58,4 +59,5 @@ $$('.infinite-scroll').on('infinite', function () {
         }           
     });  
   
+  }, 1000);
 });        

@@ -13,7 +13,7 @@ var RelatedItemType;
 var clickedEditableGridId;
 var clickedEditableGridColumnsCount;
 var newEditableGridRows = [];
-var Ediatbelegrids = {};
+
 function generateAttachmentPicture(name, folder, subFolder){
      myApp.showPreloader();
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/GetDocumentAttachedStream';
@@ -133,9 +133,11 @@ function loadRelatedItemPopup(id, isDuplicateAction,relatedItemType) {
         if(divId.indexOf('_condition') > -1)
             {
               mainView.router.load({url: 'pricingConditionScreen.html',reload:false,ignoreCache:true});
+              EditableGridObject=PricingConditionEdiatbelegrids;    
             }
         else 
             mainView.router.load({url: 'relatedItemScreen.html',reload:false,ignoreCache:true}); 
+              EditableGridObject=RelatedItemEdiatbelegrids;
 }
 }
 
@@ -266,6 +268,8 @@ function manageAttechementElement() {
         $('#' + divID).addClass('Active');
         $('#'+divID+'_buttons').removeClass("displayNone");
         $('#'+selectedDivId+'_buttons').addClass("displayNone");
+        if(screenEngine==="classicms")
+         EditableGridObject= MainItemEdiatbelegrids;  
         
 
     } 
@@ -396,7 +400,6 @@ function manageAttechementElement() {
 function mainData_SaveEvent() {
         var formData = myApp.formToData('#my-mainData-form');
         Parameters = JSON.stringify(formData);
-        UpdateItem();
         UpdateItemEvent();
     }
 
@@ -702,7 +705,7 @@ function manageUpdateItemResponse(data) {
             else {
 
                 myApp.hidePreloader();
-                myApp.alert(data.message);
+                myApp.alert(data.message,"MACP");
             }
      }
 

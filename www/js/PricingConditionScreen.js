@@ -5,12 +5,12 @@ var itemsPerLoad = 10;
 var transactionAmountStringList=null;
 var transactionAmountFeesListObject=null;
 var transactionAmountEventFeesListObject=null;
-
+var PricingConditionEdiatbelegrids = {};
 
 
 
 function simulateEvent(){
-  var isValidForm = requiredFormComponent("#my-relatedItemPopup-form"); 
+  var isValidForm = requiredFormComponent("#my-relatedItemPopup-form");  
   var stringify= getGridonPoponsData("#my-relatedItemPopup-form");
     if(isValidForm)
   GetAmortizationPopon(stringify);
@@ -72,7 +72,7 @@ function getGridonPoponsData(formdDataId){
 
 
 function savePricingCondition(){
-    var isValidForm = requiredFormComponent("my-relatedItemPopup-form"); 
+    var isValidForm = requiredFormComponent("#my-relatedItemPopup-form"); 
     if(isValidForm)
     {
    myApp.showPreloader();

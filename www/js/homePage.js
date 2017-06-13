@@ -159,7 +159,7 @@ for (i = 0; i < selectedRow.length; i++)
 function ReassignTasks(userShortName,confirmMessage) 
 {   
     
-    myApp.confirm(confirmMessage +" "+userShortName,'MACP' 
+    myApp.confirm(confirmMessage +" "+userShortName,'MACP', 
       function () {
          var data="{"+  
              "\"userData\":"+sessionStorage.getItem("userData")+","+        "\"selectedTaskId\":\""+selectedTaskId+"\","+
