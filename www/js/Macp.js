@@ -28,6 +28,7 @@ var InstructionGuide;
 var WithCollectQuestion; 
 var extendedProperties=null;
 var isSwitchLanguage = false;
+var MainItemEdiatbelegrids = {};
 
 var myApp=new Framework7({ swipeBackPage : false, statusbarOverlay:true, tapHold: true,swipePanel: 'left',fastClicksDelayBetweenClicks : 10 }) ;
 var db = openDatabase('mydb', '1.0', 'Test DB', 2 * 1024 * 1024);
@@ -357,6 +358,8 @@ function GetEditScreen(url,itemId){
                         docMenu=(data.DocumentMenu);
                         loadJSFile("js/EditScreen.js");
                         loadJSFile("js/WorkflowManager.js"); 
+                        MainItemEdiatbelegrids={};
+                        EditableGridObject=MainItemEdiatbelegrids;
                         myApp.hidePreloader();
                     },
                     error: function(e) {
@@ -768,7 +771,7 @@ function GetExecuteTaskScreen(url){
     });       
 }         
 function manageInstructionGuideResponse(data){
-    if(data.instructionGuide!==null)  
+    if(data.instructionGuide!==undefined)  
     {
          InstructionGuide=data.instructionGuide;   
          showWorkflowInstructionGuide(); 

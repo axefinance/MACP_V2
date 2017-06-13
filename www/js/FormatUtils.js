@@ -314,7 +314,7 @@ function requiredFormComponent(formToDataId){
             $(textBox[i]).closest("div.item-inner").removeClass("requiredIcon");
         }
     }
-    var dateOnly=$("form div.requiredItem.dateonly input" );
+    var dateOnly=$(formToDataId).find(" div.requiredItem.dateonly input" );
     for (i = 0; i < dateOnly.length; i++) 
     {
         if($(dateOnly[i]).val()==="")
@@ -327,7 +327,7 @@ function requiredFormComponent(formToDataId){
             $(dateOnly[i]).closest("div.item-inner").removeClass("requiredIcon");
         }
     }
-    var comboBox=$(".combobox.requiredItem .item-input");
+    var comboBox=$(formToDataId).find(".combobox.requiredItem .item-input");
     for (i = 0; i < comboBox.length; i++)
     {
         if($(comboBox[i]).find("select").find("option:selected").val()==="")
@@ -340,7 +340,7 @@ function requiredFormComponent(formToDataId){
             $(comboBox[i]).removeClass("requiredIcon");
         }            
     }
-    var checkBox=$("form div.requiredItem.checkbox label.label-checkbox");
+    var checkBox=$(formToDataId).find("div.requiredItem.checkbox label.label-checkbox");
     for (i = 0; i < checkBox.length; i++)
     {
         if($(checkBox[i]).find("input").is(":checked")===false)
