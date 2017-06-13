@@ -315,6 +315,7 @@ function requiredFormComponent(formToDataId){
         }
     }
     var dateOnly=$(formToDataId).find(" div.requiredItem.dateonly input" );
+
     for (i = 0; i < dateOnly.length; i++) 
     {
         if($(dateOnly[i]).val()==="")

@@ -1,5 +1,6 @@
 var RelatedItemEdiatbelegrids = {};
 
+
 function testclick(msg,msgTitle) {
         SuccessMsg = msg;
         SuccesMsgTitle = msgTitle;

@@ -3,6 +3,7 @@ var clickEditableGridSourceTag;
 var clickedEditableGridColumnsCount=columnsCount;
 var rowToEditIndex=-1;
 var EditableGridObject;
+
 function loadEditableGridOnPopon_popon(gridId,columnsCount,sourcetag,stringifyData){
     clickedEditableGridId=gridId;
     clickEditableGridSourceTag=sourcetag;
@@ -20,8 +21,7 @@ function GetEditableGridPoponContent(sourcetag,spname,stringifyData){
             "\"userData\":"+sessionStorage.getItem("userData")+"}";
         myApp.showPreloader();
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/GetEditableGridPoponContent';
-
-        $.ajax({
+        $.ajax({  
             type: 'POST',
             url: url,
             contentType: "text/plain",
@@ -36,9 +36,9 @@ function GetEditableGridPoponContent(sourcetag,spname,stringifyData){
                 console.log(e.message);
                 verifconnexion = false;
                 myApp.hidePreloader();
-                myApp.alert("error occured");
+                myApp.alert("error occured"); 
             }
-        });
+        }); 
 } 
 function saveInGridOnPopon(){
  var isValidForm = requiredFormComponent("#my-editableGridPopon-form"); 
@@ -46,7 +46,8 @@ if (isValidForm)
   {
     if(rowToEditIndex!==-1)
         {
-                          if(EditableGridObject[clickedEditableGridId]===undefined)
+
+             if(EditableGridObject[clickedEditableGridId]===undefined)
               EditableGridObject[clickedEditableGridId]=[];
               EditableGridObject[clickedEditableGridId].splice(rowToEditIndex, 1);
         }
@@ -62,7 +63,9 @@ var formData = myApp.formToData('#my-editableGridPopon-form');
           EditableGridObject[clickedEditableGridId]=[];
           EditableGridObject[clickedEditableGridId].push(arr);
            myApp.closeModal();
-    for(var j=0 ;j<EditableGridObject[[clickedEditableGridId]].length ;j++)
+
+    for(var j=0 ; j<EditableGridObject[[clickedEditableGridId]].length ;j++)
+
         {       
         var line="<li class='swipeout' style='background-color:#fff;border-radius: 15px !important;'><div class='swipeout-content item-content noPadding-left'><div class='item-inner gridRow'><div><table><tr>";
         for(var i=0 ; i<arr.length ;i++)
@@ -82,7 +85,7 @@ function EditEditableGridRow(rowNumber){
   var table=$('#'+clickedEditableGridId+"_header").find(".tasksTableTD.tasksTableElement:not(.displayNone)");
      var obj = {};
      var arr=[];
-     for(var j=0; j<Ediatbelegrids[clickedEditableGridId][rowNumber].length;j++)
+     for(var j=0; j<EditableGridObject[clickedEditableGridId][rowNumber].length;j++)
       {
             var entity=  table[j].getAttribute("name");
             console.log(entity);

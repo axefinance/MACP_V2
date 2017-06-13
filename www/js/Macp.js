@@ -808,6 +808,7 @@ function GetPricingConditionScreen(){
              loadJSFile("js/amortizationInfiniteScroll.js");
             myApp.hidePreloader();  
             ManagePricingCnditionComponents();
+            
         },
         error: function(e) { 
             myApp.hidePreloader();
