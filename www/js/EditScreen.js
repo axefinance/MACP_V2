@@ -136,9 +136,10 @@ function loadRelatedItemPopup(id, isDuplicateAction,relatedItemType) {
               EditableGridObject=PricingConditionEdiatbelegrids;    
             }
         else 
-            mainView.router.load({url: 'relatedItemScreen.html',reload:false,ignoreCache:true}); 
-              EditableGridObject=RelatedItemEdiatbelegrids;
-}
+        {
+          mainView.router.load({url: 'relatedItemScreen.html',reload:false,ignoreCache:true}); 
+          EditableGridObject=RelatedItemEdiatbelegrids;
+}}
 }
 
 function manageAttechementElement() {
@@ -270,7 +271,6 @@ function manageAttechementElement() {
         $('#'+selectedDivId+'_buttons').addClass("displayNone");
         if(screenEngine==="classicms")
          EditableGridObject= MainItemEdiatbelegrids;  
-        
 
     } 
 

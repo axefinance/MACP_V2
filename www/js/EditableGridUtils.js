@@ -46,6 +46,7 @@ if (isValidForm)
   {
     if(rowToEditIndex!==-1)
         {
+
              if(EditableGridObject[clickedEditableGridId]===undefined)
               EditableGridObject[clickedEditableGridId]=[];
               EditableGridObject[clickedEditableGridId].splice(rowToEditIndex, 1);
@@ -62,7 +63,9 @@ var formData = myApp.formToData('#my-editableGridPopon-form');
           EditableGridObject[clickedEditableGridId]=[];
           EditableGridObject[clickedEditableGridId].push(arr);
            myApp.closeModal();
+
     for(var j=0 ; j<EditableGridObject[[clickedEditableGridId]].length ;j++)
+
         {       
         var line="<li class='swipeout' style='background-color:#fff;border-radius: 15px !important;'><div class='swipeout-content item-content noPadding-left'><div class='item-inner gridRow'><div><table><tr>";
         for(var i=0 ; i<arr.length ;i++)
