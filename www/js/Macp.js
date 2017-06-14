@@ -86,7 +86,10 @@ function westMenuItem(item,title,screenName){
       currentItem=item;
       pageTitleContent=title;
       fromNewInput=false;
-      mainView.router.load({url: screenName,reload:true});   
+    if(!checkInternetConnection())                                                   
+        myApp.alert("please check your internet connection");
+    else                                              
+        mainView.router.load({url: screenName,reload:true});   
 }  
 myApp.onPageReinit('homePage', function (page) {
     if(!isSwitchLanguage)
@@ -237,10 +240,10 @@ myApp.onPageInit('searchResultScreen', function (page) {
     pageTitleElement=document.getElementById("title_searchResultScreen");
     pageTitleElement.textContent=pageTitleContent;
     setTemplate_HeaderData('searchResultScreen');   
-     myApp.showPreloader();
-      var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetSearchResultPage';
+    myApp.showPreloader();
+    var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetSearchResultPage';
     console.log("URL",url);
-   lunchSearchResult(url); 
+    lunchSearchResult(url); 
 });  
 myApp.onPageInit('executeTaskScreen', function (page) {
     HomeBackButton.style.visibility="visible";
@@ -531,13 +534,16 @@ function switchLanguage(property){
                    setTemplate_HeaderData("homePage");                   
                 }
             else
-                {
+            {
              isSwitchLanguage = true;
              HomeBackButton.style.visibility="hidden";  
              mainView.router.back({force:true,pageName:"homePage"});
              mainView.history=["#homePage"];
-             leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
-                }
+            if(!checkInternetConnection())                                                   
+                myApp.alert("please check your internet connection");
+            else 
+                leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
+            }
 
         },
         error: function(e) {               
@@ -577,9 +583,10 @@ function logoutAction(){
      myApp.confirm(loggingOutWindowMessage,
      loggingOutWindowTitle,
       function (value) {
-        sessionStorage.clear();        
+        sessionStorage.clear();   
         mainView.router.load({url: 'index.html'});
         location.reload(true);  
+        
      },
       function (value) {
       }
@@ -666,7 +673,10 @@ function HomeBack(){
     HomeBackButton.style.visibility="hidden";       
     mainView.router.back({force:true,pageName:"homePage"});  
     mainView.history=["#homePage"];
-    leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
+    if(!checkInternetConnection())                                                   
+        myApp.alert("please check your internet connection");
+    else 
+        leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
 }   
 function manageDB(){
          var msg;
@@ -714,8 +724,11 @@ function updateWsConfiguration(ip,port){
 function ExecuteTask(taskId,workflowName,targettab){
     TaskId=taskId;
     ExecutedWorkflowName=workflowName;
-    TargetTab = targettab;       
-    mainView.router.load({url: "executeTaskScreen.html",reload:true});
+    TargetTab = targettab; 
+    if(!checkInternetConnection())                                                   
+        myApp.alert("please check your internet connection");
+    else 
+        mainView.router.load({url: "executeTaskScreen.html",reload:true});
 }
 function GetExecuteTaskScreen(url){  
     var data="{"+
