@@ -8,18 +8,13 @@ function startWorkflow_ButtonAction(itemId){
     myApp.showPreloader();
     selectedItem=itemId;
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/StartWorkFlowButtonAction';
-    var  ProfilesList=GenerateResponseArray(sessionStorage.getItem("ProfilesList")); 
-    var  GroupsList=GenerateResponseArray(sessionStorage.getItem("GroupsList")); 
-     ProfilesList=JSON.stringify(ProfilesList); 
-     GroupsList =JSON.stringify(GroupsList);   
    var popupWidth=window.innerWidth*0.80;
      var popunHeight=95;
     popupWidth=Math.floor(popupWidth); 
-     var data="{"+          
+     var data="{"+     
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"entityName\":\""+currentItem+"\","+  
-        "\"itemId\":\""+itemId+"\"," +
-        "\"profilesList\":"+ProfilesList+","+
-        "\"groupsList\":"+GroupsList+","+   
+        "\"itemId\":\""+itemId+"\"," + 
         "\"popupWidth\":\""+popupWidth+"\","+
         "\"popupHeight\":\""+popunHeight+"\"}";    
     console.log("SearchParams",data);                
@@ -40,8 +35,8 @@ function startWorkflow_ButtonAction(itemId){
         error: function(e) {         
             verifconnexion = false;  
              myApp.hidePreloader();
-            myApp.alert("error occured"); 
-        }                           
+            errorMessage();
+      }                           
     });    
 }        
       
@@ -87,7 +82,7 @@ function manageStartWorkFlowResponse(data){
                 }
             case "error" :
                 {
-                  myApp.alert("error in worflow");
+                  myApp.alert("error in workflow","Error");
                 }
         }
 }
@@ -113,10 +108,9 @@ function startWorkFlowItem(){
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/StartWorkFlow';
      var data="{"+            
         "\"itemId\":\""+selectedItem+"\","+  
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +  
+        "\"userData\":"+sessionStorage.getItem("userData")+","+  
         "\"workfloawId\":\""+WorkflowId+"\"," +
         "\"workflowName\":\""+WorkFlowName+"\"," + 
-        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\","+
         "\"popupWidth\":\""+popupWidth+"\","+
         "\"entityName\":\""+currentItem+"\"}";    
      $.ajax({             
@@ -134,8 +128,8 @@ function startWorkFlowItem(){
         error: function(e) {       
             console.log(e.message);      
               myApp.hidePreloader();
-            myApp.alert("error occured");             
-        }                                 
+            errorMessage();
+    }                                 
     });      
 }
 
@@ -179,7 +173,7 @@ function managerRequiredMitigantResponse(data){
         }
     else
         {
-            myApp.alert(data.message+"</br></br>"+data.requiredMitigant+"</br>") ; 
+            myApp.alert(data.message+"</br></br>"+data.requiredMitigant+"</br>","MACP") ; 
         }
 }
 
@@ -192,7 +186,7 @@ function manageRequiredDocumentResponse(data){
         }
     else
         {
-            myApp.alert(data.message+"</br></br>"+data.requiredDocument+"</br>") ; 
+            myApp.alert(data.message+"</br></br>"+data.requiredDocument+"</br>","MACP") ; 
         }
 }
 
@@ -246,15 +240,14 @@ function checkWorkflowEligibility(){
         popupWidth=Math.floor(popupWidth);
      var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/CheckWorkflowEligibility';
       var data="{"+  
-        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
         "\"mainItemId\":\""+selectedItem+"\","+
         "\"item\":\""+currentItem+"\","+
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"workflowId\":\""+WorkflowId+"\","+
         "\"workflowName\":\""+WorkFlowName+"\","+  
         "\"popupWidth\":\""+popupWidth+"\"}";
     myApp.showPreloader();
-  $.ajax({             
+  $.ajax({              
         type: 'POST',               
         url: url,                    
         contentType: "text/plain",                           
@@ -277,8 +270,8 @@ function checkWorkflowEligibility(){
             console.log(e.message);  
             verifconnexion = false;        
             myApp.hidePreloader();
-            myApp.alert("error occured");                   
-        }                                         
+            errorMessage();
+       }                                         
     }); 
 
 }
@@ -305,8 +298,7 @@ function saveStartWFDeviationComment(){
         popupWidth=Math.floor(popupWidth); 
      var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveDeviationCommentOnStartWorkflow';
      var data="{"+       
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\","+
-        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
+       "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\""+selectedItem+"\","+
         "\"item\":\""+currentItem+"\","+
         "\"workflowId\":\""+WorkflowId+"\","+
@@ -337,8 +329,8 @@ function saveStartWFDeviationComment(){
             console.log(e.message);  
             verifconnexion = false;          
              myApp.hidePreloader();
-            myApp.alert("error occured");                     
-        }                                         
+            errorMessage();
+       }                                         
     });       
 }
     
@@ -346,11 +338,10 @@ function saveStartWFDeviationComment(){
 function saveStartWorkflow_EligibilityComment(){
  var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveEligibilityCommentAndStartWorkflow';
     var data="{"+  
-        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\""+selectedItem+"\","+
         "\"item\":\""+currentItem+"\","+
         "\"workflowName\":\""+WorkFlowName+"\"," +
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
         "\"workflowId\":\""+WorkflowId+"\","+
         "\"eligibilityObject\":"+JSON.stringify(StartWfEligibilityObject)+","+
         "\"commentList\":"+JSON.stringify(getCommentsList())+"}";
@@ -377,7 +368,7 @@ function saveStartWorkflow_EligibilityComment(){
             console.log(e.message);  
             verifconnexion = false;        
              myApp.hidePreloader();
-            myApp.alert("error occured");                   
+            errorMessage();
         }                                         
     }); 
 }
@@ -388,8 +379,7 @@ function saveStartWorkflow_RequiredMitigantComent()
       myApp.showPreloader();
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveRequiredMitigantCommentOnStartWorkflow';
     var data="{"+       
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\","+
-        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"deviatedMsg\":\""+DeviatedMsg+"\","+
         "\"requiredDocument\":\"\","+
         "\"requiredMitigant\":\""+RequiredMitigant+"\","+
@@ -416,15 +406,15 @@ function saveStartWorkflow_RequiredMitigantComent()
             else                         
                 { 
                     myApp.hidePreloader();
-                    myApp.alert("error occured");
+                    myApp.alert("error occured","Error");
                 }
         },  
         error: function(e) {           
             console.log(e.message);  
             verifconnexion = false;        
             myApp.hidePreloader();
-            myApp.alert("error occured");                     
-        }                                         
+            errorMessage();
+      }                                         
     }); 
 }
 
@@ -433,8 +423,7 @@ function saveStartWorkflow_RequiredDocumentComent(){
       myApp.showPreloader();
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveRequiredDocumentCommentOnStartWorkflow';
     var data="{"+       
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\","+
-        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"deviatedMsg\":\""+DeviatedMsg+"\","+
         "\"requiredDocument\":\""+RequiredDocument+"\","+
         "\"requiredMitigant\":\"\","+
@@ -461,15 +450,15 @@ function saveStartWorkflow_RequiredDocumentComent(){
             else                         
                 { 
                     myApp.hidePreloader();
-                    myApp.alert("error occured");
+                    myApp.alert("error occured","Error");
                 }
         },  
         error: function(e) {           
             console.log(e.message);  
             verifconnexion = false;        
             myApp.hidePreloader();
-            myApp.alert("error occured");                     
-        }                                         
+            errorMessage();
+     }                                         
     }); 
 }
 

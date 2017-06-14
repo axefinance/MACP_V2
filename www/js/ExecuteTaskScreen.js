@@ -2,7 +2,6 @@ var eligibilityObject;
 var deviatedMsg;
 var withValidatorControl;
 var requiredDocument;
-
 function stopWorkflow(){
    var comment=document.getElementById("stopWorkflowComment").value; 
     
@@ -11,11 +10,10 @@ function stopWorkflow(){
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/StopWorkflow';
     var data="{"+       
         "\"taskId\":\""+TaskId+"\"," +
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\""+itemId+"\"," +    
         "\"comment\":\""+comment+"\"," +
-       "\"workflowName\":\""+ExecutedWorkflowName+"\"," +
-        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"}";
+       "\"workflowName\":\""+ExecutedWorkflowName+"\"}";
   $.ajax({             
         type: 'POST',           
         url: url,                  
@@ -26,6 +24,8 @@ function stopWorkflow(){
             if(data.status==="ok")
                 {
                     myApp.hidePreloader(); 
+                    extendedProperties=null;
+                    HomeBackButton.style.visibility="hidden";   
                     mainView.router.back({force:true,pageName:"homePage"});
                     mainView.history=["#homePage"];
                     leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
@@ -38,8 +38,9 @@ function stopWorkflow(){
         error: function(e) {         
             console.log(e.message);  
             verifconnexion = false;        
-            myApp.hidePreloader();   
-            myApp.alert("error occured"); 
+            myApp.hidePreloader();                   
+            errorMessage();
+
         }                             
     });     
 }      
@@ -75,8 +76,17 @@ function saveDeviationComment_enabledButton(textarea){
       
 }; 
 $$('.end-task-form-to-data').on('click', function(){
-   endTaskEvent();
-});
+
+        var formId = "#my-mainData-form";
+        var isValidForm = requiredFormComponent(formId); 
+        /*if (!isValid) {
+            $(x[indexToSelect]).next().children().first().focus();
+        } else {*/
+    if(isValidForm){
+             endTaskEvent();
+        }
+    });
+
 function showcommentPopup(){
      myApp.popup('<div class="popup" style="width: 40% !important; height: 40% !important; top: 30% !important;left: 30% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" ><div class="content-block-title">'+stopWFMessage+'</div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="stopWorkflowComment" onkeyup="enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="stopWorkflow()" id="stopWfYesButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
 }  
@@ -88,11 +98,12 @@ function endTaskEvent(){
     popupWidth=Math.floor(popupWidth);
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/EndTaskButtonEvent';
     var data="{"+       
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
-        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\""+itemId+"\","+
+        "\"extendedProperties\":"+extendedProperties+","+
         "\"screenName\":\""+currentItem+"\","+
         "\"taskId\":\""+TaskId+"\","+
+        "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
         "\"parameters\":"+screenParameters+","+
         "\"poponWidth\":\""+popupWidth+"\"}";
   $.ajax({             
@@ -121,10 +132,15 @@ function endTaskEvent(){
                                         {
                                              manageRequiredDocument(data);
                                         }
+                                    else if(data.CollectQuestions!=null)
+                                        {
+                                            manageCollectQuestion(data.CollectQuestions);
+                                        }
                                     else 
                                         {
                                             myApp.hidePreloader(); 
-                                            HomeBackButton.style.visibility="hidden";       
+                                            HomeBackButton.style.visibility="hidden";
+                                            extendedProperties=null;
                                             mainView.router.back({force:true,pageName:"homePage"});
                                             mainView.history=["#homePage"];
                                             leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
@@ -137,17 +153,23 @@ function endTaskEvent(){
                 { 
                     myApp.hidePreloader();
                 }  
-        },
+        },  
         error: function(e) {         
             console.log(e.message);  
             verifconnexion = false;
              myApp.hidePreloader();
-            myApp.alert("error occured in the system");
+            errorMessage();
+
         }                                         
     });      
-}         
+}
+
+function manageCollectQuestion(CollectQuestion)
+{
+     myApp.popup('<div class="popup" style="width: 80% !important; height: 80% !important; top: 10% !important;left: 10% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" >'+CollectQuestion+'</div>', true);  
+}
 function manageControlValidatorBehavior(data){
-    if(data.message!=undefined)
+    if(data.message!=undefined)    
                             {
                                 var behavior=data.behavior;
                                 if(behavior==="blockingAlert")
@@ -168,9 +190,18 @@ function manageControlValidatorBehavior(data){
                             }
 }
 function checkRequiredDocument(){
-    myApp.showPreloader();
-    var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/CheckRequiredDocument';
-    var data="{\"taskId\":\""+TaskId+"\"}";
+     myApp.showPreloader();
+     var formData = myApp.formToData('#my-mainData-form');
+     var   screenParameters=JSON.stringify(formData); 
+     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/CheckRequiredDocument';
+     var data="{"+       
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
+        "\"mainItemId\":\""+itemId+"\","+
+        "\"extendedProperties\":"+extendedProperties+","+
+        "\"screenName\":\""+currentItem+"\","+
+        "\"taskId\":\""+TaskId+"\","+
+        "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
+        "\"parameters\":"+screenParameters+"}";
     $.ajax({             
         type: 'POST',             
         url: url,                  
@@ -190,6 +221,7 @@ function checkRequiredDocument(){
                     else
                         {
                           myApp.hidePreloader(); 
+                            extendedProperties=null;
                             HomeBackButton.style.visibility="hidden";       
                             mainView.router.back({force:true,pageName:"homePage"});
                             mainView.history=["#homePage"];
@@ -210,14 +242,15 @@ function saveRequiredDocumentComent(){
      var   screenParameters=JSON.stringify(formData); 
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveDeviationComment';
     var data="{"+       
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\","+
-        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"deviatedMsg\":\""+deviatedMsg+"\","+
         "\"requiredDocument\":\""+requiredDocument+"\","+
         "\"mainItemId\":\""+itemId+"\","+
         "\"screenName\":\""+currentItem+"\","+
         "\"taskId\":\""+TaskId+"\","+
+        "\"extendedProperties\":"+extendedProperties+","+
         "\"comment\":\""+comment+"\","+
+        "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
         "\"parameters\":"+screenParameters+"}";   
     
   $.ajax({             
@@ -238,6 +271,7 @@ function saveRequiredDocumentComent(){
                     else
                         {
                             myApp.hidePreloader(); 
+                            extendedProperties=null;
                             HomeBackButton.style.visibility="hidden";       
                             mainView.router.back({force:true,pageName:"homePage"});
                             mainView.history=["#homePage"];
@@ -248,14 +282,15 @@ function saveRequiredDocumentComent(){
             else                         
                 { 
                     myApp.hidePreloader();
-                    myApp.alert("error saving"); 
+                    myApp.alert("error saving","Error"); 
                 }
         },  
         error: function(e) {           
             console.log(e.message);  
             verifconnexion = false;        
              myApp.hidePreloader();
-            myApp.alert("error occured in the system");                   
+            errorMessage();
+
         }                                         
     }); 
 }
@@ -266,13 +301,14 @@ function saveDeviationComment(){
      var   screenParameters=JSON.stringify(formData); 
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveDeviationComment';
      var data="{"+       
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\","+
-        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"deviatedMsg\":\""+deviatedMsg+"\","+
         "\"requiredDocument\":\"\","+
         "\"mainItemId\":\""+itemId+"\","+
         "\"screenName\":\""+currentItem+"\","+
         "\"taskId\":\""+TaskId+"\","+
+         "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
+         "\"extendedProperties\":"+extendedProperties+","+
         "\"comment\":\""+comment+"\","+
         "\"parameters\":"+screenParameters+"}"; 
   $.ajax({             
@@ -292,11 +328,12 @@ function saveDeviationComment(){
                             if(data.deviation==="true")
                              manageRequiredDocument(data);
                             else
-                           myApp.alert(data.message+"</br></br>"+data.requiredDocuments+"</br></br>") ;     
+                           myApp.alert(data.message+"</br></br>"+data.requiredDocuments+"</br></br>","MACP") ;     
                         }
                     else if(data.endTask!=undefined)
                         {
-                             HomeBackButton.style.visibility="hidden";       
+                             HomeBackButton.style.visibility="hidden";  
+                             extendedProperties=null;
                              mainView.router.back({force:true,pageName:"homePage"});
                              mainView.history=["#homePage"];
                              leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
@@ -305,14 +342,15 @@ function saveDeviationComment(){
             else                       
                 { 
                     myApp.hidePreloader();
-                    myApp.alert("error saving"); 
+                    myApp.alert("error saving","Error"); 
                 }
         },
         error: function(e) {         
             console.log(e.message);  
             verifconnexion = false;          
              myApp.hidePreloader();
-            myApp.alert("error occured in the system");                    
+            errorMessage();
+                
         }                                         
     });       
 }
@@ -328,7 +366,7 @@ function manageRequiredDocument(data){
          }
     else
         {
-        myApp.alert(data.message+"</br></br>"+data.requiredDocuments+"</br>") ; 
+        myApp.alert(data.message+"</br></br>"+data.requiredDocuments+"</br>","MACP") ; 
         }
 };
 function saveEligibilityComment(){
@@ -338,13 +376,14 @@ function saveEligibilityComment(){
      var   screenParameters=JSON.stringify(formData); 
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveEligibilityComment';
     var data="{"+  
-        "\"userShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\""+itemId+"\","+
         "\"screenName\":\""+currentItem+"\","+
         "\"parameters\":"+screenParameters+","+
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +
         "\"taskId\":\""+TaskId+"\","+
+        "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
         "\"eligibilityObject\":"+JSON.stringify(eligibilityObject)+","+
+        "\"extendedProperties\":"+extendedProperties+","+
         "\"withValidatorControl\":\""+withValidatorControl.toLowerCase()+"\","+
         "\"commentList\":"+JSON.stringify(getCommentsList())+"}";
   $.ajax({             
@@ -366,7 +405,8 @@ function saveEligibilityComment(){
                        manageRequiredDocument(data);
                     else
                         {
-                        HomeBackButton.style.visibility="hidden";       
+                        HomeBackButton.style.visibility="hidden";     
+                            extendedProperties=null;
                              mainView.router.back({force:true,pageName:"homePage"});
                              mainView.history=["#homePage"];
                              leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
@@ -376,14 +416,15 @@ function saveEligibilityComment(){
             else                       
                 { 
                     myApp.hidePreloader();
-                     myApp.alert("error saving"); 
+                     myApp.alert("error saving","Error"); 
                 }
         },
         error: function(e) {         
             console.log(e.message);  
             verifconnexion = false;        
             myApp.hidePreloader(); 
-            myApp.alert("error occured in the system");
+            errorMessage();
+
         }                                         
     });      
 }
@@ -398,6 +439,73 @@ function getCommentsList(){
     
     return commentlist;
 } 
+
+function saveCollectQuestionEvent(){   
+    var formId = "#Collect-Question-form";
+    var isValidForm = requiredFormComponent(formId); 
+   
+  /*  if(!isValid)
+    {
+       $(x[indexToSelect]).next().children().first().focus();
+    }else*/
+    if(isValidForm)
+    {
+       saveCollectQuestion();
+       
+    }
+}
+
+function saveCollectQuestion(){ 
+    myApp.closeModal();
+    myApp.showPreloader();
+     var collectQuestionData = myApp.formToData('#Collect-Question-form');
+     var   collectQuestionParameters=JSON.stringify(collectQuestionData); 
+      var formData = myApp.formToData('#my-mainData-form');
+     var   screenParameters=JSON.stringify(formData); 
+    var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveCollectQuestionAndEndTask';
+    var data="{"+  
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
+        "\"mainItemId\":\""+itemId+"\","+
+        "\"screenName\":\""+currentItem+"\","+
+        "\"parameters\":"+screenParameters+","+
+        "\"collectQuestionParameters\":"+collectQuestionParameters+","+
+        "\"taskId\":\""+TaskId+"\"}";
+  $.ajax({             
+        type: 'POST',               
+        url: url,                    
+        contentType: "text/plain",                           
+        dataType: "json",                              
+        data: data,             
+        success: function(data) {       
+            if(data.status==="ok")  
+                {
+                             myApp.hidePreloader(); 
+                             HomeBackButton.style.visibility="hidden";  
+                             extendedProperties=null;
+                             mainView.router.back({force:true,pageName:"homePage"});
+                             mainView.history=["#homePage"];
+                             leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
+                        
+                    
+                }    
+            else                       
+                { 
+                    myApp.hidePreloader();
+                     myApp.alert("error saving","Error"); 
+                }
+        },
+        error: function(e) {         
+            console.log(e.message);  
+            verifconnexion = false;        
+            myApp.hidePreloader(); 
+            errorMessage();
+
+        }                                         
+    });      
+    
+    
+}
+
 
   
 

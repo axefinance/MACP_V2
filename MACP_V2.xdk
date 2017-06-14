@@ -5,7 +5,7 @@
       "projectTypeName": "com.intel.xdk.projecttype.jsapp",
       "src": "jsapp/template-blank-cordova-project-lite/sample.zip",
       "projectGuid": "9688cde4-62ce-4677-a863-1ea43bf4ae30",
-      "lastModifiedDate": 1493821204938,
+      "lastModifiedDate": 1496654719052,
       "creationDate": 1493817986846
     },
     "sourceDirectory": "www",
@@ -140,6 +140,29 @@
         "description": "Cordova InAppBrowser Plugin",
         "data": {},
         "dependedBy": []
+      },
+      {
+        "id": "cordova-plugin-network-information",
+        "name": "Network Information",
+        "version": "1.2.1",
+        "originType": "cordova.io",
+        "origin": "cordova-plugin-network-information",
+        "gitref": "",
+        "paramvals": {},
+        "sourceLocation": "plugins/cordova-plugin-network-information",
+        "selectedState": "Included",
+        "checksum": "9d8331a4",
+        "dependsOn": [],
+        "topLevel": true,
+        "cordovaVersion": ">=3.1.0",
+        "permissions": {
+          "android:name": [
+            "android.permission.ACCESS_NETWORK_STATE"
+          ]
+        },
+        "description": "Cordova Network Information Plugin",
+        "data": {},
+        "dependedBy": []
       }
     ],
     "buildConfigurations": {
@@ -151,7 +174,7 @@
           "android-minSdkVersion": "14",
           "android-targetSdkVersion": "21",
           "android-installLocation": "auto",
-          "Fullscreen": false,
+          "Fullscreen": true,
           "Orientation": "landscape",
           "android-signed": true
         },
@@ -159,8 +182,8 @@
         "certificateId_": "HYgELZ4pmU-2K0GAhOK-fg2",
         "cordovaCLIVersion_": "6.2.0",
         "crosswalkVersion_": "19",
-        "appName_": "MACP_V2",
-        "appID_": "xdk.intel.template",
+        "appName_": "mACP",
+        "appID_": "com.axefinance.axecreditportal.macp",
         "appAccess_": {
           "mode": "whitelist",
           "network": [
@@ -235,10 +258,10 @@
         ],
         "addlPermissions_": "",
         "excludedLibraries_": "",
-        "appVersion_": "0.0.1",
+        "appVersion_": "1.0",
         "appVersionCode_": "1",
-        "appDescription_": "Intel XDK template",
-        "appAuthor_": "Intel XDK",
+        "appDescription_": "mACP is the mobile application designed to run standard ACP features.",
+        "appAuthor_": "axefinance",
         "signed_": true
       },
       "iOS": {
@@ -277,9 +300,34 @@
         },
         "icons_": [
           {
+            "relPath": "package-assets/icon_58_58.png",
+            "width": 58,
+            "height": 58
+          },
+          {
+            "relPath": "package-assets/icon_ios_76.png",
+            "width": 76,
+            "height": 76
+          },
+          {
+            "relPath": "package-assets/icon_72_72.png",
+            "width": 72,
+            "height": 72
+          },
+          {
+            "relPath": "package-assets/icon_29_29.png",
+            "width": 29,
+            "height": 29
+          },
+          {
             "relPath": "package-assets/icon_ios_87.png",
             "width": 87,
             "height": 87
+          },
+          {
+            "relPath": "package-assets/icon_144_144.png",
+            "width": 144,
+            "height": 144
           },
           {
             "relPath": "package-assets/icon_40_40.png",
@@ -292,19 +340,9 @@
             "height": 80
           },
           {
-            "relPath": "package-assets/icon_72_72.png",
-            "width": 72,
-            "height": 72
-          },
-          {
-            "relPath": "package-assets/icon_144_144.png",
-            "width": 144,
-            "height": 144
-          },
-          {
-            "relPath": "package-assets/icon_50_50.png",
-            "width": 50,
-            "height": 50
+            "relPath": "package-assets/icon_167_167.png",
+            "width": 167,
+            "height": 167
           },
           {
             "relPath": "package-assets/icon_100_100.png",
@@ -312,12 +350,35 @@
             "height": 100
           },
           {
-            "relPath": "package-assets/icon_167_167.png",
-            "width": 167,
-            "height": 167
+            "relPath": "package-assets/icon_50_50.png",
+            "width": 50,
+            "height": 50
+          },
+          {
+            "relPath": "package-assets/icon_ios_152.png",
+            "width": 152,
+            "height": 152
           }
         ],
         "splashes_": [
+          {
+            "relPath": "package-assets/splash_ios_1024.png",
+            "height": 768,
+            "width": 1024,
+            "orientation": "landscape"
+          },
+          {
+            "relPath": "package-assets/Splash_ios_2048.png",
+            "height": 1536,
+            "width": 2048,
+            "orientation": "landscape"
+          },
+          {
+            "relPath": "package-assets/Splash_ios_2208.png",
+            "height": 1242,
+            "width": 2208,
+            "orientation": "landscape"
+          },
           {
             "relPath": "package-assets/splash_1334_750.png",
             "height": 750,

@@ -11,26 +11,26 @@
 </div>
 <div data-page="WSConfigurationScreen" class="page">
    <div class="page-content" scroll="false" style="margin-top : 20%!important; margin-right : 20% !important; margin-left : 20% !important;">
-      <div class="list-block" >
+      <div id="WSConfig" class="list-block" >
          <ul>
             <li>
                <div class="item-content" style="height : 50px !important;">
                   <div class="item-media"><a aria-hidden="true" class="ipAddressIcon"></a></div>
                   <div class="item-inner">
                      <div class="item-input">
-                        <input id="ip" name="ip" type="tel" placeholder="Host : 192.168.1.195"   value="192.168.1.195"     required>
+                        <input id="WSip" name="ip" type="tel" placeholder="Server address"   required>
                      </div>
                   </div>
                </div>
             </li>
-            <li>     
+            <li>       
                <div class="item-content">
                   <div class="item-media"><a aria-hidden="true" class="portIcon"></a></div>
                   <div class="item-inner">
                      <div class="item-input">
                         <form   autocomplete="off" >
                            <div class="item-input">
-                              <input id="port" name="port" type="tel" placeholder="Port : 92"    value="92"    required>
+                              <input id="WSport" name="port" type="tel" placeholder="Port number" required>
                            </div>
                         </form>
                      </div>

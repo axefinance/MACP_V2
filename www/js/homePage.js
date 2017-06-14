@@ -129,8 +129,7 @@ for (i = 0; i < selectedRow.length; i++)
 }
 
     var data="{"+  
-        "\"userId\":\""+sessionStorage.getItem("userId")+"\"," +    
-        "\"HomePageConfig\":\""+sessionStorage.getItem("HomePageConfig")+"\","+      
+        "\"userData\":"+sessionStorage.getItem("userData")+","+    
         "\"selectedTaskId\":\""+selectedTaskId+"\","+
         "\"windowWidth\":\""+popupWidth+"\","+
         "\"windowHeight\":\""+popunHeight+"\"}";
@@ -147,7 +146,8 @@ for (i = 0; i < selectedRow.length; i++)
                     }, 
                     error: function(e) {
                        myApp.hidePreloader();
-                       myApp.alert("error occured");       
+            errorMessage();
+
                     }   
             });   
 }
@@ -159,12 +159,11 @@ for (i = 0; i < selectedRow.length; i++)
 function ReassignTasks(userShortName,confirmMessage) 
 {   
     
-    myApp.confirm(confirmMessage +" "+userShortName, 
+    myApp.confirm(confirmMessage +" "+userShortName,'MACP', 
       function () {
          var data="{"+  
-        "\"softwareUserShortName\":\""+setUser_ShortName(sessionStorage.getItem("userShortName"))+"\"," +    
-        "\"selectedTaskId\":\""+selectedTaskId+"\","+
-        "\"userShortName\":\""+setUser_ShortName(userShortName)+"\"}";
+             "\"userData\":"+sessionStorage.getItem("userData")+","+        "\"selectedTaskId\":\""+selectedTaskId+"\","+
+             "\"userShortName\":\""+setUser_ShortName(userShortName)+"\"}";
        myApp.showPreloader();  
             $.ajax({ 
                     type: "POST", 
@@ -174,17 +173,18 @@ function ReassignTasks(userShortName,confirmMessage)
                     data: data, 
                     success: function(data) {                      
                         myApp.hidePreloader();
-                            myApp.alert(data.status, function () {
+                            myApp.alert(data.status,"MACP", function () {
                                 document.getElementById("tasks").innerHTML=null;
                                 document.getElementById("toolbar").innerHTML=null;
-                                setTimeout(function() {reInitHomePage(); }, 100) ;    
+                                reInitHomePage();
                                 myApp.closeModal('.popup', true);
                                 
                             });                        
                     }, 
                     error: function(e) {
                         myApp.hidePreloader();
-                       myApp.alert("error occured");       
+            errorMessage();
+
                     }   
             }); 
       },
