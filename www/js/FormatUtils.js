@@ -610,3 +610,15 @@ function ManagePricingCnditionComponents() {
         }
     }
 }	
+
+function getGridonPoponsData(formdDataId){
+    var grids=$(formdDataId).find("div.editableGridOnPopon");
+    var myObject = {};
+    for (i = 0; i < grids.length; i++) 
+    {
+       
+       var id=$(grids[i]).attr("id");
+       myObject[id] = GetGridData(id); 
+    }
+    return JSON.stringify(myObject); 
+}
