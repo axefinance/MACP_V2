@@ -2,15 +2,6 @@ var selectedTaskId = new Array();
 var selectedItemId = new Array();
 var selected = false;
 
-function loadTeamTasksList(title) {
-	navbarTitle = title;
-	mainView.router.load({
-		url: 'teamTasksScreen.html',
-		reload: true,
-		ignoreCache: true
-	});
-}
-
 $$('.gridRow').on('taphold', function () {
 	var gridRow = $("ul li div div.gridRow");
 	var isAllChecked = 0;
@@ -99,6 +90,7 @@ $$('.checkNavP').on('click', function () {
 		}
 	}
 });
+
 
 function loadGroupMembersPopup(tableId) {
 	var popupWidth = window.innerWidth * 0.80;

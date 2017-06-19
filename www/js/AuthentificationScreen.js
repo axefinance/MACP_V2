@@ -35,7 +35,7 @@ function manageAuthentifaction(result)
                    
           }
 }  
-  
+   
                      
 
 $$('.Auth-confirm-ok-cancel').on('click', function () {
@@ -56,7 +56,6 @@ function parseDataGet(url) {
         contentType: "text/plain",
         dataType: 'json',
         success: function(data) {
-                         myApp.hidePreloader();    
 
              manageAuthentifaction(data);
         },
