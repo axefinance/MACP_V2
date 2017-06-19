@@ -374,7 +374,7 @@ user-select: none;
 }
 .popup-toolbar-link{
     float:right !important;
-    margin :11px 20px 6px 0px !important;
+    margin :0px 20px 6px 0px !important;
     overflow-y:hidden;
 }
 .popup-container{
