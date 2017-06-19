@@ -132,12 +132,21 @@ function loadRelatedItemPopup(id, isDuplicateAction,relatedItemType) {
         isDuplicate = isDuplicateAction;
         if(divId.indexOf('_condition') > -1)
             {
-              mainView.router.load({url: 'pricingConditionScreen.html',reload:false,ignoreCache:true});
-                  
+
+                if(!checkInternetConnection())                                                   
+                    myApp.alert("please check your internet connection");
+                else 
+                    mainView.router.load({url: 'pricingConditionScreen.html',reload:false,ignoreCache:true});
+                EditableGridObject=PricingConditionEdiatbelegrids;    
             }
         else 
         {
-          mainView.router.load({url: 'relatedItemScreen.html',reload:false,ignoreCache:true}); 
+            if(!checkInternetConnection())                                                   
+                myApp.alert("please check your internet connection");
+            else 
+                mainView.router.load({url: 'relatedItemScreen.html',reload:false,ignoreCache:true}); 
+          EditableGridObject=RelatedItemEdiatbelegrids;
+
 }}
 }
 
