@@ -601,11 +601,12 @@ function mainData_SaveEvent() {
 
 
     function UpdateItem() {
-
+      var stringify= getGridonPoponsData("#my-mainData-form");
         var data = "{" +
             "\"mainItemId\":\"" + itemId + "\"," +
             "\"screenName\":\"" + currentItem + "\"," +
             "\"userData\":"+sessionStorage.getItem("userData")+"," +
+            "\"stringify\":"+stringify+"," +
             "\"parameters\":" + Parameters + "}";
         myApp.showPreloader();
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/UpdateItem';

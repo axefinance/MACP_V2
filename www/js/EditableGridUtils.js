@@ -11,16 +11,16 @@ function loadEditableGridOnPopon_popon(gridId,columnsCount,sourcetag,stringifyDa
     GetEditableGridPoponContent(sourcetag,"",stringifyData);
 }
 
-function PutExistingFeesRowsInObjectToSend()
+function PutExistingFeesRowsInObjectToSend(feesGridId) 
 {
      if(EditableGridObjectToSend===undefined);
     EditableGridObjectToSend={};
-    if(EditableGridObjectToSend["_editableGrid__consumerloan_condition__SPGetTransactionConditionFees"]===undefined)
-          EditableGridObjectToSend["_editableGrid__consumerloan_condition__SPGetTransactionConditionFees"]=[];
-     var table=$("#_editableGrid__consumerloan_condition__SPGetTransactionConditionFees_header").find(".tasksTableTD.tasksTableElement:not(.displayNone)");
-     if(EditableGridObjectToSend["_editableGrid__consumerloan_condition__SPGetTransactionConditionFees"]===undefined)
-       EditableGridObjectToSend["_editableGrid__consumerloan_condition__SPGetTransactionConditionFees"]=[];
-    var existingGridDataRows=$("#_editableGrid__consumerloan_condition__SPGetTransactionConditionFees ul tr");
+    if(EditableGridObjectToSend[feesGridId]===undefined)
+          EditableGridObjectToSend[feesGridId]=[];
+     var table=$("#"+feesGridId).find(".tasksTableTD.tasksTableElement:not(.displayNone)");
+     if(EditableGridObjectToSend[feesGridId]===undefined)
+       EditableGridObjectToSend[feesGridId]=[];
+    var existingGridDataRows=$("#"+feesGridId+" ul tr");
     for(var i=0; i<existingGridDataRows.length;i++)
         {
             var arr=[];
@@ -30,8 +30,8 @@ function PutExistingFeesRowsInObjectToSend()
                     var value=existingGridDataRows[i].children[j].innerText;
                     arr.push(value);
                 }
-            EditableGridObjectToSend["_editableGrid__consumerloan_condition__SPGetTransactionConditionFees"].push(arr);
-            EditableGridObject["_editableGrid__consumerloan_condition__SPGetTransactionConditionFees"].push(arr);
+            EditableGridObjectToSend[feesGridId].push(arr);
+            EditableGridObject[feesGridId].push(arr);
         }
 }
 
@@ -132,16 +132,16 @@ var formData = myApp.formToData('#my-editableGridPopon-form');
       if(EditableGridObject[clickedEditableGridId]===undefined)
           EditableGridObject[clickedEditableGridId]=[];
           EditableGridObject[clickedEditableGridId].push(arr);
-      if(EditableGridObject[clickedEditableGridId]===undefined)
+      if(EditableGridObjectToSend[clickedEditableGridId]===undefined)
           EditableGridObjectToSend[clickedEditableGridId]=[];
           EditableGridObjectToSend[clickedEditableGridId].push(arr);
           myApp.closeModal(); 
-        var line="<li class='swipeout' style='background-color:#fff;border-radius: 15px !important;'><div class='swipeout-content item-content noPadding-left'><div class='item-inner gridRow'><div><table><tr>";
+        var line="<li id='"+count+"__"+clickedEditableGridId+"' class='swipeout' style='background-color:#fff;border-radius: 15px !important;'><div class='swipeout-content item-content noPadding-left'><div class='item-inner gridRow'><div><table><tr>";
         for(var i=0 ; i<arr.length ;i++)
         {
             line=line+" <td style= 'font-size:small !important;width:"+ (window.innerWidth/clickedEditableGridColumnsCount)+"px !important; min-width:139px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+arr[i]+"</td>";
         }
-        line=line+ "</tr></table></div></div></div><div class='swipeout-actions-right'><a href='#'     data-popup='.demo-popup' class='action1 bg-orange editButton' onclick='EditEditableGridRow("+(count)+",\""+clickedEditableGridId+"\",\""+clickEditableGridSourceTag+"\");'></a><a href='#' data-popup='.demo-popup' class='action1 bg-red deleteButton' onclick='deleteEditableGridRow("+(count+1)+");'></a></div></li>";
+        line=line+ "</tr></table></div></div></div><div class='swipeout-actions-right'><a href='#'     data-popup='.demo-popup' class='action1 bg-orange editButton' onclick='EditEditableGridRow("+(count)+",\""+clickedEditableGridId+"\",\""+clickEditableGridSourceTag+"\");'></a><a href='#' data-popup='.demo-popup' class='action1 bg-red deleteButton' onclick='deleteEditableGridRow(\""+count+"__"+clickedEditableGridId+"\",\""+clickedEditableGridId+"\");'></a></div></li>";
         content=content+line;
  
     $("#"+clickedEditableGridId+" ul").html(content+existingGridData);
@@ -196,26 +196,18 @@ function GetGridData(gridId){
                 }
               arr.push(obj); 
         }
-   return arr;
+   return arr; 
 }
 
 
 
-function deleteEditableGridRow(rowNumber){
-    if (rowNumber > -1) {
-    EditableGridObject[clickedEditableGridId].splice(rowNumber, 1);
-    var content="<div class='list-block tasksTableElement animated fadeIn ' style='max-width:100% !important; margin-top :-0.02cm !important;background-color:#ff7f7f;-webkit-box-shadow: -2px 9px 43px -5px rgba(0,0,0,0.26);-moz-box-shadow: -2px 9px 43px    -5px rgba(0,0,0,0.26);box-shadow: -1px 9px 43px -5px rgba(0,0,0,0.26); overflow-y: auto !important;    overflow-x: none !important; max-height:614px !important; '><ul style='padding-left: 0px !important;border-radius: 15px !important;'>";    
-    for(var j=0 ; j<EditableGridObject[clickedEditableGridId].length ;j++)
-    {
-        
-        var line="<li class='swipeout'><div class='swipeout-content item-content noPadding-left'><div class='item-inner gridRow'><div><table><tr>";
-        for(var i=0 ; i<EditableGridObject[clickedEditableGridId][j].length ;i++)
+function deleteEditableGridRow(rowId,gridId)
+{ 
+  var existingGridDataRows=$("#"+gridId+" ul li");
+    for(var i=0; i<existingGridDataRows.length;i++)
         {
-            line=line+" <td    style= 'font-size:small !important;width:"+ (window.innerWidth/clickedEditableGridColumnsCount)+"px !important; min-width:139px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+EditableGridObject[clickedEditableGridId][j][i]+"</td>";
+            if($(existingGridDataRows[i]).attr("id")===rowId){
+                $("#"+rowId).remove();
+            }
         }
-        line=line+ "</tr></table></div></div></div><div class='swipeout-actions-right'><a href='#'     data-popup='.demo-popup' class='action1 bg-orange editButton' onclick='EditEditableGridRow("+j+","+clickedEditableGridId+");'></a><a href='#' data-popup='.demo-popup' class='action1 bg-red deleteButton' onclick='deleteEditableGridRow("+j+");'></a></div></li>";
-        content=content+line;
-    }
-    document.getElementById(clickedEditableGridId).innerHTML=content;    
-}
 }
