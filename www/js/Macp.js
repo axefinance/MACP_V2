@@ -28,7 +28,6 @@ var InstructionGuide;
 var WithCollectQuestion; 
 var extendedProperties=null;
 var isSwitchLanguage = false;
-var MainItemEdiatbelegrids = {};
 
 var myApp=new Framework7({ swipeBackPage : false, statusbarOverlay:true, tapHold: true,swipePanel: 'left',fastClicksDelayBetweenClicks : 10 }) ;
 var db = openDatabase('mydb', '1.0', 'Test DB', 2 * 1024 * 1024);
@@ -357,9 +356,8 @@ function GetEditScreen(url,itemId){
                         engine = data.screenEngine;                        
                         docMenu=(data.DocumentMenu);
                         loadJSFile("js/EditScreen.js");
-                        loadJSFile("js/WorkflowManager.js"); 
-                        MainItemEdiatbelegrids={};
-                        EditableGridObject=MainItemEdiatbelegrids;
+                        loadJSFile("js/WorkflowManager.js");
+                        putExistingRowsInObject("#my-mainData-form");
                         myApp.hidePreloader();
                     },
                     error: function(e) {
@@ -808,7 +806,9 @@ function GetPricingConditionScreen(){
              loadJSFile("js/amortizationInfiniteScroll.js");
             myApp.hidePreloader();  
             ManagePricingCnditionComponents();
-            
+            putExistingRowsInObject("#my-relatedItemPopup-form");
+            PutExistingFeesRowsInObjectToSend("_editableGrid__consumerloan_condition__SPGetTransactionConditionFees");
+            PutExistingFeesRowsInObjectToSend("_editableGrid__consumerloan_condition__SPGetTransactionConditionEventFees");
         },
         error: function(e) { 
             myApp.hidePreloader();
