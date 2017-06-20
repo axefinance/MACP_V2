@@ -353,16 +353,16 @@ user-select: none;
     color : #fff !important;
 }
  
-.displayNone{
+.displayNone{  
     display: none !important;
 }
 .popup-toolbar{
-    border-top:  1px solid #d1d1d1;
+    border-top:  1px solid #d1d1d1;    
     z-index : 99999;
     position: sticky !important;
     height:40px !important;
     bottom: 0px !important;
-    background : #fff !important;
+    background : #fff !important; 
     width: 100% !important;
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;    

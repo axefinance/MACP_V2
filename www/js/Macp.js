@@ -28,6 +28,8 @@ var InstructionGuide;
 var WithCollectQuestion; 
 var extendedProperties=null;
 var isSwitchLanguage = false;
+var navbarTitle;
+
 
 var myApp=new Framework7({ swipeBackPage : false, statusbarOverlay:true, tapHold: true,swipePanel: 'left',fastClicksDelayBetweenClicks : 10 }) ;
 var db = openDatabase('mydb', '1.0', 'Test DB', 2 * 1024 * 1024);
@@ -94,14 +96,16 @@ myApp.onPageReinit('homePage', function (page) {
     if(!isSwitchLanguage)
     {
      document.getElementById("tasks").innerHTML=null;
-     document.getElementById("toolbar").innerHTML=null;
+     document.getElementById("homePage-toolbarContent").innerHTML=null;
+
      reInitHomePage();
      console.log(mainView.history);
     }
     else
     {
            document.getElementById("tasks").innerHTML=null;
-           document.getElementById("toolbar").innerHTML=null;
+           document.getElementById("homePage-toolbarContent").innerHTML=null;
+
            isSwitchLanguage = false;           
            loadTaskList(); 
            setTemplate_HeaderData("homePage");
@@ -122,7 +126,7 @@ function reInitHomePage(){
         data: data,       
         success: function(data) {
             document.getElementById("tasks").innerHTML=data.TasksContent;
-            document.getElementById("toolbar").innerHTML=data.toolbar;
+            document.getElementById("homePage-toolbarContent").innerHTML=data.buttonsDiv;
             console.log("success");
              myApp.hidePreloader();
 GetHomePageScripts(); 
@@ -206,6 +210,20 @@ myApp.onPageInit('searchScreen', function (page) {
     loadsearchScreen();
   
 }); 
+myApp.onPageInit('teamTasksScreen', function (page) {
+    TaskId = 0;
+    createLanguagesList('teamTasks');
+    createLogoutPopover('teamTasks');
+    myApp.params.swipePanel=false;
+    myApp.showPreloader();
+    if(fromNewInput===true)
+        document.getElementById("backButton").style.display = "none"; 
+    pageTitleElement=document.getElementById("title_teamTasks");
+    pageTitleElement.textContent=navbarTitle;
+    setTemplate_HeaderData('teamTasks');
+    GetTeamTasks();
+    
+});    
 myApp.onPageInit('editScreen', function (page) {
     TaskId = 0;
     createLanguagesList('editScreen');
@@ -213,7 +231,7 @@ myApp.onPageInit('editScreen', function (page) {
     myApp.params.swipePanel=false;
     myApp.showPreloader();
     if(fromNewInput===true)
-    document.getElementById("backButton").style.display = "none"; 
+        document.getElementById("backButton").style.display = "none"; 
     pageTitleElement=document.getElementById("title_editScreen");
     pageTitleElement.textContent=itemRef;
     setTemplate_HeaderData('editScreen');
@@ -460,7 +478,7 @@ function GetHomePage(url) {
         success: function(data) {            
             document.getElementById("tasks").innerHTML=data.TasksContent;
             document.getElementById("westMenu").innerHTML=data.WestMenuContent;
-            document.getElementById("toolbar").innerHTML=data.toolbar;
+            document.getElementById("homePage-toolbarContent").innerHTML=data.buttonsDiv;
             sessionStorage.setItem("Languages",data.Languages);
             var languages=sessionStorage.getItem('Languages');
             languagesList = JSON.parse(languages); 
@@ -473,6 +491,33 @@ function GetHomePage(url) {
             createLanguagesList('homePage');
             createLogoutPopover('homePage'); 
             GetHomePageScripts(); 
+            myApp.hidePreloader();
+        }, 
+        error: function(e) {  
+            myApp.hidePreloader();                
+            errorMessage();
+        }
+    });          
+               
+}  
+function GetTeamTasks(url) {
+   var data="{"+  
+        "\"windowWidth\":\""+window.innerWidth+"\","+
+        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
+        "\"windowHeight\":\""+(window.innerHeight-90)+"\"}";  
+    var dataToReturn = 'null';    
+     $.ajax({             
+        type: 'POST',                             
+        url: 'http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetTeamTasks',                                  
+        contentType: "text/plain",                                    
+        dataType: "json",                               
+        data: data,     
+        success: function(data) {            
+            document.getElementById("teamTasks").innerHTML=data.TasksContent;
+            document.getElementById("teamTasks-toolbarContent").innerHTML=data.buttonsDiv;
+            createLanguagesList('teamTasks');
+            createLogoutPopover('teamTasks'); 
+            loadJSFile("js/TeamTasks.js");
             myApp.hidePreloader();
         }, 
         error: function(e) {  
@@ -527,7 +572,7 @@ function switchLanguage(property){
             if(mainView.history[0]==="#homePage")
                 {
                    document.getElementById("tasks").innerHTML=null;
-                   document.getElementById("toolbar").innerHTML=null;
+                   document.getElementById("homePage-toolbarContent").innerHTML=null;
                    loadTaskList();
                    setTemplate_HeaderData("homePage");                   
                 }
@@ -752,6 +797,7 @@ function GetExecuteTaskScreen(url){
                      eligibility=data.eligibility;
                     WithCollectQuestion=data.WithCollectQuestion;
                      currentItem=data.screenName;
+                     document.getElementById("executeTaskContent").innerHTML=data.content;
                      pageTitleElement=document.getElementById("title_executeTaskScreen");
                      pageTitleElement.textContent=data.itemShortName;
                      $('#executeTask-toolbarContent').append(data.buttonsDiv);
@@ -761,6 +807,7 @@ function GetExecuteTaskScreen(url){
                     extendedProperties=data.ExtendedProperties;    
                     myApp.hidePreloader();
                     manageInstructionGuideResponse(data);
+                     myApp.hidePreloader();
                 }
             else if(data.status==="item not found")
                 {
