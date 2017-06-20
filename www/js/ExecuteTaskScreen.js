@@ -28,7 +28,10 @@ function stopWorkflow(){
                     HomeBackButton.style.visibility="hidden";   
                     mainView.router.back({force:true,pageName:"homePage"});
                     mainView.history=["#homePage"];
-                    leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
+                    if(!checkInternetConnection())                                                   
+                        myApp.alert("please check your internet connection");
+                    else 
+                        leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
                 }
             else                     
                 { 
@@ -143,7 +146,10 @@ function endTaskEvent(){
                                             extendedProperties=null;
                                             mainView.router.back({force:true,pageName:"homePage"});
                                             mainView.history=["#homePage"];
-                                            leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
+                                            if(!checkInternetConnection())                                                   
+                                                myApp.alert("please check your internet connection");
+                                            else 
+                                                leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
                                         }
                                         
                                 }
@@ -225,7 +231,10 @@ function checkRequiredDocument(){
                             HomeBackButton.style.visibility="hidden";       
                             mainView.router.back({force:true,pageName:"homePage"});
                             mainView.history=["#homePage"];
-                            leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
+                            if(!checkInternetConnection())                                                   
+                                myApp.alert("please check your internet connection");
+                            else 
+                                leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
                         }
                 }    
             else                       
@@ -275,7 +284,10 @@ function saveRequiredDocumentComent(){
                             HomeBackButton.style.visibility="hidden";       
                             mainView.router.back({force:true,pageName:"homePage"});
                             mainView.history=["#homePage"];
-                            leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
+                            if(!checkInternetConnection())                                                   
+                                myApp.alert("please check your internet connection");
+                            else 
+                                leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
                         }
                     
                 }    
@@ -336,7 +348,10 @@ function saveDeviationComment(){
                              extendedProperties=null;
                              mainView.router.back({force:true,pageName:"homePage"});
                              mainView.history=["#homePage"];
-                             leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
+                             if(!checkInternetConnection())                                                   
+                                myApp.alert("please check your internet connection");
+                            else 
+                                leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
                         }
                 }      
             else                       
@@ -409,7 +424,10 @@ function saveEligibilityComment(){
                             extendedProperties=null;
                              mainView.router.back({force:true,pageName:"homePage"});
                              mainView.history=["#homePage"];
-                             leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
+                             if(!checkInternetConnection())                                                   
+                                 myApp.alert("please check your internet connection");
+                             else 
+                                 leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
                         }
                     
                 }    
@@ -484,7 +502,10 @@ function saveCollectQuestion(){
                              extendedProperties=null;
                              mainView.router.back({force:true,pageName:"homePage"});
                              mainView.history=["#homePage"];
-                             leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
+                             if(!checkInternetConnection())                                                   
+                                 myApp.alert("please check your internet connection");
+                             else 
+                                 leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
                         
                     
                 }    

@@ -155,12 +155,15 @@ function manageStartWorkFlowItemResponse(data){
     }
     else
     { 
-             HomeBackButton.style.visibility="hidden";  
-             myApp.hidePreloader(); 
-             myApp.closeModal('.popup');
-             mainView.router.back({force:true,pageName:"homePage"});
-             mainView.history=["#homePage"];
-             leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
+            HomeBackButton.style.visibility="hidden";  
+            myApp.hidePreloader(); 
+            myApp.closeModal('.popup');
+            mainView.router.back({force:true,pageName:"homePage"});
+            mainView.history=["#homePage"];
+            if(!checkInternetConnection())                                                   
+                myApp.alert("please check your internet connection");
+            else 
+                leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
     }
 }
 

@@ -1,5 +1,5 @@
 var RelatedItemEdiatbelegrids = {};
-
+var RelatedItemEdiatbelegridsToSend = {};
 
 function testclick(msg,msgTitle) {
         SuccessMsg = msg;

@@ -15,6 +15,9 @@ function launchSearch()
     {
         var formData = myApp.formToData('#my-search-form');
         searchParams=JSON.stringify(formData);
-        mainView.router.load({url: 'searchResultScreen.html',reload:false,ignoreCache:true});
+        if(!checkInternetConnection())                                                   
+            myApp.alert("please check your internet connection");
+        else 
+            mainView.router.load({url: 'searchResultScreen.html',reload:false,ignoreCache:true});
     }
 }

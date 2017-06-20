@@ -26,7 +26,7 @@ function GetAmortizationPopon(stringify){
      var parameters=JSON.stringify(formData);
      var data="{"+ 
        "\"limit\":\"30\","+
-       "\"start\":\"0\","+
+       "\"start\":\"0\","+ 
        "\"mainItemId\":\""+itemId+"\"," + 
        "\"screenTag\":\""+divId+"\"," +   
        "\"parentId\":\""+itemId+"\"," +  
@@ -58,17 +58,7 @@ function GetAmortizationPopon(stringify){
         }   
     });         
 }
-function getGridonPoponsData(formdDataId){
-    var grids=$(formdDataId).find("div.editableGridOnPopon");
-    var myObject = {};
-    for (i = 0; i < grids.length; i++) 
-    {
-       
-       var id=$(grids[i]).attr("id");
-       myObject[id] = GetGridData(id+"_header"); 
-    }
-    return JSON.stringify(myObject); 
-}
+
 
 
 function savePricingCondition(){
@@ -76,12 +66,13 @@ function savePricingCondition(){
     if(isValidForm)
     {
    myApp.showPreloader();
+         var stringify= getGridonPoponsData("#my-relatedItemPopup-form");
      var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveCondition';
      var popupWidth=window.innerWidth*0.90;
      var popupHeight=window.innerHeight*0.90;
      popupWidth=Math.floor(popupWidth); 
      popupHeight=Math.floor(popupHeight); 
-     var formData = myApp.formToData('#my-relatedItemPopup-form');
+     var formData = myApp.formToData('#my-relatedItemPopup-form');   
      var parameters=JSON.stringify(formData);
      var data="{"+ 
        "\"mainItemId\":\""+itemId+"\"," + 
@@ -93,6 +84,7 @@ function savePricingCondition(){
        "\"transactionAmountFeesListObject\":"+transactionAmountFeesListObject+"," +   
        "\"transactionAmountEventFeesListObject\":"+transactionAmountEventFeesListObject+"," + 
        "\"screenName\":\""+currentItem+"\","+ 
+       "\"stringify\":"+stringify+"," +     
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
        "\"parameters\":"+parameters+"}" ;  
     $.ajax({ 
@@ -122,6 +114,7 @@ function savePricingConditionEvent(){
     if(isValidForm)
     {
      myApp.showPreloader();
+     var stringify= getGridonPoponsData("#my-relatedItemPopup-form");    
      var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveConditionEvent';
      var formData = myApp.formToData('#my-relatedItemPopup-form');
      var parameters=JSON.stringify(formData);
@@ -134,7 +127,8 @@ function savePricingConditionEvent(){
        "\"transactionAmountStringList\":\""+transactionAmountStringList+"\"," +      
        "\"transactionAmountFeesListObject\":"+transactionAmountFeesListObject+"," +   
        "\"transactionAmountEventFeesListObject\":"+transactionAmountEventFeesListObject+"," + 
-       "\"screenName\":\""+currentItem+"\","+ 
+       "\"screenName\":\""+currentItem+"\","+
+       "\"stringify\":"+stringify+"," +      
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
        "\"parameters\":"+parameters+"}" ;  
     $.ajax({ 
