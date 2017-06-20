@@ -22,7 +22,7 @@
       <!--  <script src='xhr.js'></script>
          <script src="intelxdk.js"></script> -->
    </head>
-   <body onkeypress="handleKeyboardButton(event)">
+   <body>
       <div class="statusbar-overlay"></div>
       <!-- Views -->
       <div class="views">
@@ -45,19 +45,16 @@
             <div class="pages navbar-through toolbar-through">
                <a id="homeBackButton" style="visibility:hidden;" href="#" aria-hidden="true" class="homeIcon floating-button color-blue" onclick="HomeBack();">
                </a> 
-               <div data-page="index" class="page">                   
-                  <div class="page-content" style="overflow:hidden; margin-top : 10%!important; margin-right : 20% !important; margin-left : 20% !important;">
-                             <center>   <img src="assets/icon.png" style="margin-bottom:100px;"></center>
-                     <div id ="loginPage" class="list-block">
+               <div data-page="index" class="page">
+                  <div class="page-content" style="overflow:hidden; margin-top : 20%!important; margin-right : 20% !important; margin-left : 20% !important;">
+                     <div class="list-block">
                         <ul>
-                            
-                            
                            <li>
                               <div class="item-content">
                                  <div class="item-media"><a aria-hidden="true" class="navbarUserIcon"></a></div>
                                  <div class="item-inner">
                                     <div class="item-input"> 
-                                       <input id="userName"   type="text" placeholder="Username"   id="userName">
+                                       <input id="userName"   type="text" placeholder="Username" id="userName">
                                     </div>
                                  </div>
                               </div>
@@ -67,7 +64,7 @@
                                  <div class="item-media"><a aria-hidden="true" class="passwordIcon"></a></div>
                                  <div class="item-inner">
                                     <div class="item-input">
-                                          <input id="password" placeholder="Password" type="password"  spellcheck="false">
+                                       <form   autocomplete="off" >    <input id="password" placeholder="Password" type="password" spellcheck="false"    ></form>
                                     </div>
                                  </div>
                               </div>
@@ -103,10 +100,8 @@
                   </div>
                </div>
                <div data-page="WSConfigurationScreen" class="page">
-                  <div class="page-content" style="margin-top : 10%!important; margin-right : 20% !important; margin-left : 20% !important;">
-                             <center>   <img src="assets/icon.png" style="margin-bottom:100px;"></center>
-
-                     <div id="firstWSConfig" class="list-block" >
+                  <div class="page-content" style="margin-top : 20%!important; margin-right : 20% !important; margin-left : 20% !important;">
+                     <div class="list-block" >
                         <ul>
                            <li>
                               <div class="item-content">
@@ -123,9 +118,11 @@
                                  <div class="item-media"><a aria-hidden="true" class="portIcon"></a></div>
                                  <div class="item-inner">
                                     <div class="item-input">
-
+                                       <form   autocomplete="off" >
+                                          <div class="item-input">
                                              <input id="portFirstConfig" name="port" type="tel" placeholder="Port number" required>
-
+                                          </div>
+                                       </form>
                                     </div>
                                  </div>
                               </div>
@@ -147,7 +144,7 @@
                               <div class="ripple"></div>
                            </button>
                         </a>
-                     </center>        
+                     </center>
                   </div>
                </div>
             </div>

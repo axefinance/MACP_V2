@@ -2,7 +2,7 @@ var clickedEditableGridId;
 var clickEditableGridSourceTag;
 var clickedEditableGridColumnsCount=columnsCount;
 var rowToEditIndex=-1;
-var EditableGridObject={};
+var EditableGridObject={}; 
 var EditableGridObjectToSend={};
 function loadEditableGridOnPopon_popon(gridId,columnsCount,sourcetag,stringifyData){
     clickedEditableGridId=gridId;
