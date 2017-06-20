@@ -5,7 +5,7 @@
       "projectTypeName": "com.intel.xdk.projecttype.jsapp",
       "src": "jsapp/template-blank-cordova-project-lite/sample.zip",
       "projectGuid": "9688cde4-62ce-4677-a863-1ea43bf4ae30",
-      "lastModifiedDate": 1496654719052,
+      "lastModifiedDate": 1497440067959,
       "creationDate": 1493817986846
     },
     "sourceDirectory": "www",
@@ -175,11 +175,11 @@
           "android-targetSdkVersion": "21",
           "android-installLocation": "auto",
           "Fullscreen": true,
-          "Orientation": "landscape",
+          "Orientation": "default",
           "android-signed": true
         },
         "isActive_": true,
-        "certificateId_": "HYgELZ4pmU-2K0GAhOK-fg2",
+        "certificateId_": "D7lrVvgaA06_susYcA-1rg2",
         "cordovaCLIVersion_": "6.2.0",
         "crosswalkVersion_": "19",
         "appName_": "mACP",
@@ -254,12 +254,40 @@
             "height": 720,
             "width": 960,
             "orientation": "landscape"
+          },
+          {
+            "relPath": "package-assets/Splash_320_426.png",
+            "density": "ldpi",
+            "height": 426,
+            "width": 320,
+            "orientation": "portrait"
+          },
+          {
+            "relPath": "package-assets/Splash_320_470.png",
+            "density": "mdpi",
+            "height": 470,
+            "width": 320,
+            "orientation": "portrait"
+          },
+          {
+            "relPath": "package-assets/Splash_480_640.png",
+            "density": "hdpi",
+            "height": 640,
+            "width": 480,
+            "orientation": "portrait"
+          },
+          {
+            "relPath": "package-assets/Splash_720_960.png",
+            "density": "xhdpi",
+            "height": 960,
+            "width": 720,
+            "orientation": "portrait"
           }
         ],
         "addlPermissions_": "",
         "excludedLibraries_": "",
-        "appVersion_": "1.0",
-        "appVersionCode_": "1",
+        "appVersion_": "2.1",
+        "appVersionCode_": "4",
         "appDescription_": "mACP is the mobile application designed to run standard ACP features.",
         "appAuthor_": "axefinance",
         "signed_": true
