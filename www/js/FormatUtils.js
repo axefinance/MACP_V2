@@ -609,7 +609,7 @@ function ManagePricingCnditionComponents() {
 
         }
     }
-}	
+}
 
 function getGridonPoponsData(formdDataId){
     var grids=$(formdDataId).find("div.editableGridOnPopon");

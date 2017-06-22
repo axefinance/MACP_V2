@@ -25,10 +25,7 @@ function manageAuthentifaction(result)
               case "ok":
                  {  
                    sessionStorage.setItem("userData",JSON.stringify(result.userData));  
-                    if(!checkInternetConnection())                                                   
-                        myApp.alert("please check your internet connection");
-                    else 
-                        mainView.router.load({url: 'homePage.html',ignoreCache: true,reload: true});
+                   mainView.router.load({url: 'homePage.html',ignoreCache: true,reload: true});
                    sessionStorage.setItem("dateFormat",result.dateFormat);
                      break;
                  }
@@ -56,8 +53,6 @@ function parseDataGet(url) {
         contentType: "text/plain",
         dataType: 'json',
         success: function(data) {
-                         myApp.hidePreloader();    
-
              manageAuthentifaction(data);
         },
         error: function(e) {

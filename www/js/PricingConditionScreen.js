@@ -5,7 +5,6 @@ var itemsPerLoad = 10;
 var transactionAmountStringList=null;
 var transactionAmountFeesListObject=null;
 var transactionAmountEventFeesListObject=null;
-var PricingConditionEdiatbelegrids = {};
 
 
 
@@ -110,7 +109,7 @@ function savePricingCondition(){
 
 function savePricingConditionEvent(){
     
-    var isValidForm = requiredFormComponent("my-relatedItemPopup-form"); 
+    var isValidForm = requiredFormComponent("#my-relatedItemPopup-form"); 
     if(isValidForm)
     {
      myApp.showPreloader();

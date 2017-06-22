@@ -12,7 +12,6 @@ var isUpdateAttachment = false;
 var RelatedItemType;
 var clickedEditableGridId;
 var clickedEditableGridColumnsCount;
-var newEditableGridRows = [];
 
 function generateAttachmentPicture(name, folder, subFolder){
      myApp.showPreloader();
@@ -132,21 +131,11 @@ function loadRelatedItemPopup(id, isDuplicateAction,relatedItemType) {
         isDuplicate = isDuplicateAction;
         if(divId.indexOf('_condition') > -1)
             {
-
-                if(!checkInternetConnection())                                                   
-                    myApp.alert("please check your internet connection");
-                else 
-                    mainView.router.load({url: 'pricingConditionScreen.html',reload:false,ignoreCache:true});
-                EditableGridObject=PricingConditionEdiatbelegrids;    
+              mainView.router.load({url: 'pricingConditionScreen.html',reload:false,ignoreCache:true});   
             }
         else 
         {
-            if(!checkInternetConnection())                                                   
-                myApp.alert("please check your internet connection");
-            else 
-                mainView.router.load({url: 'relatedItemScreen.html',reload:false,ignoreCache:true}); 
-          EditableGridObject=RelatedItemEdiatbelegrids;
-
+          mainView.router.load({url: 'relatedItemScreen.html',reload:false,ignoreCache:true}); 
 }}
 }
 
@@ -277,7 +266,9 @@ function manageAttechementElement() {
         $('#' + divID).addClass('Active');
         $('#'+divID+'_buttons').removeClass("displayNone");
         $('#'+selectedDivId+'_buttons').addClass("displayNone");
-         
+        if(screenEngine==="classicms")
+         EditableGridObject= MainItemEdiatbelegrids;  
+
     } 
 
     $$('.startWF-From-Edit-Screen-form-to-data').on('click', function () {
@@ -601,12 +592,11 @@ function mainData_SaveEvent() {
 
 
     function UpdateItem() {
-      var stringify= getGridonPoponsData("#my-mainData-form");
+
         var data = "{" +
             "\"mainItemId\":\"" + itemId + "\"," +
             "\"screenName\":\"" + currentItem + "\"," +
             "\"userData\":"+sessionStorage.getItem("userData")+"," +
-            "\"stringify\":"+stringify+"," +
             "\"parameters\":" + Parameters + "}";
         myApp.showPreloader();
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/UpdateItem';
@@ -647,13 +637,12 @@ function mainData_SaveEvent() {
 
 
  function UpdateItemEvent() {
-var stringify= getGridonPoponsData("#my-mainData-form");
+
         var data = "{" +
             "\"mainItemId\":\"" + itemId + "\"," +
             "\"screenName\":\"" + currentItem + "\"," +
             "\"userData\":"+sessionStorage.getItem("userData")+","+
-            "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
-            "\"stringify\":"+stringify+"," +
+            "\"ipAddress\":\"" + sessionStorage.getItem('Ip_config') + "\"," +
             "\"parameters\":" + Parameters + "}";
         myApp.showPreloader();
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/UpdateItemEvent';
