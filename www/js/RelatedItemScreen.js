@@ -1,13 +1,8 @@
-var RelatedItemEdiatbelegrids = {};
-var RelatedItemEdiatbelegridsToSend = {};
 
 function testclick(msg,msgTitle) {
         SuccessMsg = msg;
         SuccesMsgTitle = msgTitle;
         var isValidForm = requiredFormComponent();
-     /*   if (!isValid) {
-            $(x[indexToSelect]).next().children().first().focus();
-        } else {*/
     if(isValidForm)
            { var formData = myApp.formToData('#my-relatedItemPopup-form');
             Parameters = JSON.stringify(formData);

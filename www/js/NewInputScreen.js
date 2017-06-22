@@ -75,10 +75,7 @@ function saveNewInput(parameters){
             divId=data.itemId;
             itemRef=data.itemRef; 
             TargetTab=data.targetTab;  
-            if(!checkInternetConnection())                                                   
-                myApp.alert("please check your internet connection");
-            else         
-                mainView.router.load({url: "editScreen.html",reload:true});
+            mainView.router.load({url: "editScreen.html",reload:true});
             fromNewInput=true;
                 }
             else
@@ -131,14 +128,11 @@ function manageSaveInputResponse(data)
     }
     else
         {
-            itemId=data.itemId; 
-            itemRef=data.itemRef;
-            TargetTab=data.targetTab;
-            if(!checkInternetConnection())                                                   
-                myApp.alert("please check your internet connection");
-            else 
-                mainView.router.load({url: "editScreen.html",reload:true});
-            fromNewInput=true;
+             itemId=data.itemId; 
+                    itemRef=data.itemRef;
+                    TargetTab=data.targetTab;
+                    mainView.router.load({url: "editScreen.html",reload:true});
+                    fromNewInput=true;
         }
 }
 
@@ -185,12 +179,10 @@ function saveBeforeInsert_DeviationComment()
             myApp.hidePreloader();
             itemId=data.itemId; 
             divId=data.itemId;
-            itemRef=data.itemRef;              
-            TargetTab=data.targetTab; 
-            if(!checkInternetConnection())                                                   
-                myApp.alert("please check your internet connection");
-            else 
-                mainView.router.load({url: "editScreen.html",reload:true});
+            itemRef=data.itemRef;  
+            
+            TargetTab=data.targetTab;  
+            mainView.router.load({url: "editScreen.html",reload:true});
             fromNewInput=true;
         }
     else{  
