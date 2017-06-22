@@ -275,7 +275,7 @@ myApp.onPageInit('executeTaskScreen', function (page) {
     console.log("URL",url);
     GetExecuteTaskScreen(url);
 });
-myApp.onPageInit('relatedItemScreen', function (page) {
+myApp.onPageInit('relatedItemScreen', function (page) {    
     HomeBackButton.style.visibility="visible";
     createLanguagesList('relatedItemScreen'); 
     createLogoutPopover('relatedItemScreen');
@@ -306,6 +306,7 @@ function GetRelatedItemScreen()
         "\"screenName\":\""+divId+"\","+
         "\"screenType\":\"relatedItemDetails\","+
         "\"userData\":"+sessionStorage.getItem("userData")+","+
+        "\"taskId\":\""+TaskId+"\"," +
         "\"mainItemId\":\""+itemId+"\","+
         "\"screenWidth\":\""+window.innerWidth+"\","+          
         "\"relatedItemId\":\""+relatedItemId+"\"}"; 
