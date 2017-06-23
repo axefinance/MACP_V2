@@ -306,7 +306,7 @@ function GetRelatedItemScreen()
         "\"screenName\":\""+divId+"\","+
         "\"screenType\":\"relatedItemDetails\","+
         "\"userData\":"+sessionStorage.getItem("userData")+","+
-        "\"taskId\":\""+TaskId+"\"," +
+        "\"taskId\":\""+TaskId+"\"," + 
         "\"mainItemId\":\""+itemId+"\","+
         "\"screenWidth\":\""+window.innerWidth+"\","+          
         "\"relatedItemId\":\""+relatedItemId+"\"}"; 
@@ -849,6 +849,7 @@ function GetPricingConditionScreen(){
       "\"screenType\":\"pricingCondition\","+
       "\"userData\":"+sessionStorage.getItem("userData")+","+
       "\"mainItemId\":\""+itemId+"\","+
+      "\"taskId\":\""+TaskId+"\"," +
       "\"screenWidth\":\""+window.innerWidth+"\"," +
       "\"relatedItemId\":\""+relatedItemId+"\"}"; 
     console.log("SearchParams",data);        
