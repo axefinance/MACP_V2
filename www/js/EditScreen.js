@@ -183,6 +183,8 @@ function manageAttechementElement() {
             data: data,
             success: function (data) {
                 document.getElementById(divID).innerHTML = data.content;
+                loadJSFile("js/informativeGridInfiniteScroll.js");
+                myApp.attachInfiniteScroll($$('.informativeGrid-infinite-scroll'));
                 myApp.hidePreloader();
                 switch (engine) {
                     case ("attachment"):
