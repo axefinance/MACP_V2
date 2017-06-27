@@ -266,8 +266,6 @@ function manageAttechementElement() {
         $('#' + divID).addClass('Active');
         $('#'+divID+'_buttons').removeClass("displayNone");
         $('#'+selectedDivId+'_buttons').addClass("displayNone");
-        if(screenEngine==="classicms")
-         EditableGridObject= MainItemEdiatbelegrids;  
 
     } 
 

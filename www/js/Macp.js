@@ -358,9 +358,6 @@ function GetEditScreen(url,itemId){
                         docMenu=(data.DocumentMenu);
                         loadJSFile("js/EditScreen.js");
                         loadJSFile("js/WorkflowManager.js");
-                        EditableGridObject={};
-                        EditableGridObjectToSend={};
-                        putExistingRowsInObject("#my-mainData-form");
                         myApp.hidePreloader();
                     },
                     error: function(e) {
@@ -809,9 +806,6 @@ function GetPricingConditionScreen(){
              loadJSFile("js/amortizationInfiniteScroll.js");
             myApp.hidePreloader();  
             ManagePricingCnditionComponents();
-            putExistingRowsInObject("#my-relatedItemPopup-form");
-            EditableGridObjectToSend={};
-            EditableGridObjectToSend["_editableGrid__consumerloan_condition__SPGetTransactionConditionFees"]=EditableGridObject["_editableGrid__consumerloan_condition__SPGetTransactionConditionFees"];
         },
         error: function(e) { 
             myApp.hidePreloader();

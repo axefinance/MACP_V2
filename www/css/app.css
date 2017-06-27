@@ -25,7 +25,7 @@ html {
 body {
     -ms-touch-action: pan-y ;
     -ms-content-zooming: none ;
-}
+} 
 
 /* allow copy-paste */
 input, textarea  {
