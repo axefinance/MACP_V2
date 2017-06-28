@@ -3,8 +3,6 @@ var clickEditableGridSourceTag;
 var clickedEditableGridColumnsCount=columnsCount;
 var rowToEditIndex=-1;
 var rowIdToEdit="";
-var EditableGridObject={};
-var EditableGridObjectToSend={};
 var SaveAction="";
 var RowNumberToEdit;
 function loadEditableGridOnPopon_popon(gridId,columnsCount,sourcetag,stringifyData){
@@ -15,23 +13,6 @@ function loadEditableGridOnPopon_popon(gridId,columnsCount,sourcetag,stringifyDa
     SaveAction="new";
     console.log(SaveAction);
 }
-
-
-function putExistingRowsInObject(formId)
-{
-    console.log(EditableGridObject);
-     var grids=$(formId).find("div.editableGridOnPopon");
-    var myObject = {};
-    for (i = 0; i < grids.length; i++) 
-    { 
-       var obj={};
-       var id=$(grids[i]).attr("id");
-     //EditableGridObject[id]=  GetGridDataFromHtml(id);
-       obj[id]=  GetGridDataFromHtml(id);
-    }
-    
-}
-
 function GetGridDataFromHtml(gridId)
 {
    var arrays=[];
@@ -59,9 +40,9 @@ function GetEditableGridPoponContent(sourcetag,spname,stringifyData){
     var screenName=divId;
       var data = "{" +
             "\"sourcetag\":\"" + sourcetag + "\"," +
-            "\"spname\":\"" + spname + "\"," +
-            "\"taskId\":\"" + TaskId + "\"," +
+            "\"spname\":\"" + spname + "\"," + 
             "\"screenName\":\"" + screenName + "\"," + 
+            "\"taskId\":\"" + TaskId + "\"," +
             "\"stringifyData\":" + stringifyData +"," +   
             "\"userData\":"+sessionStorage.getItem("userData")+"}";
         myApp.showPreloader();
@@ -102,23 +83,11 @@ if (isValidForm)
 {
     if(SaveAction==="new")
     {
-    if(EditableGridObjectToSend===undefined)
-        EditableGridObjectToSend={};
     var existingGridData=$("#"+clickedEditableGridId+" ul").html();
         if(existingGridData===undefined)
             existingGridData="";
     var count = $("#"+clickedEditableGridId+" ul").children().length;
     console.log(existingGridData);
-    if(rowToEditIndex!==-1)
-        {
-
-             if(EditableGridObject[clickedEditableGridId]===undefined)
-              EditableGridObject[clickedEditableGridId]=[];
-              EditableGridObject[clickedEditableGridId].splice(rowToEditIndex, 1);
-            if(EditableGridObjectToSend[clickedEditableGridId]===undefined)
-              EditableGridObjectToSend[clickedEditableGridId]=[];
-              EditableGridObjectToSend[clickedEditableGridId].splice(rowToEditIndex, 1);
-        }
 var formData = myApp.formToData('#my-editableGridPopon-form');
  var dataToSave= GetObjectFromFormToData(formData); 
     var arr = [];
@@ -126,19 +95,22 @@ var formData = myApp.formToData('#my-editableGridPopon-form');
           myApp.closeModal(); 
         var line="<li id='"+count+"_"+clickedEditableGridId+"' class='swipeout' style='background-color:#fff;border-radius: 15px !important;'><div class='swipeout-content item-content noPadding-left'><div class='item-inner gridRow'><div><table><tr>";
         var table=$('#'+clickedEditableGridId+"_header").find(".tasksTableTD.tasksTableElement:not(.displayNone)");
-        var padding=3;
+        var padding=1;
         for(var i=0 ; i<table.length ;i++)
         {
+            var entity=$(table[i]).attr("name");
+            var value="";
+            if(dataToSave[entity]!==undefined)
+                value=dataToSave[entity];
             var entity=  table[i].getAttribute("name");
-            line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-padding)+"px !important; min-width:125px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+dataToSave[entity]+"</td>";
+            line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+value+"</td>";
             padding=padding+2;
         }
-        line=line+ "</tr></table></div></div></div><div class='swipeout-actions-right'><a href='#'     data-popup='.demo-popup' class='action1 bg-orange editButton' onclick='EditEditableGridRow("+(count)+",\""+clickedEditableGridId+"\",\""+clickEditableGridSourceTag+"\");'></a><a href='#' data-popup='.demo-popup' class='action1 bg-red deleteButton' onclick='deleteEditableGridRow(\""+count+"__"+clickedEditableGridId+"\",\""+clickedEditableGridId+"\");'></a></div></li>";
+        line=line+ "</tr></table></div></div></div><div class='swipeout-actions-right'><a href='#'     data-popup='.demo-popup' class='action1 bg-orange editButton' onclick='EditEditableGridRow("+(count)+",\""+clickedEditableGridId+"\",\""+clickEditableGridSourceTag+"\");'></a><a href='#' data-popup='.demo-popup' class='action1 bg-red deleteButton' onclick='deleteEditableGridRow(\""+count+"\",\""+clickedEditableGridId+"\");'></a></div></li>";
         content=content+line;
  
     $("#"+clickedEditableGridId+" ul").html(content+existingGridData);
     rowToEditIndex=-1;
-    console.log(EditableGridObject[clickedEditableGridId]);
     }
     else
     {
@@ -146,7 +118,6 @@ var formData = myApp.formToData('#my-editableGridPopon-form');
      var dataToSave= GetObjectFromFormToData(formData);    
     var content="";
         var line="";
-        //var line="<li id='"+count+"__"+clickedEditableGridId+"' class='swipeout' style='background-color:#fff;border-radius: 15px !important;'><div class='swipeout-content item-content noPadding-left'><div class='item-inner gridRow'><div><table><tr>";
         var table=$('#'+clickedEditableGridId+"_header").find(".tasksTableTD.tasksTableElement:not(.displayNone)");
         var padding=3;
         for(var i=0 ; i<table.length ;i++)
@@ -155,7 +126,6 @@ var formData = myApp.formToData('#my-editableGridPopon-form');
             line=line+" <td name="+entity+" style= 'font-size:small !important; max-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-padding)+"px !important; min-width:125px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+dataToSave[entity]+"</td>";
             padding=padding+2;
         }
-        // line=line+ "</tr></table></div></div></div><div class='swipeout-actions-right'><a href='#'     data-popup='.demo-popup' class='action1 bg-orange editButton' onclick='EditEditableGridRow("+(count)+",\""+clickedEditableGridId+"\",\""+clickEditableGridSourceTag+"\");'></a><a href='#' data-popup='.demo-popup' class='action1 bg-red deleteButton' onclick='deleteEditableGridRow(\""+RowNumberToEdit+"__"+clickedEditableGridId+"\",\""+clickedEditableGridId+"\");'></a></div></li>";  
         var existingGridDataRows=$("#"+clickedEditableGridId+" ul li");
         for(var i=0; i<existingGridDataRows.length;i++)
         {
@@ -171,7 +141,7 @@ var formData = myApp.formToData('#my-editableGridPopon-form');
 function EditEditableGridRow(rowNumber,selectedGridId,gridSourceTag){
     clickedEditableGridId=selectedGridId;
     rowIdToEdit=rowNumber+"_"+selectedGridId;
-    rowObject=GetEditableGridRowObject(rowNumber,selectedGridId,gridSourceTag);
+    rowObject=GetEditableGridRowObject(selectedGridId,rowIdToEdit,gridSourceTag);
     var object={};
     var arr=[];
     arr.push(rowObject);
@@ -181,11 +151,11 @@ function EditEditableGridRow(rowNumber,selectedGridId,gridSourceTag){
 }
  
 
-function GetEditableGridRowObject(rowNumber,gridId,selectedGrid)
+function GetEditableGridRowObject(selectedGridId,rowIdToEdit,selectedGrid)
 {
     var obj={};
-    var table=$("#"+gridId+"_header").find(".tasksTableTD.tasksTableElement:not(.displayNone)");
-    var existingGridDataRows=$("#"+rowNumber+"_"+gridId+" td");
+    var table=$("#"+selectedGridId+"_header").find(".tasksTableTD.tasksTableElement:not(.displayNone)");
+    var existingGridDataRows=$("#"+rowIdToEdit+" tr td");
     
             var arr=[];
             console.log(existingGridDataRows[i]);
@@ -237,9 +207,7 @@ function deleteEditableGridRow(rowNumber,selectedGridId,gridSourceTag)
 { 
   var existingGridDataRows=$("#"+selectedGridId+" ul li");
     for(var i=0; i<existingGridDataRows.length;i++)
-        { 
-            console.log("id existing    "+$(existingGridDataRows[i]).attr("id"));
-            console.log("id selected    "+i+"   "+rowNumber+"_"+selectedGridId);
+        {
             if($(existingGridDataRows[i]).attr("id")===rowNumber+"_"+selectedGridId){
                 $("#"+rowNumber+"_"+selectedGridId).remove();
             }

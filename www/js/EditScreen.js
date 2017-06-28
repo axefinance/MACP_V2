@@ -98,7 +98,7 @@ function deleteAttachmentDocument(name, folder, subFolder) {
             },
             error: function (e) {
 
-                console.log(e.message);
+                console.log(e.message); 
                 verifconnexion = false;
                 myApp.hidePreloader();
                 errorMessage();
@@ -137,7 +137,6 @@ function loadRelatedItemPopup(id, isDuplicateAction,relatedItemType) {
                     myApp.alert("please check your internet connection");
                 else 
                     mainView.router.load({url: 'pricingConditionScreen.html',reload:false,ignoreCache:true});
-                EditableGridObject=PricingConditionEdiatbelegrids;    
             }
         else 
         {
@@ -145,7 +144,6 @@ function loadRelatedItemPopup(id, isDuplicateAction,relatedItemType) {
                 myApp.alert("please check your internet connection");
             else 
                 mainView.router.load({url: 'relatedItemScreen.html',reload:false,ignoreCache:true}); 
-          EditableGridObject=RelatedItemEdiatbelegrids;
 
 }}
 }
