@@ -41,7 +41,7 @@ function GetEditableGridPoponContent(sourcetag,spname,stringifyData){
       var data = "{" +
             "\"sourcetag\":\"" + sourcetag + "\"," +
             "\"spname\":\"" + spname + "\"," + 
-            "\"mainItemId\"" + itemId + "\"," +
+            "\"mainItemId\"" + itemId + "\"," + 
             "\"screenName\":\"" + screenName + "\"," + 
             "\"taskId\":\"" + TaskId + "\"," +
             "\"stringifyData\":" + stringifyData +"," +   
