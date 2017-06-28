@@ -15,7 +15,7 @@ var searchParams;
 var HomeBackButton;
 var docMenu;
 var eligibility;
-var relatedItemId;
+var relatedItemId=0;
 var stopWFMessage;
 var TaskId;
 var ExecutedWorkflowName;
@@ -379,6 +379,8 @@ function GetEditScreen(url,itemId){
                         docMenu=(data.DocumentMenu);
                         loadJSFile("js/EditScreen.js");
                         loadJSFile("js/WorkflowManager.js");
+                        loadJSFile("js/informativeGridInfiniteScroll.js");
+                        myApp.attachInfiniteScroll($$('.informativeGrid-infinite-scroll'));
                         putExistingRowsInObject("#my-mainData-form");
                         myApp.hidePreloader();
                     },

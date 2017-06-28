@@ -1,37 +1,33 @@
 var loading = false;
 var infiniteScroll_JSFlag; 
-// Last loaded index
-var lastIndex = 30;
- 
- 
-// Append items per load
 var itemsPerLoad = 10;
-myApp.attachInfiniteScroll($$('.infinite-scroll'))
-// Attach 'infinite' event handler
-$$('.infinite-scroll').on('infinite', function () {
+myApp.attachInfiniteScroll($$('.informativeGrid-infinite-scroll'))
+$$('.informativeGrid-infinite-scroll').on('infinite', function () {
    
+    gridId=$$(this).attr("id");
+    var spName= gridId.split("__")[1];
+    var lastIndex = $("#"+gridId+" ul tr").length;
     if (loading) return;  
     loading = true;
     setTimeout(function () {  
-
-        // Emulate 1s loading     
-        // Reset loading flag  
+ 
         loading = false;
-        var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetNextSearchResult';
+        var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetNextInformativeGridRows';
         if (lastIndex >= totalRowNumber) {
-            myApp.detachInfiniteScroll($$('.infinite-scroll'));
-            $$('.infinite-scroll-preloader').remove();
+            myApp.detachInfiniteScroll($$("#"+gridId));
+            $$('.infinite-scroll-preloader '+gridId).remove();
             return;
         }      
       
         var data="{"+    
-          "\"item\":\""+currentItem+"\","+
+          "\"screenName\":\""+divId+"\","+
+          "\"spName\":\""+spName+"\","+  
+          "\"mainItemId\":\""+itemId+"\","+  
+          "\"relatedItemId\":\""+relatedItemId+"\","+  
           "\"userData\":"+sessionStorage.getItem("userData")+","+
-          "\"searchParams\":"+searchParams+","+
           "\"start\":\""+lastIndex+"\","+
           "\"limit\":\"10\","+      
-          "\"windowWidth\":\""+window.innerWidth+"\","+
-          "\"windowHeight\":\""+(window.innerHeight-70)+"\"}"; 
+          "\"windowWidth\":\""+window.innerWidth+"\"}"; 
         console.log("SearchParams",data);        
         $.ajax({             
             type: 'POST',             
@@ -41,15 +37,16 @@ $$('.infinite-scroll').on('infinite', function () {
             async: false,                                
             data: data,         
             success: function(data) {              
-                if(data.data==="")  
+                if(data.content==="")  
                 { 
-                    $$('.infinite-scroll-preloader').remove();
+                    $$('.infinite-scroll-preloader '+gridId).remove();
                     return;  
                 }
-                $$('.tasksTableElement ul').append(data.data);
+                $$("#"+gridId+" ul").append(data.content);
+                totalRowNumber=data.totalRow;
                 lastIndex=lastIndex+itemsPerLoad; 
             
-            },
+            }, 
             error: function(e) { 
                 console.log(e.message);  
                 verifconnexion = false;        
