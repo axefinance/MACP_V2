@@ -41,7 +41,7 @@ function GetEditableGridPoponContent(sourcetag,spname,stringifyData){
       var data = "{" +
             "\"sourcetag\":\"" + sourcetag + "\"," +
             "\"spname\":\"" + spname + "\"," + 
-            "\"mainItemId\"" + itemId + "\"," + 
+            "\"mainItemId\":\"" + itemId + "\"," + 
             "\"screenName\":\"" + screenName + "\"," + 
             "\"taskId\":\"" + TaskId + "\"," +
             "\"stringifyData\":" + stringifyData +"," +   
@@ -66,7 +66,7 @@ function GetEditableGridPoponContent(sourcetag,spname,stringifyData){
             }
         }); 
 } 
-
+/*
 function GetObjectFromFormToData(formData)
 {
        var  obj={}; 
@@ -76,6 +76,27 @@ function GetObjectFromFormToData(formData)
         obj[property]=formData[propertyName];
     }
     return obj;
+     
+}
+*/
+function GetObjectFromFormToData(formData)
+{
+       var  obj={}; 
+    for(var propertyName in formData) {
+        var type=propertyName.split('__')[0];
+        var property=propertyName.split('__')[2];
+        var value=formData[propertyName];
+        if(type==="j")
+            {
+             if(value[0]==="on")  
+               value="true";
+             else
+                value="false";
+            }
+        
+        obj[property]=value;
+    } 
+    return obj; 
      
 }
 function saveInGridOnPopon(){
