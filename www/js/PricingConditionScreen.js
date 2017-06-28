@@ -5,7 +5,6 @@ var itemsPerLoad = 10;
 var transactionAmountStringList=null;
 var transactionAmountFeesListObject=null;
 var transactionAmountEventFeesListObject=null;
-var PricingConditionEdiatbelegrids = {};
 
 
 

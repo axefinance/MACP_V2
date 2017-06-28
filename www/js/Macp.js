@@ -381,7 +381,6 @@ function GetEditScreen(url,itemId){
                         loadJSFile("js/WorkflowManager.js");
                         loadJSFile("js/informativeGridInfiniteScroll.js");
                         myApp.attachInfiniteScroll($$('.informativeGrid-infinite-scroll'));
-                        putExistingRowsInObject("#my-mainData-form");
                         myApp.hidePreloader();
                     },
                     error: function(e) {
@@ -870,9 +869,6 @@ function GetPricingConditionScreen(){
              loadJSFile("js/amortizationInfiniteScroll.js");
             myApp.hidePreloader();  
             ManagePricingCnditionComponents();
-            putExistingRowsInObject("#my-relatedItemPopup-form");
-            PutExistingFeesRowsInObjectToSend("_editableGrid__consumerloan_condition__SPGetTransactionConditionFees");
-            PutExistingFeesRowsInObjectToSend("_editableGrid__consumerloan_condition__SPGetTransactionConditionEventFees");
         },
         error: function(e) { 
             myApp.hidePreloader();
