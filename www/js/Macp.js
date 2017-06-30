@@ -298,6 +298,17 @@ myApp.onPageInit('pricingConditionScreen', function (page) {
     myApp.showPreloader();
 });
 
+myApp.onPageInit('relatedScreen', function (page) {
+    HomeBackButton.style.visibility="visible";
+    createLanguagesList('relatedScreen'); 
+    createLogoutPopover('relatedScreen');    
+    setTemplate_HeaderData('relatedScreen'); 
+    myApp.params.swipePanel=false;
+    pageTitleElement=document.getElementById("title_relatedScreen");
+    pageTitleElement.textContent=itemRef+" : "+ RelatedItemType;
+    GetRelatedScreenFromLink(); 
+});
+
 function GetRelatedItemScreen()
 {
      var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    
@@ -874,6 +885,38 @@ function GetPricingConditionScreen(){
             myApp.hidePreloader();
         }              
     });  
+}
+
+function GetRelatedScreenFromLink()
+{
+     
+        var data = "{" +
+           "\"userData\":"+sessionStorage.getItem("userData")+","+
+           "\"screenName\":\"" + LinkSourceTag + "\"," +
+           "\"screenParent\":\"" + currentItem + "\"," + 
+           "\"mainItemId\":\"" + itemId + "\"," +
+           "\"taskId\":\""+TaskId+"\"," +
+           "\"screenEngine\":\"classicre\"," +
+           "\"screenWidth\":\"" + window.innerWidth + "\"," +
+           "\"screenHeight\":\"" + window.innerHeight + "\"}";
+        myApp.showPreloader();
+        $.ajax({
+            type: "POST",
+            url: "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetLoadEditTabFrame",
+            contentType: "text/plain",
+            dataType: "json",
+            data: data,
+            success: function (data) {
+                document.getElementById("relatedScreenForm").innerHTML = data.content;  
+                myApp.hidePreloader();  
+            },
+            error: function (e) {
+                myApp.hidePreloader();
+                errorMessage();
+            }
+        });
+        
+   
 }
     
 

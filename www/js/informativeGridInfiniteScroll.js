@@ -32,7 +32,7 @@ $$('.informativeGrid-infinite-scroll').on('infinite', function () {
         $.ajax({             
             type: 'POST',             
             url: url,                                     
-            contentType: "text/plain",                            
+            contentType: "text/plain",                             
             dataType: "json",                               
             async: false,                                
             data: data,         
