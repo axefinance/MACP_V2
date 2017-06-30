@@ -700,14 +700,17 @@ function connectedComboOptions(url,idChild,val,child,entity,screenTagName,shared
         contentType: "text/plain",                          
         dataType: "json",                            
         data: data,
-                    success: function(data) {
-                    
-                        
-                        for(var i=0;i<child.length;i++)
-                            {
-                                document.getElementById(childs[i]).innerHTML=data[childs[i]];
-                            }
-                                                                    
+                success: function(data) {
+                        var json=JSON.stringify(data.content);
+                        var myObj=JSON.parse(json)
+
+                        Object.keys(myObj).forEach(function(key){
+                            var value = myObj[key];
+                            Object.keys(value).forEach(function(key2){
+                                var value2 = value[key2];
+                                document.getElementById(key2).innerHTML=value2;
+                            });
+                        });                                    
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
                         console.log(errorThrown+'  in processing!'+textStatus);
