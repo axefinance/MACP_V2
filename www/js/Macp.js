@@ -309,6 +309,10 @@ myApp.onPageInit('relatedScreen', function (page) {
     GetRelatedScreenFromLink(); 
 });
 
+myApp.onPageReinit('relatedScreen', function (page) {
+    loadScreen(divId);
+    });
+
 function GetRelatedItemScreen()
 {
      var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    

@@ -131,7 +131,7 @@ function loadRelatedItemPopup(id, isDuplicateAction,relatedItemType) {
      relatedItemId = id;
         isDuplicate = isDuplicateAction;
         if(divId.indexOf('_condition') > -1)
-            {
+            { 
 
                 if(!checkInternetConnection())                                                   
                     myApp.alert("please check your internet connection");
@@ -143,7 +143,11 @@ function loadRelatedItemPopup(id, isDuplicateAction,relatedItemType) {
             if(!checkInternetConnection())                                                   
                 myApp.alert("please check your internet connection");
             else 
-                mainView.router.load({url: 'relatedItemScreen.html',reload:false,ignoreCache:true}); 
+                {
+                    mainView.router.load({url: 'relatedItemScreen.html',reload:false,ignoreCache:true}); 
+                   // myApp.alert("related Item   "+engine);
+                }
+                
 
 }}
 }
