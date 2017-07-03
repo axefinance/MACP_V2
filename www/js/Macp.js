@@ -29,6 +29,7 @@ var WithCollectQuestion;
 var extendedProperties=null;
 var isSwitchLanguage = false;
 var navbarTitle;
+var isRelatedFromLink="false";
 
 
 var myApp=new Framework7({ swipeBackPage : false, statusbarOverlay:true, tapHold: true,swipePanel: 'left',fastClicksDelayBetweenClicks : 10 }) ;
@@ -275,7 +276,8 @@ myApp.onPageInit('executeTaskScreen', function (page) {
     console.log("URL",url);
     GetExecuteTaskScreen(url);
 });
-myApp.onPageInit('relatedItemScreen', function (page) {    
+myApp.onPageInit('relatedItemScreen', function (page) {
+   
     HomeBackButton.style.visibility="visible";
     createLanguagesList('relatedItemScreen'); 
     createLogoutPopover('relatedItemScreen');
@@ -306,12 +308,9 @@ myApp.onPageInit('relatedScreen', function (page) {
     myApp.params.swipePanel=false;
     pageTitleElement=document.getElementById("title_relatedScreen");
     pageTitleElement.textContent=itemRef+" : "+ RelatedItemType;
-    GetRelatedScreenFromLink(); 
+    loadScreen(divId);  
 });
 
-myApp.onPageReinit('relatedScreen', function (page) {
-    loadScreen(divId);
-    });
 
 function GetRelatedItemScreen()
 {
@@ -328,7 +327,7 @@ function GetRelatedItemScreen()
     console.log("SearchParams",data);        
     $.ajax({             
         type: 'POST',             
-        url: url,                                     
+        url: url,                                      
         contentType: "text/plain",                             
         dataType: "json",                            
         data: data,         
@@ -397,6 +396,7 @@ function GetEditScreen(url,itemId){
                         loadJSFile("js/informativeGridInfiniteScroll.js");
                         myApp.attachInfiniteScroll($$('.informativeGrid-infinite-scroll'));
                         myApp.hidePreloader();
+                        RelatedItemType=$(".selectedTab").text(); 
                     },
                     error: function(e) {
                         myApp.hidePreloader();               
@@ -856,7 +856,6 @@ function manageInstructionGuideResponse(data){
 function showWorkflowInstructionGuide(){  
      myApp.popup('<div class="popup" style="width: 50% !important; height :50% !important; top: 25% !important; top:25% !important; left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" >' + InstructionGuide + '</div>', true); 
 }
-
 function GetPricingConditionScreen(){
     var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    
 
@@ -890,38 +889,3 @@ function GetPricingConditionScreen(){
         }              
     });  
 }
-
-function GetRelatedScreenFromLink()
-{
-     
-        var data = "{" +
-           "\"userData\":"+sessionStorage.getItem("userData")+","+
-           "\"screenName\":\"" + LinkSourceTag + "\"," +
-           "\"screenParent\":\"" + currentItem + "\"," + 
-           "\"mainItemId\":\"" + itemId + "\"," +
-           "\"taskId\":\""+TaskId+"\"," +
-           "\"screenEngine\":\"classicre\"," +
-           "\"screenWidth\":\"" + window.innerWidth + "\"," +
-           "\"screenHeight\":\"" + window.innerHeight + "\"}";
-        myApp.showPreloader();
-        $.ajax({
-            type: "POST",
-            url: "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetLoadEditTabFrame",
-            contentType: "text/plain",
-            dataType: "json",
-            data: data,
-            success: function (data) {
-                document.getElementById("relatedScreenForm").innerHTML = data.content;  
-                myApp.hidePreloader();  
-            },
-            error: function (e) {
-                myApp.hidePreloader();
-                errorMessage();
-            }
-        });
-        
-   
-}
-    
-
-

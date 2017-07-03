@@ -137,7 +137,7 @@ function manageSaveRelatedItemResponse(data) {
 
                 myApp.hidePreloader();
                 myApp.alert(SuccessMsg, SuccesMsgTitle, function () {
-                    loadScreen(divId);
+                            loadScreen(divId);
                     mainView.router.back({reloadPrevious:true});
                 });
                 myApp.closeModal(".popup", true);
