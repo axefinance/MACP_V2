@@ -37,6 +37,7 @@ input, textarea  {
         font-weight: bold !important;
 }
 
+
 body {
     /* margin: 0.5rem ; */
     background: white ; 
@@ -46,6 +47,8 @@ body {
 .align-center {
     text-align: center ;
 }
+
+
 
 .popup {
     border-radius: 15px;

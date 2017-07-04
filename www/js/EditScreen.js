@@ -1,4 +1,4 @@
-// JavaScript source code
+
 var EditScreen_JSFlag;
 var fileUploadedName;
 var fileData;
@@ -14,7 +14,7 @@ var clickedEditableGridId;
 var clickedEditableGridColumnsCount;
 var newEditableGridRows = [];
 
-function generateAttachmentPicture(name, folder, subFolder){
+    function generateAttachmentPicture(name, folder, subFolder){
      myApp.showPreloader();
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/GetDocumentAttachedStream';
         var data = "{" +
@@ -69,9 +69,7 @@ function generateAttachmentPicture(name, folder, subFolder){
             }
         });
 }
-
-
-function deleteAttachmentDocument(name, folder, subFolder) {
+    function deleteAttachmentDocument(name, folder, subFolder) {
         myApp.showPreloader();
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/DeleteAttachmentDocument';
         var data = "{" +
@@ -91,7 +89,6 @@ function deleteAttachmentDocument(name, folder, subFolder) {
                 if (data.status === "ok") {
                     myApp.hidePreloader();
                     loadScreen(divId);
-                } else {
                     myApp.hidePreloader();
                     myApp.alert("error deleting","Error");
                 }
@@ -106,8 +103,8 @@ function deleteAttachmentDocument(name, folder, subFolder) {
         });
 
     }
-
-function loadRelatedItemPopup(id, isDuplicateAction,relatedItemType) {
+    function loadRelatedItemPopup(id, isDuplicateAction,relatedItemType) {
+      
     if (engine === "attachment") {
         isUpdateAttachment = false;
         var formData = {
@@ -131,7 +128,7 @@ function loadRelatedItemPopup(id, isDuplicateAction,relatedItemType) {
      relatedItemId = id;
         isDuplicate = isDuplicateAction;
         if(divId.indexOf('_condition') > -1)
-            {
+            { 
 
                 if(!checkInternetConnection())                                                   
                     myApp.alert("please check your internet connection");
@@ -143,12 +140,15 @@ function loadRelatedItemPopup(id, isDuplicateAction,relatedItemType) {
             if(!checkInternetConnection())                                                   
                 myApp.alert("please check your internet connection");
             else 
-                mainView.router.load({url: 'relatedItemScreen.html',reload:false,ignoreCache:true}); 
+                {
+                    mainView.router.load({url: 'relatedItemScreen.html',reload:false,ignoreCache:true}); 
+                   // myApp.alert("related Item   "+engine);
+                }
+                
 
 }}
 }
-
-function manageAttechementElement() {
+    function manageAttechementElement() {
     document.getElementById("uploadBtn").onchange = function () {
         document.getElementById("uploadFile").value = this.value;
         var file = this.files[0];
@@ -163,7 +163,7 @@ function manageAttechementElement() {
     }
 }
     function loadScreen(divID) {
-        var data = "{" +
+              var data = "{" +
            "\"userData\":"+sessionStorage.getItem("userData")+","+
            "\"screenName\":\"" + divId + "\"," +
            "\"screenParent\":\"" + currentItem + "\"," + 
@@ -173,6 +173,29 @@ function manageAttechementElement() {
            "\"screenWidth\":\"" + window.innerWidth + "\"," +
            "\"screenHeight\":\"" + window.innerHeight + "\"}";
         myApp.showPreloader();
+        if(isRelatedFromLink==="true")
+            {
+        
+        $.ajax({
+            type: "POST",
+            url: "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedFrameFromLink",
+            contentType: "text/plain",
+            dataType: "json",
+            data: data,
+            success: function (data) {
+                document.getElementById("relatedScreenForm").innerHTML = data.content;  
+                if($('#relatedScreen-toolbarContent div').length===0)
+                 $('#relatedScreen-toolbarContent').append(data.buttonsDiv); 
+                myApp.hidePreloader();  
+            },
+            error: function (e) {
+                myApp.hidePreloader();
+                errorMessage();
+            }
+        });
+            }
+        else
+            {
         $.ajax({
             type: "POST",
             url: "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetLoadEditTabFrame",
@@ -194,7 +217,6 @@ function manageAttechementElement() {
                     case ("classicre"):
                         {
                             document.getElementById(divID).innerHTML = data.content;
-                            RelatedItemType=data.screenName; 
                             myApp.hidePreloader();
                             break; 
                         }
@@ -219,17 +241,13 @@ function manageAttechementElement() {
             }
         });
         
+          }
     }
-
-
-
     function deleteRelatedItem(id, culture, confirmationMessage) {
         myApp.confirm(confirmationMessage, function () {
             deleteItem(id, culture);
         });
     }
-
-
     function deleteItem(id, culture) {
         var data = "{" +
        "\"screenName\":\"" + divId + "\"," +
@@ -250,7 +268,7 @@ function manageAttechementElement() {
             success: function (data) {
                 myApp.hidePreloader();
                 myApp.alert(data.status,"MACP", function () {
-                    loadScreen(divId);
+                    loadScreen(divId);    
                 });
             },
             error: function (e) {
@@ -259,12 +277,13 @@ function manageAttechementElement() {
             }
         });
     }
-
-
     function menuTabClick(divID, butDiv, screenEngine) {
+         isRelatedFromLink="false";
+         console.log("menuTabClick   isRelatedFromLink",isRelatedFromLink);
         divId = divID;
         engine = screenEngine;
         isUpdateAttachment = false;
+      
         var selectedDivId ;
         selectedDivId = $("div").siblings(".Active").attr("id");
         $("button").siblings(".selectedTab").removeClass('selectedTab');
@@ -277,20 +296,16 @@ function manageAttechementElement() {
         $('#' + divID).addClass('Active');
         $('#'+divID+'_buttons').removeClass("displayNone");
         $('#'+selectedDivId+'_buttons').addClass("displayNone");
-         
+        RelatedItemType=$(".selectedTab").text();  
     } 
-
     $$('.startWF-From-Edit-Screen-form-to-data').on('click', function () {
 
         startWorkflow_ButtonAction(itemId);
     });
-
-
     function generateDocumentMenu() {
 
         myApp.popup('<div id="documentMenuPopup" class="popup" style="width: 60% !important; top: 10% !important;left: 20% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" >' + docMenu + '</div>', true);
     }
-
     function generateDocument(documentName, item, fileType) {
         myApp.showPreloader();
         var url = "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/ExportReport";
@@ -321,15 +336,11 @@ function manageAttechementElement() {
             }
         });
     }
-
-
     function managePdfReaderInAndroid(documentName, base64) {
         var folderpath = cordova.file.externalRootDirectory;
         var contentType = "application/pdf";
         savebase64AsPDF(folderpath, documentName, base64, contentType);
-
     }
-
     function b64toBlob(b64Data, contentType, sliceSize) {
         contentType = contentType || '';
         sliceSize = sliceSize || 512;
@@ -355,7 +366,6 @@ function manageAttechementElement() {
         });
         return blob;
     }
-
     function savebase64AsPDF(folderpath, filename, content, contentType) {
         var DataBlob = b64toBlob(content, contentType);
 
@@ -379,7 +389,6 @@ function manageAttechementElement() {
         myApp.hidePreloader();
         window.open(folderpath + "//" + filename, "_system", 'location=yes');
     }
-
     $$('.edit-mainData-form-to-data').on('click', function () {
         var indexToSelect = 1;
         if (engine === "classicms") {
@@ -401,66 +410,14 @@ function manageAttechementElement() {
             }
         }
     });
-
-
-function mainData_SaveEvent() {
+    function mainData_SaveEvent() {
         var formData = myApp.formToData('#my-mainData-form');
         Parameters = JSON.stringify(formData);
         UpdateItemEvent();
     }
-
     function attachement_SaveEvent() {
         uploadAttachementFile();
     }
-
-
-
-    function UpdateRelatedItem(msg) {
-        var updateId = relatedItemId;
-        if (isDuplicate === "isDuplicate"||isDuplicate==="isNew")
-            updateId = 0;
-        var data = "{" +
-            "\"mainItemId\":\"" + itemId + "\"," +
-            "\"relatedItemId\":\"" + updateId + "\"," +
-            "\"screenName\":\"" + divId + "\"," +
-            "\"userId\":\"" + sessionStorage.getItem("userId") + "\"," +
-            "\"parameters\":" + Parameters + "}";
-        myApp.showPreloader();
-        var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/SaveRelatedItem';
-
-        $.ajax({
-            type: 'POST',
-            url: url,
-            contentType: "text/plain",
-            dataType: "json",
-            data: data,
-            success: function (data) {
-
-                if (data.status === "ok") {
-                    myApp.hidePreloader();
-                    myApp.alert(msg,"MACP", function () {
-                        loadScreen(divId);
-
-                    });
-                    myApp.closeModal(".popup", true);
-
-                } else {
-                    myApp.hidePreloader();
-                    myApp.alert("error saving","Error");
-                }
-            },
-            error: function (e) {
-
-                console.log(e.message);
-                verifconnexion = false;
-                myApp.hidePreloader();
-                errorMessage();
-
-
-            }
-        });
-    }
-
     function uploadAttachementFile() {
         var formData = myApp.formToData('#my-attachment-form');
         parameters = JSON.stringify(formData);
@@ -485,7 +442,9 @@ function mainData_SaveEvent() {
                 if (data.status === "ok") {
                     myApp.hidePreloader();
                     loadScreen(divId);
-                } else {
+                        }
+                    
+                 else {
                     myApp.hidePreloader();
                     myApp.alert("error saving","Error");
                 }
@@ -500,7 +459,6 @@ function mainData_SaveEvent() {
         });
 
     }
-
     function editFileDetail(name, type, status, description, rejectionComment, expiryDate, dateFormat, folder, subFolder) {
         isUpdateAttachment = true;
         fileUploadedName = name;
@@ -554,7 +512,6 @@ function mainData_SaveEvent() {
 
 
     }
-
     function fileDetail(name, type, status, description, rejectionComment, expiryDate, dateFormat, folder, subFolder, buttonListMenu) {
 
         var buttonsGroup = [];
@@ -598,8 +555,6 @@ function mainData_SaveEvent() {
         }
         myApp.actions(buttonsGroup);
     }
-
-
     function UpdateItem() {
       var stringify= getGridonPoponsData("#my-mainData-form");
         var data = "{" +
@@ -629,10 +584,7 @@ function mainData_SaveEvent() {
             }
         });
     }
-
-       
-
-        function downloadAsset(fileName) {
+    function downloadAsset(fileName) {
             var assetURL = "https://raw.githubusercontent.com/cfjedimaster/Cordova-Examples/master/readme.md";
             var store = cordova.file.dataDirectory;
             var fileTransfer = new FileTransfer();
@@ -644,9 +596,7 @@ function mainData_SaveEvent() {
                     console.log("Error");
                 });
         }
-
-
- function UpdateItemEvent() {
+    function UpdateItemEvent() {
 var stringify= getGridonPoponsData("#my-mainData-form");
         var data = "{" +
             "\"mainItemId\":\"" + itemId + "\"," +
@@ -681,8 +631,7 @@ var stringify= getGridonPoponsData("#my-mainData-form");
             }  
         });
     }
-
-function manageUpdateItemResponse(data) {
+    function manageUpdateItemResponse(data) {
             console.log(data.behavior);
             if (data.behavior != null) {
 
@@ -716,8 +665,6 @@ function manageUpdateItemResponse(data) {
                 myApp.alert(data.message,"MACP");
             }
      }
-
-    
     function saveBeforeUpdateItem_DeviationComment() {
             var comment = document.getElementById("deviationComment").value;
             var updateId = relatedItemId;
