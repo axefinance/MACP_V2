@@ -29,7 +29,7 @@ var WithCollectQuestion;
 var extendedProperties=null;
 var isSwitchLanguage = false;
 var navbarTitle;
-var isRefreshingEvent=false;
+//var isRefreshingEvent=false;
 
 var myApp=new Framework7({ swipeBackPage : false, statusbarOverlay:true, tapHold: true,swipePanel: 'left',fastClicksDelayBetweenClicks : 10 }) ;
 var db = openDatabase('mydb', '1.0', 'Test DB', 2 * 1024 * 1024);
@@ -52,7 +52,7 @@ $$('.firstWS-confirm-ok-cancel').on('click', function () {
     
 });   
 
-var homePagePullToRequestContent = $$('.pull-to-refresh-content'); 
+/*var homePagePullToRequestContent = $$('.pull-to-refresh-content'); 
 
 homePagePullToRequestContent.on('ptr:refresh', function (e) {
     // Emulate 2s loading
@@ -61,7 +61,7 @@ homePagePullToRequestContent.on('ptr:refresh', function (e) {
         reInitHomePage();
         myApp.pullToRefreshDone();
     }, 2000);
-});
+});*/
 
 
 function checkInternetConnection() {
@@ -123,7 +123,7 @@ myApp.onPageReinit('homePage', function (page) {
     }
 });  
 function reInitHomePage(){ 
-    if(!isRefreshingEvent)
+    //if(!isRefreshingEvent)
    myApp.showPreloader();
    var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/ReInitHomePage';
    var data="{"+ 
@@ -140,10 +140,10 @@ function reInitHomePage(){
             document.getElementById("tasks").innerHTML=data.TasksContent;
             document.getElementById("homePage-toolbarContent").innerHTML=data.buttonsDiv;
             console.log("success");
-            if(!isRefreshingEvent)
+            //if(!isRefreshingEvent)
              myApp.hidePreloader();
             GetHomePageScripts(); 
-            isRefreshingEvent=false;
+           // isRefreshingEvent=false;
         },
         error: function(e) {
             
