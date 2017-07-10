@@ -2,7 +2,7 @@ var changeLangConfirmationMessage;
 var loggingOutWindowMessage;
 var loggingOutWindowTitle;
 var ip_config;
-var ip_port;
+var ip_port; 
 var itemId;
 var tasks; 
 var totalRowNumber;
@@ -30,6 +30,7 @@ var extendedProperties=null;
 var isSwitchLanguage = false;
 var navbarTitle;
 var isRelatedFromLink="false";
+var xmlTagNewInput;
 
 
 var myApp=new Framework7({ swipeBackPage : false, statusbarOverlay:true, tapHold: true,swipePanel: 'left',fastClicksDelayBetweenClicks : 10 }) ;
@@ -76,7 +77,7 @@ function isScreenInCache(screenName){
     console.log("false");   
     return false;
 }
-function westMenuItem(item,title,screenName){ 
+function westMenuItem(item,title,screenName, xmlTag){ 
     if(isScreenInCache(screenName))
         {
         mainView.history=["#homePage"];
@@ -85,6 +86,7 @@ function westMenuItem(item,title,screenName){
         document.getElementById("lng_label_"+screenName.replace(".html","")).remove(); 
         $$('.view-main .page-on-left').remove(screenName);
         }
+      xmlTagNewInput = xmlTag;
       currentItem=item;
       pageTitleContent=title;
       fromNewInput=false;
@@ -399,7 +401,7 @@ function GetEditScreen(url,itemId){
                         RelatedItemType=$(".selectedTab").text(); 
                     },
                     error: function(e) {
-                        myApp.hidePreloader();               
+                        myApp.hidePreloader();                 
                         errorMessage();
                     }   
             });         
@@ -407,7 +409,8 @@ function GetEditScreen(url,itemId){
 function GetNewInputScreen(url){
      var data="{"+     
         "\"currentItem\":\""+currentItem+"\","+
-        "\"screenWidth\":\""+window.innerWidth+"\","+         
+        "\"screenWidth\":\""+window.innerWidth+"\","+
+        "\"xmlTag\":\""+xmlTagNewInput+"\","+
         "\"userData\":"+sessionStorage.getItem("userData")+"}";
     $.ajax({ 
                     type: "POST",  
