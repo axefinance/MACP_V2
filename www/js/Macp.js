@@ -819,6 +819,7 @@ function GetExecuteTaskScreen(url){
                      document.getElementById("executeTaskContent").innerHTML=data.content;
                      pageTitleElement=document.getElementById("title_executeTaskScreen");
                      pageTitleElement.textContent=data.itemShortName;
+                     itemRef=data.itemShortName;
                      $('#executeTask-toolbarContent').append(data.buttonsDiv);
                         divId = data.divId;
                         engine = data.screenEngine;    
