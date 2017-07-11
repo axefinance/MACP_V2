@@ -263,7 +263,7 @@ myApp.onPageInit('searchResultScreen', function (page) {
     myApp.showPreloader();
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetSearchResultPage';
     console.log("URL",url);
-    lunchSearchResult(url); 
+    lunchSearchResult(url,"searchResult",currentItem)
 });  
 myApp.onPageInit('executeTaskScreen', function (page) {
     HomeBackButton.style.visibility="visible";
@@ -544,7 +544,7 @@ function GetTeamTasks(url) {
             myApp.hidePreloader();                
             errorMessage();
         }
-    });          
+    });           
                
 }                
 function createLanguagesList(screen){
@@ -656,14 +656,15 @@ function logoutAction(){
     );
        
 }
-function lunchSearchResult(url){           
+function lunchSearchResult(url,searchScreenType,sarchItem){           
      var data="{"+    
         "\"userData\":"+sessionStorage.getItem("userData")+","+ 
-        "\"item\":\""+currentItem+"\","+
+        "\"item\":\""+sarchItem+"\","+
         "\"searchParams\":"+searchParams+","+
         "\"start\":\"0\","+
         "\"limit\":\"30\","+      
         "\"windowWidth\":\""+window.innerWidth+"\","+
+        "\"searchScreenType\":\""+searchScreenType+"\","+
         "\"windowHeight\":\""+(window.innerHeight-90)+"\"}";  
     console.log("SearchParams",data);          
     $.ajax({             
@@ -673,22 +674,27 @@ function lunchSearchResult(url){
         dataType: "json",                            
         data: data,         
         success: function(data) {   
-            
-            document.getElementById("searchResult").innerHTML=data.dataGrid;  
-            totalRowNumber=data.TotalRows;
-            console.log(totalRowNumber);
-             var tasksTableElement =document.getElementById("tasksTableElement");
+            if(searchScreenType=="searchResult")
+                {
+             document.getElementById("searchResult").innerHTML=data.dataGrid; 
+             loadJSFile("js/SearchResultScreen.js");       
+                }
+            else
+                {
+              createPopup(data.dataGrid,"",10,10,80,80);           
+                }
+            var tasksTableElement =document.getElementById("tasksTableElement");
              myApp.attachInfiniteScroll(tasksTableElement);
+            totalRowNumber=data.TotalRows;
             loadJSFile("js/infiniteScroll.js");
             loadJSFile("js/WorkflowManager.js");
-            loadJSFile("js/SearchResultScreen.js");
+           
             myApp.hidePreloader();
             
-        },   
+        },    
         error: function(e) { 
             console.log(e.message);  
             verifconnexion = false;  
-            
             myApp.hidePreloader();
             errorMessage();
                          
