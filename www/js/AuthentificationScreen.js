@@ -8,8 +8,8 @@ function onClickLoginButton(){
           if(password==="")
               password='""';
           myApp.showPreloader();
-           var url ='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/Authentication/' + login + '/' + password;
-          parseDataGet(url);   
+          var url ='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/Authentication';
+          parseDataGet(url,login,password);   
           }
           catch(e){}
 }
@@ -48,21 +48,24 @@ $$('.Auth-confirm-ok-cancel').on('click', function () {
     );
 });
 
-function parseDataGet(url) {
+function parseDataGet(url,login,password) {
     var dataToReturn = 'null';
+    var data = "{" +
+        "\"login\":\"" + login + "\","+
+        "\"password\":\"" + password + "\"}";
     $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: url, 
         contentType: "text/plain",
         dataType: 'json',
+        data : data,
         success: function(data) {
-
              manageAuthentifaction(data);
         },
         error: function(e) {
            // if(e.status===0)
              myApp.hidePreloader();    
-             errorMessage();    
+             errorMessage();   
         }
     });
 
