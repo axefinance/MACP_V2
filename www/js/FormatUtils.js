@@ -314,6 +314,19 @@ function requiredFormComponent(formToDataId){
             $(textBox[i]).closest("div.item-inner").removeClass("requiredIcon");
         }
     }
+    var textArea=$(formToDataId).find("div.requiredItem.textarea textarea");
+    for (i = 0; i < textArea.length; i++) 
+    {
+        if($(textArea[i]).val()==="")
+        {
+            $(textArea[i]).closest("div.item-inner").addClass("requiredIcon");
+            isValid=false;            
+        }
+        else
+        {
+            $(textArea[i]).closest("div.item-inner").removeClass("requiredIcon");
+        }
+    }
     var dateOnly=$(formToDataId).find(" div.requiredItem.dateonly input" );
 
     for (i = 0; i < dateOnly.length; i++) 
