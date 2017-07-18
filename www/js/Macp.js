@@ -856,11 +856,11 @@ function manageInstructionGuideResponse(data){
     {
          InstructionGuide=data.instructionGuide;   
          showWorkflowInstructionGuide(); 
-        $('#executeTask-toolbarContent').append(data.instructionGuideButton); 
-    }
+        $('#executeTask-toolbarContent div').append(data.instructionGuideButton); 
+    } 
 } 
 function showWorkflowInstructionGuide(){  
-     myApp.popup('<div class="popup" style="width: 50% !important; height :50% !important; top: 25% !important; top:25% !important; left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" >' + InstructionGuide + '</div>', true); 
+     myApp.popup('<div class="popup" style="width: 50% !important; height :50% !important; top: 25% !important; top:25% !important; left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;" >' + InstructionGuide + '</div>', true); 
 }
 function GetPricingConditionScreen(){
     var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    

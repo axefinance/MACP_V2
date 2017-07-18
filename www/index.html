@@ -47,9 +47,9 @@
                <a id="homeBackButton" style="visibility:hidden;" href="#" aria-hidden="true" class="homeIcon floating-button color-blue" onclick="HomeBack();">
                </a> 
                <div data-page="index" class="page">                   
-                  <div class="page-content" style="overflow:hidden; margin-top : 10%!important; margin-right : 20% !important; margin-left : 20% !important;">
+                  <div class="page-content" style="overflow-y : auto !important;overflow:hidden; margin-top : 10%!important; margin-right : 20% !important; margin-left : 20% !important;">
                              <center>   <img src="assets/icon.png" style="margin-bottom:100px;"></center>
-                     <div id ="loginPage" class="list-block">
+                     <div id ="loginPage" class="list-block" >
                         <ul>
                             
                             
@@ -77,14 +77,14 @@
                      </div>
                      <center>
                         <a href="#" class="Auth-confirm-ok-cancel">
-                           <button class="paper-button colored raised-button paper-shadow-top-z-1" style="width: 150px;height: 40px;">
+                           <button class="paper-button colored raised-button paper-shadow-top-z-1" style="width: 150px;height: 40px;margin-bottom : 10px !important;margin-right : 10px !important;">
                               Cancel
                               <div class="ripple"></div>
                            </button>
                         </a>
-                        &nbsp;
+                       
                         <a href="#" id="HomeLogin">
-                           <button onClick="onClickLoginButton()" class="paper-button colored raised-button paper-shadow-top-z-1" style="width: 150px;height: 40px;">
+                           <button onClick="onClickLoginButton()" class="paper-button colored raised-button paper-shadow-top-z-1" style="width: 150px;height: 40px;margin-right : 10px !important;">
                               Login
                               <div class="ripple"></div>
                            </button>
@@ -135,15 +135,14 @@
                      </div>
                      <center>
                         <a href="#" class="firstWS-confirm-ok-cancel">   
-                           <button onClick="" class="paper-button colored raised-button paper-shadow-top-z-1" class="paper-button colored raised-button paper-shadow-top-z-1" style="width: 150px;height: 40px;">
+                           <button onClick="" class="paper-button colored raised-button paper-shadow-top-z-1" class="paper-button colored raised-button paper-shadow-top-z-1" style="width: 150px;height: 40px;margin-bottom : 10px !important;margin-right : 10px !important;">
                               Cancel
                               <div class="ripple"></div>
                            </button>
                         </a>
-                        &nbsp;
                         <a href="#indexmenu" id="HomeLogin">
                            <button onClick="saveFirstConfig();" class="paper-button colored raised-button paper-shadow-top-z-1" style="width: 150px;
-                              height: 40px;">
+                              height: 40px;margin-right : 10px !important;">
                               Save
                               <div class="ripple"></div>
                            </button>
