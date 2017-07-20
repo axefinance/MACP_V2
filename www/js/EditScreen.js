@@ -57,7 +57,7 @@ var newEditableGridRows = [];
                         case "jpeg":
                         case "gif":                                                        
                             fileHeader = "data:image/"+fileType+";base64,"                            
-                            myApp.popup('<div class="popup" style="width: 80% !important; top: 10% !important;left: 10% !important; margin-left: 0px !important; margin-top: 0px !important;  position:absoloute !important background : #f1f1f1 !important;" ><img src="' +fileHeader+ data.content + '"/></div>', true);                            
+                            myApp.popup('<div class="popup" style="width: 80% !important; top: 10% !important;left: 10% !important; margin-left: 0px !important; margin-top: 0px !important;  position:absoloute !important; background : #f1f1f1 !important;" ><img src="' +fileHeader+ data.content + '"/></div>', true);                            
                     }
             },
             error: function (e) {
@@ -284,13 +284,12 @@ var newEditableGridRows = [];
             }
         });
     }
+
     function menuTabClick(divID, butDiv, screenEngine,parentItemId,parentItem) {
-         isRelatedFromLink="false";
-         console.log("menuTabClick   isRelatedFromLink",isRelatedFromLink);
+        isRelatedFromLink="false";
         divId = divID;
         engine = screenEngine;
-        isUpdateAttachment = false;
-      
+        isUpdateAttachment = false;      
         var selectedDivId ;
         selectedDivId = $('#' + divID+"__"+parentItemId).siblings(".Active").attr("id");
         $("button").siblings(".selectedTab."+parentItemId).removeClass('selectedTab');
@@ -653,7 +652,8 @@ var newEditableGridRows = [];
                     case "deviationAlert":
                         {
                           errorMsg = data.message;
-                            myApp.popup('<div class="popup" style="width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" ><div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">' + data.message + '</br></br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="saveProcessEngineComment_enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="saveBeforeUpdateItem_DeviationComment('+parentItemId+')" id="saveProcessEngineCommentButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
+
+                            myApp.popup('<div class="popup" style="width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;" ><div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">' + data.message + '</br></br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="saveProcessEngineComment_enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="saveBeforeUpdateItem_DeviationComment()" id="saveProcessEngineCommentButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
                             break;
                                                                   
              
