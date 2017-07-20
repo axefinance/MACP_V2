@@ -78,31 +78,29 @@ function saveDeviationComment_enabledButton(textarea){
     
       
 }; 
-$$('.end-task-form-to-data').on('click', function(){
+function endTaskButtonEvent(mainItemId)
+{
 
-        var formId = "#my-mainData-form";
+        var formId = "#my-mainData-form__"+mainItemId;
         var isValidForm = requiredFormComponent(formId); 
-        /*if (!isValid) {
-            $(x[indexToSelect]).next().children().first().focus();
-        } else {*/
-    if(isValidForm){
-             endTaskEvent();
+        if(isValidForm){
+             endTaskEvent(formId,mainItemId);
         }
-    });
-
+    
+}
 function showcommentPopup(){
      myApp.popup('<div class="popup" style="width: 40% !important; height: 40% !important; top: 30% !important;left: 30% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;" ><div class="content-block-title">'+stopWFMessage+'</div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="stopWorkflowComment" onkeyup="enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="stopWorkflow()" id="stopWfYesButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
 }  
-function endTaskEvent(){
+function endTaskEvent(formId,mainItemId){
    myApp.showPreloader();
-      var formData = myApp.formToData('#my-mainData-form');
+      var formData = myApp.formToData(formId);
      var   screenParameters=JSON.stringify(formData); 
      var popupWidth=window.innerWidth*0.8;
     popupWidth=Math.floor(popupWidth);
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/EndTaskButtonEvent';
     var data="{"+       
-        "\"userData\":"+sessionStorage.getItem("userData")+","+
-        "\"mainItemId\":\""+itemId+"\","+
+        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
+        "\"mainItemId\":\""+mainItemId+"\","+
         "\"extendedProperties\":"+extendedProperties+","+
         "\"screenName\":\""+currentItem+"\","+
         "\"taskId\":\""+TaskId+"\","+

@@ -5,16 +5,17 @@ var itemsPerLoad = 10;
 var transactionAmountStringList=null;
 var transactionAmountFeesListObject=null;
 var transactionAmountEventFeesListObject=null;
+var mainItemIdForPricingConditionScreen;
+var mainItemForPricingConditionScreen;
 
 
-
-function simulateEvent(){
+function simulateEvent(item){
   var isValidForm = requiredFormComponent("#my-relatedItemPopup-form");  
   var stringify= getGridonPoponsData("#my-relatedItemPopup-form");
     if(isValidForm)
-  GetAmortizationPopon(stringify);
+  GetAmortizationPopon(stringify,item);
 }
-function GetAmortizationPopon(stringify){
+function GetAmortizationPopon(stringify,item){
      myApp.showPreloader();
      var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetAmortizationGrid';
      var popupWidth=window.innerWidth*0.90;
@@ -26,10 +27,10 @@ function GetAmortizationPopon(stringify){
      var data="{"+ 
        "\"limit\":\"30\","+
        "\"start\":\"0\","+ 
-       "\"mainItemId\":\""+itemId+"\"," + 
+       "\"mainItemId\":\""+mainItemIdForPricingConditionScreen+"\"," + 
        "\"screenTag\":\""+divId+"\"," +   
-       "\"parentId\":\""+itemId+"\"," +  
-       "\"screenName\":\""+currentItem+"\","+
+       "\"parentId\":\""+mainItemIdForPricingConditionScreen+"\"," +  
+       "\"screenName\":\""+item+"\","+
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
        "\"poponWidth\":\""+popupWidth+"\"," + 
        "\"poponHeight\":\""+popupHeight+"\"," +  
@@ -60,7 +61,7 @@ function GetAmortizationPopon(stringify){
 
 
 
-function savePricingCondition(){
+function savePricingCondition(item){
     var isValidForm = requiredFormComponent("#my-relatedItemPopup-form"); 
     if(isValidForm)
     {
@@ -74,15 +75,15 @@ function savePricingCondition(){
      var formData = myApp.formToData('#my-relatedItemPopup-form');   
      var parameters=JSON.stringify(formData);
      var data="{"+ 
-       "\"mainItemId\":\""+itemId+"\"," + 
+       "\"mainItemId\":\""+mainItemIdForPricingConditionScreen+"\"," + 
        "\"screenTag\":\""+divId+"\"," +   
-       "\"parentId\":\""+itemId+"\"," +    
+       "\"parentId\":\""+mainItemIdForPricingConditionScreen+"\"," +    
        "\"relatedItemId\":\""+relatedItemId+"\"," +  
        "\"remoteIp\":\""+sessionStorage.getItem('Ip_config')+"\"," + 
        "\"transactionAmountStringList\":\""+transactionAmountStringList+"\"," +      
        "\"transactionAmountFeesListObject\":"+transactionAmountFeesListObject+"," +   
        "\"transactionAmountEventFeesListObject\":"+transactionAmountEventFeesListObject+"," + 
-       "\"screenName\":\""+currentItem+"\","+ 
+       "\"screenName\":\""+item+"\","+ 
        "\"stringify\":"+stringify+"," +     
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
        "\"parameters\":"+parameters+"}" ;  
@@ -95,7 +96,7 @@ function savePricingCondition(){
         data: data,        
         success: function(data) { 
             myApp.hidePreloader();
-             loadScreen(divId);
+             loadScreen(divId,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen);
              mainView.router.back({reloadPrevious:true});
         
         },
@@ -107,7 +108,7 @@ function savePricingCondition(){
     }
 }
 
-function savePricingConditionEvent(){
+function savePricingConditionEvent(parentItemId,item){
     
     var isValidForm = requiredFormComponent("my-relatedItemPopup-form"); 
     if(isValidForm)
@@ -118,15 +119,15 @@ function savePricingConditionEvent(){
      var formData = myApp.formToData('#my-relatedItemPopup-form');
      var parameters=JSON.stringify(formData);
      var data="{"+ 
-       "\"mainItemId\":\""+itemId+"\"," + 
+       "\"mainItemId\":\""+mainItemIdForPricingConditionScreen+"\"," + 
        "\"screenTag\":\""+divId+"\"," +   
-       "\"parentId\":\""+itemId+"\"," +    
+       "\"parentId\":\""+parentItemId+"\"," +    
        "\"relatedItemId\":\""+relatedItemId+"\"," +  
        "\"remoteIp\":\""+sessionStorage.getItem('Ip_config')+"\"," + 
        "\"transactionAmountStringList\":\""+transactionAmountStringList+"\"," +      
        "\"transactionAmountFeesListObject\":"+transactionAmountFeesListObject+"," +   
        "\"transactionAmountEventFeesListObject\":"+transactionAmountEventFeesListObject+"," + 
-       "\"screenName\":\""+currentItem+"\","+
+       "\"screenName\":\""+item+"\","+
        "\"stringify\":"+stringify+"," +      
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
        "\"parameters\":"+parameters+"}" ;  
@@ -139,7 +140,7 @@ function savePricingConditionEvent(){
         data: data,        
         success: function(data) { 
             myApp.hidePreloader();
-            manageSaveConditionResponse(data);
+            manageSaveConditionResponse(data,item);
         
         },
         error: function(e) {
@@ -164,7 +165,7 @@ function saveProcessEngineComment_enabledButton(textarea) {
 
         };
 
-function manageSaveConditionResponse(data) {
+function manageSaveConditionResponse(data,item) {
             console.log(data.behavior);
             if (data.behavior != null) {
 
@@ -184,6 +185,7 @@ function manageSaveConditionResponse(data) {
                     case "deviationAlert":
                         {
                             errorMsg = data.message;
+
                             myApp.popup('<div class="popup" style="width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;" ><div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">' + data.message + '</br></br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="saveProcessEngineComment_enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="saveBeforeSaveConditon_DeviationComment()" id="saveProcessEngineCommentButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
                             break;
                         }
@@ -192,18 +194,18 @@ function manageSaveConditionResponse(data) {
             else
             {
                 
-            loadScreen(divId);
+            loadScreen(divId,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen);
             mainView.router.back({reloadPrevious:true});
             }
 }
 
-function saveBeforeSaveConditon_DeviationComment(){
+function saveBeforeSaveConditon_DeviationComment(item){
     var comment = document.getElementById("deviationComment").value;
     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveCustomErrorHandlingDeviationCommentAndSaveCondition';
      var formData = myApp.formToData('#my-relatedItemPopup-form');
      var parameters=JSON.stringify(formData);
      var data="{"+ 
-       "\"mainItemId\":\""+itemId+"\"," + 
+       "\"mainItemId\":\""+mainItemIdForPricingConditionScreen+"\"," + 
        "\"screenTag\":\""+divId+"\"," +   
        "\"parentId\":\""+itemId+"\"," +    
        "\"comment\":\""+comment+"\"," +
@@ -213,7 +215,7 @@ function saveBeforeSaveConditon_DeviationComment(){
        "\"transactionAmountStringList\":\""+transactionAmountStringList+"\"," +      
        "\"transactionAmountFeesListObject\":"+transactionAmountFeesListObject+"," +   
        "\"transactionAmountEventFeesListObject\":"+transactionAmountEventFeesListObject+"," + 
-       "\"screenName\":\""+currentItem+"\","+ 
+       "\"screenName\":\""+item+"\","+ 
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
        "\"parameters\":"+parameters+"}" ;  
     $.ajax({ 
@@ -226,7 +228,7 @@ function saveBeforeSaveConditon_DeviationComment(){
         success: function(data) { 
             myApp.hidePreloader();
             myApp.closeModal();
-            loadScreen(divId);
+            loadScreen(divId,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen);
             mainView.router.back({reloadPrevious:true});
         
         },
