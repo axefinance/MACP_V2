@@ -14,8 +14,6 @@ $$('.infinite-scroll').on('infinite', function () {
     loading = true;
     setTimeout(function () {  
 
-        // Emulate 1s loading     
-        // Reset loading flag  
         loading = false;
         var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetNextSearchResult';
         if (lastIndex >= totalRowNumber) {
@@ -24,17 +22,30 @@ $$('.infinite-scroll').on('infinite', function () {
             return;
         }      
       
-        var data="{"+    
-          "\"item\":\""+currentItem+"\","+
-          "\"userData\":"+sessionStorage.getItem("userData")+","+
-          "\"searchParams\":"+searchParams+","+
-          "\"start\":\""+lastIndex+"\","+
-          "\"limit\":\"10\","+      
-          "\"windowWidth\":\""+window.innerWidth+"\","+
-          "\"windowHeight\":\""+(window.innerHeight-70)+"\"}"; 
-        console.log("SearchParams",data);        
+           if(currentSearchType=="searchResult")
+          {
+           screenWidth=window.innerWidth; 
+            screenHeight=window.innerHeight-90;
+          }
+          else
+          {
+            screenWidth=window.innerWidth*0.80;
+            screenWidth=Math.floor(screenWidth); 
+            screenHeight=window.innerHeight*0.73;
+            screenHeight=Math.floor(screenHeight); 
+          }
+       var data="{"+    
+        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
+        "\"item\":\""+currentSearchItem+"\","+
+        "\"searchParams\":"+currentSearchParams+","+
+        "\"start\":\""+lastIndex+"\","+
+        "\"limit\":\"10\","+      
+        "\"windowWidth\":\""+screenWidth+"\","+
+        "\"searchScreenType\":\""+currentSearchType+"\","+
+        "\"windowHeight\":\""+screenHeight+"\"}"; 
+          
         $.ajax({             
-            type: 'POST',             
+            type: 'POST',              
             url: url,                                     
             contentType: "text/plain",                            
             dataType: "json",                               
@@ -46,9 +57,16 @@ $$('.infinite-scroll').on('infinite', function () {
                     $$('.infinite-scroll-preloader').remove();
                     return;  
                 }
+                if(currentSearchType=="searchResult")
+                    {
                 $$('.tasksTableElement ul').append(data.data);
-                lastIndex=lastIndex+itemsPerLoad; 
-            
+              
+                    }
+                else
+                    {
+                    $$('.tasksTableElementOnPopon ul').append(data.data);
+                    }
+              lastIndex=lastIndex+itemsPerLoad; 
             },
             error: function(e) { 
                 console.log(e.message);  

@@ -30,23 +30,26 @@ var extendedProperties=null;
 var isSwitchLanguage = false;
 var navbarTitle;
 var isRelatedFromLink="false";
+var currentSearchItem;
+var currentSearchParams;
+var currentSearchType;
 var xmlTagNewInput;
 
 
 var myApp=new Framework7({ swipeBackPage : false, statusbarOverlay:true, tapHold: true,swipePanel: 'left',fastClicksDelayBetweenClicks : 10 }) ;
 var db = openDatabase('mydb', '1.0', 'Test DB', 2 * 1024 * 1024);
 var mainView = myApp.addView('.view-main', {
-  dynamicNavbar: true,
+    dynamicNavbar: true,
     domCache :true
 });
 var leftView = myApp.addView('.view-left', {
     dynamicNavbar: true,
-      domCache :true
+    domCache :true
 });
 $$('.firstWS-confirm-ok-cancel').on('click', function () {
     myApp.confirm('Are you sure want to exit from App?', 'MACP',
       function () {
-       navigator.app.exitApp();
+          navigator.app.exitApp();
       },
       function () {
       }
@@ -67,29 +70,29 @@ function isScreenInCache(screenName){
     var history=mainView.history;
     console.log(screenName);
     for(var i=0 ; i<history.length ; i++)
+    {
+        if(history[i]===screenName)
         {
-            if(history[i]===screenName)
-                {
-                console.log("true");    
-                return true;
-                } 
-        }
+            console.log("true");    
+            return true;
+        } 
+    }
     console.log("false");   
     return false;
 }
 function westMenuItem(item,title,screenName, xmlTag){ 
     if(isScreenInCache(screenName))
-        {
+    {
         mainView.history=["#homePage"];
         document.getElementById("title_"+screenName.replace(".html","")).remove(); 
         document.getElementById("userName_label_"+screenName.replace(".html","")).remove(); 
         document.getElementById("lng_label_"+screenName.replace(".html","")).remove(); 
         $$('.view-main .page-on-left').remove(screenName);
-        }
-      xmlTagNewInput = xmlTag;
-      currentItem=item;
-      pageTitleContent=title;
-      fromNewInput=false;
+    }
+    xmlTagNewInput = xmlTag;
+    currentItem=item;
+    pageTitleContent=title;
+    fromNewInput=false;
     if(!checkInternetConnection())                                                   
         myApp.alert("please check your internet connection");
     else                                              
@@ -98,30 +101,30 @@ function westMenuItem(item,title,screenName, xmlTag){
 myApp.onPageReinit('homePage', function (page) {
     if(!isSwitchLanguage)
     {
-     document.getElementById("tasks").innerHTML=null;
-     document.getElementById("homePage-toolbarContent").innerHTML=null;
+        document.getElementById("tasks").innerHTML=null;
+        document.getElementById("homePage-toolbarContent").innerHTML=null;
 
-     reInitHomePage();
-     console.log(mainView.history);
+        reInitHomePage();
+        console.log(mainView.history);
     }
     else
     {
-           document.getElementById("tasks").innerHTML=null;
-           document.getElementById("homePage-toolbarContent").innerHTML=null;
+        document.getElementById("tasks").innerHTML=null;
+        document.getElementById("homePage-toolbarContent").innerHTML=null;
 
-           isSwitchLanguage = false;           
-           loadTaskList(); 
-           setTemplate_HeaderData("homePage");
+        isSwitchLanguage = false;           
+        loadTaskList(); 
+        setTemplate_HeaderData("homePage");
     }
 });  
 function reInitHomePage(){ 
-   myApp.showPreloader();
-   var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/ReInitHomePage';
-   var data="{"+ 
-        "\"userData\":"+sessionStorage.getItem("userData")+","+
-        "\"windowWidth\":\""+window.innerWidth+"\","+
-        "\"windowHeight\":\""+(window.innerHeight-90)+"\"}";
-     $.ajax({             
+    myApp.showPreloader();
+    var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/ReInitHomePage';
+    var data="{"+ 
+         "\"userData\":"+sessionStorage.getItem("userData")+","+
+         "\"windowWidth\":\""+window.innerWidth+"\","+
+         "\"windowHeight\":\""+(window.innerHeight-90)+"\"}";
+    $.ajax({             
         type: 'POST',                               
         url: url,                                    
         contentType: "text/plain",                                      
@@ -131,8 +134,8 @@ function reInitHomePage(){
             document.getElementById("tasks").innerHTML=data.TasksContent;
             document.getElementById("homePage-toolbarContent").innerHTML=data.buttonsDiv;
             console.log("success");
-             myApp.hidePreloader();
-GetHomePageScripts(); 
+            myApp.hidePreloader();
+            GetHomePageScripts(); 
         },
         error: function(e) {
             
@@ -148,24 +151,24 @@ function saveFirstConfig(){
     myApp.closeModal();
 }       
 function loadJSFile(screenName){           
-            var js = document.createElement("script");
-            js.type = "text/javascript";                
-            js.src = screenName;                                    
-            document.body.appendChild(js);
+    var js = document.createElement("script");
+    js.type = "text/javascript";                
+    js.src = screenName;                                    
+    document.body.appendChild(js);
    
 
 }  
 function isScriptAlreadyIncluded(src){
     var scripts = document.getElementsByTagName("script");
     for(var i = 0; i < scripts.length; i++) 
-       if(scripts[i].getAttribute('src') == src) return true;
+        if(scripts[i].getAttribute('src') == src) return true;
     return false;
 }
 function verifConfig(){    
     ip_config=sessionStorage.getItem("Ip_config");
     ip_port=sessionStorage.getItem("Ip_port");
     if(ip_config===null || ip_port===null)
-      myApp.loginScreen(); 
+        myApp.loginScreen(); 
 }  
 function verifDeviceConfig(){
     manageDB();
@@ -173,7 +176,7 @@ function verifDeviceConfig(){
 }
 var leftView=myApp.addView('.view-left',{
     domCache: true,dynamicNavbar:true
-   });
+});
 document.addEventListener("deviceready", onDeviceReady, true);
 function onDeviceReady() {         
     HomeBackButton=document.getElementById("homeBackButton");
@@ -191,12 +194,12 @@ myApp.onPageInit('WSConfigurationScreen', function (page) {
     myApp.params.swipePanel=false;    
     document.getElementById('WSip').value=sessionStorage.getItem('Ip_config');
     document.getElementById('WSport').value=sessionStorage.getItem('Ip_port');
-   loadJSFile("js/WSConfigurationScreen.js");
+    loadJSFile("js/WSConfigurationScreen.js");
 });   
 myApp.onPageInit('homePage', function (page) {   
-     myApp.params.swipePanel=false;    
+    myApp.params.swipePanel=false;    
     setTemplate_HeaderData('homePage');
-   loadTaskList();
+    loadTaskList();
 });                  
 myApp.onPageInit('searchScreen', function (page) {
     console.log("Init search screen");
@@ -235,10 +238,7 @@ myApp.onPageInit('editScreen', function (page) {
     myApp.showPreloader();
     if(fromNewInput===true)
         document.getElementById("backButton").style.display = "none"; 
-    pageTitleElement=document.getElementById("title_editScreen");
-    pageTitleElement.textContent=itemRef;
-    setTemplate_HeaderData('editScreen');
-    loadEditScreen(itemId);
+    loadEditScreen(itemId,currentItem);
     
 }); 
 myApp.onPageInit('newInputScreen', function (page) {
@@ -261,9 +261,10 @@ myApp.onPageInit('searchResultScreen', function (page) {
     pageTitleElement.textContent=pageTitleContent;
     setTemplate_HeaderData('searchResultScreen');   
     myApp.showPreloader();
-    var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetSearchResultPage';
-    console.log("URL",url);
-    lunchSearchResult(url,"searchResult",currentItem)
+    currentSearchItem=currentItem; 
+    currentSearchParams=searchParams;
+    currentSearchType="searchResult";
+    lunchSearchResult();
 });  
 myApp.onPageInit('executeTaskScreen', function (page) {
     HomeBackButton.style.visibility="visible";
@@ -273,8 +274,8 @@ myApp.onPageInit('executeTaskScreen', function (page) {
     pageTitleElement=document.getElementById("title_executeTaskScreen");
     pageTitleElement.textContent=pageTitleContent;
     setTemplate_HeaderData('executeTaskScreen'); 
-     myApp.showPreloader();
-      var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetExecuteTaskScreen';
+    myApp.showPreloader();
+    var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetExecuteTaskScreen';
     console.log("URL",url);
     GetExecuteTaskScreen(url);
 });
@@ -310,22 +311,22 @@ myApp.onPageInit('relatedScreen', function (page) {
     myApp.params.swipePanel=false;
     pageTitleElement=document.getElementById("title_relatedScreen");
     pageTitleElement.textContent=itemRef+" : "+ RelatedItemType;
-    loadScreen(divId);  
+    loadScreen(divId,mainItemIdForLink,mainItemForLink);  
 });
 
 
 function GetRelatedItemScreen()
 {
-     var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    
+    var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    
             
-      var data="{"+    
-        "\"screenName\":\""+divId+"\","+
-        "\"screenType\":\"relatedItemDetails\","+
-        "\"userData\":"+sessionStorage.getItem("userData")+","+
-        "\"taskId\":\""+TaskId+"\"," + 
-        "\"mainItemId\":\""+itemId+"\","+
-        "\"screenWidth\":\""+window.innerWidth+"\","+          
-        "\"relatedItemId\":\""+relatedItemId+"\"}"; 
+    var data="{"+    
+      "\"screenName\":\""+divId+"\","+
+      "\"screenType\":\"relatedItemDetails\","+
+      "\"userData\":"+sessionStorage.getItem("userData")+","+
+      "\"taskId\":\""+TaskId+"\"," + 
+      "\"mainItemId\":\""+itemId+"\","+
+      "\"screenWidth\":\""+window.innerWidth+"\","+          
+      "\"relatedItemId\":\""+relatedItemId+"\"}"; 
     console.log("SearchParams",data);        
     $.ajax({             
         type: 'POST',             
@@ -333,7 +334,8 @@ function GetRelatedItemScreen()
         contentType: "text/plain",                             
         dataType: "json",                            
         data: data,         
-        success: function(data) {  
+        success: function(data) { 
+            manageAutoCompleteComponent("my-relatedItemPopup-form",divId);   
             loadJSFile("js/RelatedItemScreen.js");
             document.getElementById("relatedItemForm").innerHTML=data.content;
             $('#relatedItem-toolbarContent').append(data.buttonsDiv);
@@ -348,133 +350,166 @@ function GetRelatedItemScreen()
 function setTemplate_HeaderData(pScreen){
     var user = JSON.parse(sessionStorage.getItem('userData'));
     document.getElementById("userName_label"+"_"+pScreen).textContent=user.user_name;
-     document.getElementById("lng_label"+"_"+pScreen).textContent=user.culture_language;
+    document.getElementById("lng_label"+"_"+pScreen).textContent=user.culture_language;
 }  
 function loadsearchScreen(){
     GetSearchPage('http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetSearchScreen');
    
 }       
 function loadTaskList() {
-     tasks=document.getElementById('tasks');
-     var deviceWidth = window.innerWidth - 50;
-      GetHomePage('http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/getHomePage');  
+    tasks=document.getElementById('tasks');
+    var deviceWidth = window.innerWidth - 50;
+    GetHomePage('http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/getHomePage');  
 } 
 function loadNewInputPage(){  
     currentItem=currentItem.toLowerCase();
     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetNewInputScreen';
     GetNewInputScreen(url);
 }  
-function loadEditScreen(itemId){
+function loadEditScreen(itemId,item){
     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetEditScreen';
-    GetEditScreen(url,itemId);
+    GetEditScreen(url,itemId,item);
 } 
-function GetEditScreen(url,itemId){ 
-     var data="{"+      
-        "\"screenName\":\""+currentItem+"\","+
-        "\"screenParent\":\"\","+ 
-        "\"taskId\":\""+TaskId+"\"," +
-        "\"userData\":"+sessionStorage.getItem("userData")+","+  
-        "\"mainItemId\":\""+itemId+"\"," +
-        "\"targetTab\":\""+TargetTab+"\"," +  
-        "\"screenEngine\":\"empty\","+
-        "\"screenWidth\":\""+window.innerWidth+"\"," +
-        "\"screenHeight\":\""+window.innerHeight+"\"}";  
-          
+function GetEditScreen(url,itemId,item){ 
+    console.log(item+"      "+itemId);
+    var data="{"+      
+       "\"screenName\":\""+item+"\","+
+       "\"screenParent\":\"\","+ 
+       "\"taskId\":\""+TaskId+"\"," +
+       "\"userData\":"+sessionStorage.getItem("userData")+","+  
+       "\"mainItemId\":\""+itemId+"\"," +
+       "\"targetTab\":\""+TargetTab+"\"," +  
+       "\"screenEngine\":\"empty\","+
+       "\"screenWidth\":\""+window.innerWidth+"\"," +
+       "\"screenHeight\":\""+window.innerHeight+"\"}";     
     $.ajax({ 
-                    type: "POST",     
-                    dataType:"json",  
-                    url: url,    
-                    contentType: "text/plain",                          
-                    data: data,        
-                    success: function(data) { 
-                        console.log(data);
-                        document.getElementById("editScreenForm").innerHTML=data.content;
-                        $('#edit-toolbarContent').append(data.buttonsDiv);
-                        divId = data.divId;
-                        engine = data.screenEngine;                        
-                        docMenu=(data.DocumentMenu);
-                        loadJSFile("js/EditScreen.js");
-                        loadJSFile("js/WorkflowManager.js");
-                        loadJSFile("js/informativeGridInfiniteScroll.js");
-                        myApp.attachInfiniteScroll($$('.informativeGrid-infinite-scroll'));
-                        myApp.hidePreloader();
-                        RelatedItemType=$(".selectedTab").text(); 
-                    },
-                    error: function(e) {
-                        myApp.hidePreloader();                 
-                        errorMessage();
-                    }   
-            });         
+        type: "POST",     
+        dataType:"json",  
+        url: url,    
+        contentType: "text/plain",                          
+        data: data,        
+        success: function(data) { 
+            var elms = document.querySelectorAll("#editScreenForm");
+            console.log(elms.length);
+            console.log(elms);
+            if(elms.length>1)
+            {
+                var ourEelement=elms[elms.length-1];
+                ourEelement.innerHTML=data.content;
+                console.log($('#edit-toolbarContent__'+itemId));
+                $('#edit-toolbarContent__'+itemId).append(data.buttonsDiv);
+                pageTitleElement=document.getElementById("title_editScreen__"+itemId);
+                pageTitleElement.textContent=itemRef;
+                setTemplate_HeaderData('editScreen__'+itemId);
+            }    
+            else
+            {
+                if(document.getElementById("title_editScreen")!=null)
+                    {
+                 document.getElementById("editScreenForm").innerHTML=data.content;
+                $('#edit-toolbarContent').append(data.buttonsDiv);
+                pageTitleElement=document.getElementById("title_editScreen");
+                pageTitleElement.textContent=itemRef;
+                setTemplate_HeaderData('editScreen');
+                    }
+                else
+                    {
+                var ourEelement=elms[elms.length-1];
+                ourEelement.innerHTML=data.content;
+                console.log($('#edit-toolbarContent__'+itemId));
+                $('#edit-toolbarContent__'+itemId).append(data.buttonsDiv);
+                pageTitleElement=document.getElementById("title_editScreen__"+itemId);
+                pageTitleElement.textContent=itemRef;
+                setTemplate_HeaderData('editScreen__'+itemId); 
+                    }
+            }
+    engine = data.screenEngine;                                
+    divId = data.divId;     
+    manageAutoCompleteComponent("my-mainData-form__"+itemId,item);         
+    loadJSFile("js/EditScreen.js");
+    loadJSFile("js/WorkflowManager.js");
+    loadJSFile("js/informativeGridInfiniteScroll.js");
+    myApp.attachInfiniteScroll($$('.informativeGrid-infinite-scroll'));
+    myApp.hidePreloader();
+    RelatedItemType=$(".selectedTab").text(); 
+},
+error: function(e) {
+    myApp.hidePreloader();                 
+    errorMessage();
+}    
+});         
 }                 
 function GetNewInputScreen(url){
-     var data="{"+     
-        "\"currentItem\":\""+currentItem+"\","+
-        "\"screenWidth\":\""+window.innerWidth+"\","+
-        "\"xmlTag\":\""+xmlTagNewInput+"\","+
-        "\"userData\":"+sessionStorage.getItem("userData")+"}";
+    var data="{"+     
+       "\"currentItem\":\""+currentItem+"\","+
+       "\"screenWidth\":\""+window.innerWidth+"\","+
+       "\"xmlTag\":\""+xmlTagNewInput+"\","+
+       "\"userData\":"+sessionStorage.getItem("userData")+"}";
     $.ajax({ 
-                    type: "POST",  
-                    dataType:"json",  
-                    url: url,    
-                    contentType: "text/plain",                          
-                    data: data,  
-                    success: function(data) {     
-                        document.getElementById("newInputForm").innerHTML=data.content;
-                        document.getElementById("newInput-toolbarContent").innerHTML=data.button;
-                        loadJSFile("js/NewInputScreen.js");
-                      //  loadJSFile("js/FormatUtils.js");
-                         myApp.hidePreloader();
-                    },
-                    error: function(e) {
-                        myApp.hidePreloader();
-                        errorMessage();                         
-                    }    
-            });         
+        type: "POST",  
+        dataType:"json",  
+        url: url,    
+        contentType: "text/plain",                          
+        data: data,  
+        success: function(data) {     
+            document.getElementById("newInputForm").innerHTML=data.content;
+            document.getElementById("newInput-toolbarContent").innerHTML=data.button;
+            manageAutoCompleteComponent("my-newInput-form",currentItem);
+            loadJSFile("js/NewInputScreen.js");
+            //  loadJSFile("js/FormatUtils.js");
+            myApp.hidePreloader();
+        },
+        error: function(e) {
+            myApp.hidePreloader();
+            errorMessage();                         
+        }    
+    });         
 }
 function GetSearchPage(url){ 
-     var data="{"+  
-        "\"currentItem\":\""+currentItem+"\","+
-        "\"userData\":"+sessionStorage.getItem("userData")+"}";
+    var data="{"+  
+       "\"currentItem\":\""+currentItem+"\","+
+       "\"userData\":"+sessionStorage.getItem("userData")+"}";
     $.ajax({ 
         type: 'POST',                             
         url: url,                                  
         contentType: "text/plain",                                    
         dataType: "json",                               
         data: data,
-                    success: function(data) { 
-                        document.getElementById("searchForm").innerHTML=data.content;
-                        loadJSFile("js/SearchScreen.js");
-                      //  loadJSFile("js/FormatUtils.js");
-                        loadJSFile("js/accounting.js");
-                         myApp.hidePreloader();
-                    },
-                    error: function(e) {
-                        myApp.hidePreloader();
-                        errorMessage();
-                    }  
+        success: function(data) { 
+            document.getElementById("searchForm").innerHTML=data.content;
+            manageAutoCompleteComponent("my-search-form",currentItem);
+            loadJSFile("js/SearchScreen.js");
+            //  loadJSFile("js/FormatUtils.js");
+            loadJSFile("js/accounting.js");
+            myApp.hidePreloader();
+        },
+        error: function(e) {
+            myApp.hidePreloader();
+            errorMessage();
+        }  
                  
-            });    
+    });    
 }  
 function GetHomePageScripts(){
-                 $.getScript("js/Macp.js");
-             $("script[src='js/Macp.js']").remove();
+    $.getScript("js/Macp.js");
+    $("script[src='js/Macp.js']").remove();
 
-             $.getScript("js/Macp.js");
-            $("script[src='js/Macp.js']").remove();
-            $("script[src='js/Macp.js']").remove();
-             $("script[src='js/homePage.js']").remove();
-             loadJSFile("js/homePage.js"); 
+    $.getScript("js/Macp.js");
+    $("script[src='js/Macp.js']").remove();
+    $("script[src='js/Macp.js']").remove();
+    $("script[src='js/homePage.js']").remove();
+    loadJSFile("js/homePage.js"); 
 }
 function GenerateResponseArray(element){ 
-   var res = element.split(",");
-   var result = [];//Array
+    var res = element.split(",");
+    var result = [];//Array
     if(res.length!==0)
     {
-    for (var i = 0; i < res.length; i++) 
-      {
-          if(res[i]!=="")
-            result.push(res[i]);
-      }
+        for (var i = 0; i < res.length; i++) 
+        {
+            if(res[i]!=="")
+                result.push(res[i]);
+        }
     } 
     return result;        
 } 
@@ -484,12 +519,12 @@ function setUser_ShortName(userShortName){
     
 } 
 function GetHomePage(url) {
-   var data="{"+  
-        "\"windowWidth\":\""+window.innerWidth+"\","+
-        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
-        "\"windowHeight\":\""+(window.innerHeight-90)+"\"}";  
+    var data="{"+  
+         "\"windowWidth\":\""+window.innerWidth+"\","+
+         "\"userData\":"+sessionStorage.getItem("userData")+","+ 
+         "\"windowHeight\":\""+(window.innerHeight-90)+"\"}";  
     var dataToReturn = 'null';    
-     $.ajax({             
+    $.ajax({             
         type: 'POST',                             
         url: url,                                  
         contentType: "text/plain",                                    
@@ -521,12 +556,12 @@ function GetHomePage(url) {
                
 }  
 function GetTeamTasks(url) {
-   var data="{"+  
-        "\"windowWidth\":\""+window.innerWidth+"\","+
-        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
-        "\"windowHeight\":\""+(window.innerHeight-90)+"\"}";  
+    var data="{"+  
+         "\"windowWidth\":\""+window.innerWidth+"\","+
+         "\"userData\":"+sessionStorage.getItem("userData")+","+ 
+         "\"windowHeight\":\""+(window.innerHeight-90)+"\"}";  
     var dataToReturn = 'null';    
-     $.ajax({             
+    $.ajax({             
         type: 'POST',                             
         url: 'http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetTeamTasks',                                  
         contentType: "text/plain",                                    
@@ -549,124 +584,138 @@ function GetTeamTasks(url) {
 }                
 function createLanguagesList(screen){
     $$('.create-language-links-'+screen).on('click', function () {
-  var clickedLink = this;
-    var output="";        
-    for(var i=0 ; i< languagesList.LangsList.length ; i++)
+        var clickedLink = this;
+        var output="";        
+        for(var i=0 ; i< languagesList.LangsList.length ; i++)
         { 
             var display=languagesList.LangsList[i].display;
             output=output+'<li><a href="#" class="item-link list-button" onclick="switchLanguage(\''+languagesList.LangsList[i].property+'\')">'+display  +'</li>';
         }
-  var popoverHTML = '<div id="language_popover" class="popover">'+
-                      '<div class="popover-inner">'+
-                        '<div class="list-block">'+
-                          '<ul>'+
-                           output
-                          '</ul>'+
-                        '</div>'+
-                      '</div>'+
-                    '</div>';
-  myApp.popover(popoverHTML, clickedLink); 
-});
+        var popoverHTML = '<div id="language_popover" class="popover">'+
+                            '<div class="popover-inner">'+
+                              '<div class="list-block">'+
+                                '<ul>'+
+                                 output
+        '</ul>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+        myApp.popover(popoverHTML, clickedLink); 
+    });
 }  
 
 function switchLanguage(property){
     myApp.closeModal();
     
-      myApp.confirm(changeLangConfirmationMessage,
-     '',
-      function (value) {
+    myApp.confirm(changeLangConfirmationMessage,
+   '',
+    function (value) {
         var userData = JSON.parse(sessionStorage.getItem("userData"));
-    myApp.showPreloader();
-    userData.culture_language = property;
-    sessionStorage.setItem("userData",JSON.stringify(userData));  
-    var updatedUserData = sessionStorage.getItem("userData");
-     var data="{\"userData\":"+updatedUserData+"}";  
-     $.ajax({             
-        type: 'POST',                             
-        url:'http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/UpdateUserLanguage',                                
-        contentType: "text/plain",                                    
-        dataType: "json",                               
-        data: data,    
-        success: function(data) {
+        myApp.showPreloader();
+        userData.culture_language = property;
+        sessionStorage.setItem("userData",JSON.stringify(userData));  
+        var updatedUserData = sessionStorage.getItem("userData");
+        var data="{\"userData\":"+updatedUserData+"}";  
+        $.ajax({             
+            type: 'POST',                             
+            url:'http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/UpdateUserLanguage',                                
+            contentType: "text/plain",                                    
+            dataType: "json",                               
+            data: data,    
+            success: function(data) {
             
-            if(mainView.history[0]==="#homePage")
+                if(mainView.history[0]==="#homePage")
                 {
-                   document.getElementById("tasks").innerHTML=null;
-                   document.getElementById("homePage-toolbarContent").innerHTML=null;
-                   loadTaskList();
-                   setTemplate_HeaderData("homePage");                   
+                    document.getElementById("tasks").innerHTML=null;
+                    document.getElementById("homePage-toolbarContent").innerHTML=null;
+                    loadTaskList();
+                    setTemplate_HeaderData("homePage");                   
                 }
-            else
-            {
-             isSwitchLanguage = true;
-             HomeBackButton.style.visibility="hidden";  
-             mainView.router.back({force:true,pageName:"homePage"});
-             mainView.history=["#homePage"];
-            if(!checkInternetConnection())                                                   
-                myApp.alert("please check your internet connection");
-            else 
-                leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
-            }
+                else
+                {
+                    isSwitchLanguage = true;
+                    HomeBackButton.style.visibility="hidden";  
+                    mainView.router.back({force:true,pageName:"homePage"});
+                    mainView.history=["#homePage"];
+                    if(!checkInternetConnection())                                                   
+                        myApp.alert("please check your internet connection");
+                    else 
+                        leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
+                }
 
-        },
-        error: function(e) {               
-            myApp.hidePreloader();    
-            errorMessage();    
-        }
-    }); 
-     },
-      function (value) {
-      }
-    );
+            },
+            error: function(e) {               
+                myApp.hidePreloader();    
+                errorMessage();    
+            }
+        }); 
+    },
+    function (value) {
+    }
+  );
        
     
 }
 function createLogoutPopover(screen){
     $$('.create-profile-links-'+screen).on('click', function () {
-  var clickedLink = this;
-    var output="";
+        var clickedLink = this;
+        var output="";
 
-            output=output+'<li><a href="#" onclick="logoutAction();" class="item-link list-button">Logout</li>';
+        output=output+'<li><a href="#" onclick="logoutAction();" class="item-link list-button">Logout</li>';
         
-  var popoverHTML = '<div class="popover">'+
-                      '<div class="popover-inner">'+
-                        '<div class="list-block">'+
-                          '<ul>'+
-                           output
-                          '</ul>'+
-                        '</div>'+
-                      '</div>'+
-                    '</div>';
-  myApp.popover(popoverHTML, clickedLink);
-});
+        var popoverHTML = '<div class="popover">'+
+                            '<div class="popover-inner">'+
+                              '<div class="list-block">'+
+                                '<ul>'+
+                                 output
+        '</ul>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+        myApp.popover(popoverHTML, clickedLink);
+    });
 }          
 
 function logoutAction(){
     myApp.closeModal();
-     myApp.confirm(loggingOutWindowMessage,
-     loggingOutWindowTitle,
-      function (value) {
-        sessionStorage.clear();   
-        mainView.router.load({url: 'index.html'});
-        location.reload(true);  
+    myApp.confirm(loggingOutWindowMessage,
+    loggingOutWindowTitle,
+     function (value) {
+         sessionStorage.clear();   
+         mainView.router.load({url: 'index.html'});
+         location.reload(true);  
         
      },
-      function (value) {
-      }
-    );
+     function (value) {
+     }
+   );
        
 }
-function lunchSearchResult(url,searchScreenType,sarchItem){           
-     var data="{"+    
-        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
-        "\"item\":\""+sarchItem+"\","+
-        "\"searchParams\":"+searchParams+","+
-        "\"start\":\"0\","+
-        "\"limit\":\"30\","+      
-        "\"windowWidth\":\""+window.innerWidth+"\","+
-        "\"searchScreenType\":\""+searchScreenType+"\","+
-        "\"windowHeight\":\""+(window.innerHeight-90)+"\"}";  
-    console.log("SearchParams",data);          
+function lunchSearchResult(){  
+    var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetSearchResultPage';    
+    var screenHeight;
+    var screenWidth;
+    if(currentSearchType=="searchResult")
+    {
+        screenWidth=window.innerWidth; 
+        screenHeight=window.innerHeight-90;
+    }
+    else
+    {
+        screenWidth=window.innerWidth*0.80;
+        screenWidth=Math.floor(screenWidth); 
+        screenHeight=window.innerHeight*0.73;
+        screenHeight=Math.floor(screenHeight); 
+    }
+    var data="{"+    
+       "\"userData\":"+sessionStorage.getItem("userData")+","+ 
+       "\"item\":\""+currentSearchItem+"\","+
+       "\"searchParams\":"+currentSearchParams+","+
+       "\"start\":\"0\","+
+       "\"limit\":\"30\","+      
+       "\"windowWidth\":\""+screenWidth+"\","+
+       "\"searchScreenType\":\""+currentSearchType+"\","+
+       "\"windowHeight\":\""+screenHeight+"\"}"; 
     $.ajax({             
         type: 'POST',           
         url: url,                      
@@ -674,17 +723,21 @@ function lunchSearchResult(url,searchScreenType,sarchItem){
         dataType: "json",                            
         data: data,         
         success: function(data) {   
-            if(searchScreenType=="searchResult")
-                {
-             document.getElementById("searchResult").innerHTML=data.dataGrid; 
-             loadJSFile("js/SearchResultScreen.js");       
-                }
+            if(currentSearchType=="searchResult")
+            {
+                document.getElementById("searchResult").innerHTML=data.dataGrid; 
+                loadJSFile("js/SearchResultScreen.js");       
+                var tasksTableElement =document.getElementById("tasksTableElement");
+                myApp.attachInfiniteScroll(tasksTableElement);      
+            }
             else
-                {
-              createPopup(data.dataGrid,"",10,10,80,80);           
-                }
+            {
+                myApp.popup("<div class='popup' style='width:80% !important; height:80% !important; left:10% !important; top:10% !important; margin-left:0px !important; margin-top:0px !important; margin-right:0px !important; overflow:hidden'>"+data.dataGrid+"</div>");
+                var tasksTableElement =document.getElementById("tasksTableElementOnPopon");
+                myApp.attachInfiniteScroll(tasksTableElement);  
+            }
             var tasksTableElement =document.getElementById("tasksTableElement");
-             myApp.attachInfiniteScroll(tasksTableElement);
+            myApp.attachInfiniteScroll(tasksTableElement);
             totalRowNumber=data.TotalRows;
             loadJSFile("js/infiniteScroll.js");
             loadJSFile("js/WorkflowManager.js");
@@ -708,38 +761,38 @@ function generateConnectedComboItems(idChild,screenTagName,val,child,entity,shar
 } 
 
 function connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property) {
-       var childs=idChild.split(",");
-      var data="{"+    
-        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
-        "\"parentValue\":\""+val.value+"\","+
-        "\"property\":\""+property+"\","+
-        "\"screenTagName\":\""+screenTagName+"\","+
-        "\"sharedConfig\":\""+sharedConfig+"\","+
-        "\"child\":\""+child+"\","+  
-        "\"idChild\":\""+idChild+"\","+ 
-        "\"entity\":\""+entity+"\"}"; 
+    var childs=idChild.split(",");
+    var data="{"+    
+      "\"userData\":"+sessionStorage.getItem("userData")+","+ 
+      "\"parentValue\":\""+val.value+"\","+
+      "\"property\":\""+property+"\","+
+      "\"screenTagName\":\""+screenTagName+"\","+
+      "\"sharedConfig\":\""+sharedConfig+"\","+
+      "\"child\":\""+child+"\","+  
+      "\"idChild\":\""+idChild+"\","+ 
+      "\"entity\":\""+entity+"\"}"; 
     $.ajax({   
         type: 'POST',           
         url: url,                       
         contentType: "text/plain",                          
         dataType: "json",                            
         data: data,
-                success: function(data) {
-                        var json=JSON.stringify(data.content);
-                        var myObj=JSON.parse(json)
+        success: function(data) {
+            var json=JSON.stringify(data.content);
+            var myObj=JSON.parse(json)
 
-                        Object.keys(myObj).forEach(function(key){
-                            var value = myObj[key];
-                            Object.keys(value).forEach(function(key2){
-                                var value2 = value[key2];
-                                document.getElementById(key2).innerHTML=value2;
-                            });
-                        });                                    
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        console.log(errorThrown+'  in processing!'+textStatus);
-                    }                   
-            });          
+            Object.keys(myObj).forEach(function(key){
+                var value = myObj[key];
+                Object.keys(value).forEach(function(key2){
+                    var value2 = value[key2];
+                    document.getElementById(key2).innerHTML=value2;
+                });
+            });                                    
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(errorThrown+'  in processing!'+textStatus);
+        }                   
+    });          
 };
 function HomeBack(){
     HomeBackButton.style.visibility="hidden";       
@@ -751,46 +804,46 @@ function HomeBack(){
         leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
 }   
 function manageDB(){
-         var msg;
-         db.transaction(function (tx) {
-            tx.executeSql('CREATE TABLE IF NOT EXISTS WS (id unique, ip, port)');
+    var msg;
+    db.transaction(function (tx) {
+        tx.executeSql('CREATE TABLE IF NOT EXISTS WS (id unique, ip, port)');
             
-         });
+    });
 }
 function getWsConfiguration(){
     
     db.readTransaction(function (tx) {
-            tx.executeSql('SELECT * FROM WS', [], function (tx, results) {
-               var len = results.rows.length, i;
-                if(results.rows.length!==0)
-                    { 
-               var 	ip=results.rows.item(0).ip;
+        tx.executeSql('SELECT * FROM WS', [], function (tx, results) {
+            var len = results.rows.length, i;
+            if(results.rows.length!==0)
+            { 
+                var 	ip=results.rows.item(0).ip;
                 var  port=results.rows.item(0).port;
-             sessionStorage.setItem('Ip_config', ip);
-           sessionStorage.setItem('Ip_port', port);
-                    }
-                else
-               {
-                  myApp.loginScreen();
-               }
-               });
-            }, null);
+                sessionStorage.setItem('Ip_config', ip);
+                sessionStorage.setItem('Ip_port', port);
+            }
+            else
+            {
+                myApp.loginScreen();
+            }
+        });
+    }, null);
 }
 function onError(tx, error) {
-   myApp.alert(error.message,"Error");
- }
+    myApp.alert(error.message,"Error");
+}
 function saveWsConfiguration(ip,port){    
-       db.transaction(function (t) {
-       t.executeSql('INSERT INTO WS (id,ip,port) VALUES (1,"'+ip+'","'+port+'")');
-  });  
+    db.transaction(function (t) {
+        t.executeSql('INSERT INTO WS (id,ip,port) VALUES (1,"'+ip+'","'+port+'")');
+    });  
     sessionStorage.setItem('Ip_config', ip);
     sessionStorage.setItem('Ip_port', port);
 }
 function updateWsConfiguration(ip,port){
-           db.transaction(function (t) {
-       t.executeSql('Update WS SET ip="'+ip+'" , port="'+port+'" where id=1');
-  });
-       sessionStorage.setItem('Ip_config', ip);
+    db.transaction(function (t) {
+        t.executeSql('Update WS SET ip="'+ip+'" , port="'+port+'" where id=1');
+    });
+    sessionStorage.setItem('Ip_config', ip);
     sessionStorage.setItem('Ip_port', port);   
 }
 function ExecuteTask(taskId,workflowName,targettab){
@@ -809,7 +862,7 @@ function GetExecuteTaskScreen(url){
         "\"targetTab\":\""+TargetTab+"\"," +         
         "\"screenWidth\":\""+window.innerWidth+"\","+
         "\"screenHeight\":\""+(window.innerHeight-90)+"\"}";
-  $.ajax({             
+    $.ajax({             
         type: 'POST',                                    
         url: url,                    
         contentType: "text/plain",                           
@@ -817,36 +870,37 @@ function GetExecuteTaskScreen(url){
         data: data,             
         success: function(data) {       
             if(data.status==="ok")
-                {
-                    loadJSFile("js/EditScreen.js");
-                    loadJSFile("js/ExecuteTaskScreen.js");
-                    document.getElementById("executeTaskContent").innerHTML=data.content;
-                    itemId=data.itemId;
-                    stopWFMessage=data.stopWFMessage;
-                     eligibility=data.eligibility;
-                    WithCollectQuestion=data.WithCollectQuestion;
-                     currentItem=data.screenName;
-                     document.getElementById("executeTaskContent").innerHTML=data.content;
-                     pageTitleElement=document.getElementById("title_executeTaskScreen");
-                     pageTitleElement.textContent=data.itemShortName;
-                     $('#executeTask-toolbarContent').append(data.buttonsDiv);
-                        divId = data.divId;
-                        engine = data.screenEngine;    
-                    docMenu=(data.DocumentMenu);
-                    extendedProperties=data.ExtendedProperties;    
-                    myApp.hidePreloader();
-                    manageInstructionGuideResponse(data);
-                     myApp.hidePreloader();
-                }
+            {
+                  
+                loadJSFile("js/EditScreen.js");
+                loadJSFile("js/ExecuteTaskScreen.js");
+                document.getElementById("executeTaskContent").innerHTML=data.content;
+                itemId=data.itemId;
+                stopWFMessage=data.stopWFMessage;
+                eligibility=data.eligibility;
+                WithCollectQuestion=data.WithCollectQuestion;
+                currentItem=data.screenName;
+                manageAutoCompleteComponent("my-mainData-form__"+itemId,currentItem);
+                document.getElementById("executeTaskContent").innerHTML=data.content;
+                pageTitleElement=document.getElementById("title_executeTaskScreen");
+                pageTitleElement.textContent=data.itemShortName;
+                $('#executeTask-toolbarContent').append(data.buttonsDiv);
+                divId = data.divId;
+                engine = data.screenEngine;                    
+                extendedProperties=data.ExtendedProperties;    
+                myApp.hidePreloader();
+                manageInstructionGuideResponse(data);
+                myApp.hidePreloader();
+            }
             else if(data.status==="item not found")
-                {
-                     myApp.hidePreloader(); 
-                     myApp.alert("Item not found in database","Item not found");
-                }
+            {
+                myApp.hidePreloader(); 
+                myApp.alert("Item not found in database","Item not found");
+            }
             else                     
-                {   
-                    myApp.hidePreloader();
-                }
+            {   
+                myApp.hidePreloader();
+            }
         },
         error: function(e) {         
              
@@ -860,13 +914,13 @@ function GetExecuteTaskScreen(url){
 function manageInstructionGuideResponse(data){
     if(data.instructionGuide!==undefined)  
     {
-         InstructionGuide=data.instructionGuide;   
-         showWorkflowInstructionGuide(); 
+        InstructionGuide=data.instructionGuide;   
+        showWorkflowInstructionGuide(); 
         $('#executeTask-toolbarContent').append(data.instructionGuideButton); 
     }
 } 
 function showWorkflowInstructionGuide(){  
-     myApp.popup('<div class="popup" style="width: 50% !important; height :50% !important; top: 25% !important; top:25% !important; left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" >' + InstructionGuide + '</div>', true); 
+    myApp.popup('<div class="popup" style="width: 50% !important; height :50% !important; top: 25% !important; top:25% !important; left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" >' + InstructionGuide + '</div>', true); 
 }
 function GetPricingConditionScreen(){
     var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    
@@ -891,8 +945,8 @@ function GetPricingConditionScreen(){
             document.getElementById("pricingConditionForm").innerHTML=data.content;
             $('#pricingConditionScreen-toolbarContent').append(data.buttonsDiv);
             myApp.hidePreloader();    
-             loadJSFile("js/PricingConditionScreen.js");
-             loadJSFile("js/amortizationInfiniteScroll.js");
+            loadJSFile("js/PricingConditionScreen.js");
+            loadJSFile("js/amortizationInfiniteScroll.js");
             myApp.hidePreloader();  
             ManagePricingCnditionComponents();
         },

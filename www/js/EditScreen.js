@@ -14,11 +14,11 @@ var clickedEditableGridId;
 var clickedEditableGridColumnsCount;
 var newEditableGridRows = [];
 
-    function generateAttachmentPicture(name, folder, subFolder){
+    function generateAttachmentPicture(name, folder, subFolder,parentItemId){
      myApp.showPreloader();
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/GetDocumentAttachedStream';
         var data = "{" +
-            "\"mainItemId\":\"" + itemId + "\"," +
+            "\"mainItemId\":\"" + parentItemId + "\"," +
             "\"screenName\":\"" + divId + "\"," +
             "\"fileName\":\"" + name + "\"," +
             "\"folder\":\"" + folder + "\"," +
@@ -69,11 +69,11 @@ var newEditableGridRows = [];
             }
         });
 }
-    function deleteAttachmentDocument(name, folder, subFolder) {
+    function deleteAttachmentDocument(name, folder, subFolder,parentItemId) {
         myApp.showPreloader();
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/DeleteAttachmentDocument';
         var data = "{" +
-            "\"mainItemId\":\"" + itemId + "\"," +
+            "\"mainItemId\":\"" + parentItemId + "\"," +
             "\"screenName\":\"" + divId + "\"," +
             "\"fileName\":\"" + name + "\"," +
             "\"folder\":\"" + folder + "\"," +
@@ -88,7 +88,7 @@ var newEditableGridRows = [];
             success: function (data) {
                 if (data.status === "ok") {
                     myApp.hidePreloader();
-                    loadScreen(divId);
+                    loadScreen(divId,parentItemId,divId);
                     myApp.hidePreloader();
                     myApp.alert("error deleting","Error");
                 }
@@ -103,8 +103,8 @@ var newEditableGridRows = [];
         });
 
     }
-    function loadRelatedItemPopup(id, isDuplicateAction,relatedItemType) {
-      
+    function loadRelatedItemPopup(id, isDuplicateAction,parentItemId,screenParent) {
+       
     if (engine === "attachment") {
         isUpdateAttachment = false;
         var formData = {
@@ -123,7 +123,7 @@ var newEditableGridRows = [];
         $("#h__none__subfolder_name").children().remove();
         $('#h__none__subfolder_name').closest(".combobox").attr('disabled', false);
     }
-    else {
+    else { 
         
      relatedItemId = id;
         isDuplicate = isDuplicateAction;
@@ -134,6 +134,8 @@ var newEditableGridRows = [];
                     myApp.alert("please check your internet connection");
                 else 
                     mainView.router.load({url: 'pricingConditionScreen.html',reload:false,ignoreCache:true});
+                    mainItemIdForPricingConditionScreen=parentItemId;
+                    mainItemForPricingConditionScreen=screenParent;
             }
         else 
         {
@@ -141,7 +143,12 @@ var newEditableGridRows = [];
                 myApp.alert("please check your internet connection");
             else 
                 {
+                   
+                    mainItemIdForRelatedScreen=parentItemId;
+                    mainItemForRelatedScreen=screenParent;
                     mainView.router.load({url: 'relatedItemScreen.html',reload:false,ignoreCache:true}); 
+                    
+                   
                    // myApp.alert("related Item   "+engine);
                 }
                 
@@ -162,12 +169,12 @@ var newEditableGridRows = [];
         reader.readAsDataURL(file);
     }
 }
-    function loadScreen(divID) {
+    function loadScreen(divID,parentItemId,parentItem) {
               var data = "{" +
            "\"userData\":"+sessionStorage.getItem("userData")+","+
-           "\"screenName\":\"" + divId + "\"," +
-           "\"screenParent\":\"" + currentItem + "\"," + 
-           "\"mainItemId\":\"" + itemId + "\"," +
+           "\"screenName\":\"" + divID + "\"," +
+           "\"screenParent\":\"" + parentItem + "\"," + 
+           "\"mainItemId\":\"" + parentItemId + "\"," +
            "\"taskId\":\""+TaskId+"\"," +
            "\"screenEngine\":\"" + engine + "\"," +
            "\"screenWidth\":\"" + window.innerWidth + "\"," +
@@ -194,7 +201,7 @@ var newEditableGridRows = [];
             }
         });
             }
-        else
+        else  
             {
         $.ajax({
             type: "POST",
@@ -203,7 +210,7 @@ var newEditableGridRows = [];
             dataType: "json",
             data: data,
             success: function (data) {
-                document.getElementById(divID).innerHTML = data.content;
+                document.getElementById(divID+"__"+parentItemId).innerHTML = data.content;
                 loadJSFile("js/informativeGridInfiniteScroll.js");
                 myApp.attachInfiniteScroll($$('.informativeGrid-infinite-scroll'));
                 myApp.hidePreloader();
@@ -216,19 +223,19 @@ var newEditableGridRows = [];
                         }
                     case ("classicre"):
                         {
-                            document.getElementById(divID).innerHTML = data.content;
+                            document.getElementById(divID+"__"+parentItemId).innerHTML = data.content;
                             myApp.hidePreloader();
                             break; 
                         }
                     case ("classicms"):
                         {
-                            document.getElementById(divID).innerHTML = data.content;
+                            document.getElementById(divID+"__"+parentItemId).innerHTML = data.content;
                             myApp.hidePreloader();
                             break;
                         }
                     case ("wflifecycle"):
                         {
-                            document.getElementById(divID).innerHTML = data.content;
+                            document.getElementById(divID+"__"+parentItemId).innerHTML = data.content;
                             myApp.hidePreloader();
                             break;
                         }
@@ -243,12 +250,12 @@ var newEditableGridRows = [];
         
           }
     }
-    function deleteRelatedItem(id, culture, confirmationMessage) {
+    function deleteRelatedItem(id, culture, confirmationMessage,parentItemId,screenParent) {
         myApp.confirm(confirmationMessage, function () {
-            deleteItem(id, culture);
+            deleteItem(id, culture,parentItemId,screenParent);
         });
     }
-    function deleteItem(id, culture) {
+    function deleteItem(id, culture,parentItemId,screenParent) {
         var data = "{" +
        "\"screenName\":\"" + divId + "\"," +
        "\"itemId\":\"" + id + "\"," +
@@ -268,8 +275,8 @@ var newEditableGridRows = [];
             success: function (data) {
                 myApp.hidePreloader();
                 myApp.alert(data.status,"MACP", function () {
-                    loadScreen(divId);    
-                });
+                    loadScreen(divId,parentItemId,screenParent);    
+                }); 
             },
             error: function (e) {
                 myApp.hidePreloader();            
@@ -277,7 +284,7 @@ var newEditableGridRows = [];
             }
         });
     }
-    function menuTabClick(divID, butDiv, screenEngine) {
+    function menuTabClick(divID, butDiv, screenEngine,parentItemId,parentItem) {
          isRelatedFromLink="false";
          console.log("menuTabClick   isRelatedFromLink",isRelatedFromLink);
         divId = divID;
@@ -285,27 +292,25 @@ var newEditableGridRows = [];
         isUpdateAttachment = false;
       
         var selectedDivId ;
-        selectedDivId = $("div").siblings(".Active").attr("id");
-        $("button").siblings(".selectedTab").removeClass('selectedTab');
+        selectedDivId = $('#' + divID+"__"+parentItemId).siblings(".Active").attr("id");
+        $("button").siblings(".selectedTab."+parentItemId).removeClass('selectedTab');
         $('#' + butDiv).addClass('selectedTab');
         if (!($('#' + butDiv).hasClass('loaded'))) {
             $('#' + butDiv).addClass('loaded');
-            loadScreen(divID);
+            loadScreen(divID,parentItemId,parentItem);
         }
-        $("div").siblings(".Active").removeClass('Active');
-        $('#' + divID).addClass('Active');
-        $('#'+divID+'_buttons').removeClass("displayNone");
+        $("#"+divID+"__"+parentItemId).siblings(".Active").removeClass('Active');
+        $('#' + divID+"__"+parentItemId).addClass('Active');
+        $('#'+divID+'__'+parentItemId+'_buttons').removeClass("displayNone");
         $('#'+selectedDivId+'_buttons').addClass("displayNone");
         RelatedItemType=$(".selectedTab").text();  
-    } 
-    $$('.startWF-From-Edit-Screen-form-to-data').on('click', function () {
-
-        startWorkflow_ButtonAction(itemId);
-    });
-    function generateDocumentMenu() {
-
-        myApp.popup('<div id="documentMenuPopup" class="popup" style="width: 60% !important; top: 10% !important;left: 20% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" >' + docMenu + '</div>', true);
     }
+   
+     function startworkflowButtonEvent(parentItemId)
+    {
+           startWorkflow_ButtonAction(parentItemId);
+    }
+
     function generateDocument(documentName, item, fileType) {
         myApp.showPreloader();
         var url = "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/ExportReport";
@@ -389,43 +394,40 @@ var newEditableGridRows = [];
         myApp.hidePreloader();
         window.open(folderpath + "//" + filename, "_system", 'location=yes');
     }
-    $$('.edit-mainData-form-to-data').on('click', function () {
-        var indexToSelect = 1;
+    function saveButtonEvent(parentItemId,item,parentItem) {
+    var indexToSelect = 1;
         if (engine === "classicms") {
-            formId = "#my-mainData-form";
+            formId = "#my-mainData-form__"+parentItemId;
 
         } else if (engine === "attachment") {
-            formId = "#my-attachment-form";
+            formId = "#my-attachment-form__"+parentItemId;
         }
          var isValidForm = requiredFormComponent(formId); 
-
-       /* if (!isValid) {
-            $(x[indexToSelect]).next().children().first().focus();
-        } else {*/
         if(isValidForm){
             if (engine === "classicms") {
-                mainData_SaveEvent();
+                mainData_SaveEvent(parentItemId,item);
             } else if (engine === "attachment") {
-                attachement_SaveEvent();
+                attachement_SaveEvent(parentItemId,item,parentItem);
             }
         }
-    });
-    function mainData_SaveEvent() {
-        var formData = myApp.formToData('#my-mainData-form');
+     }
+   
+    function mainData_SaveEvent(parentItemId,item) {
+        var formData = myApp.formToData('#my-mainData-form__'+parentItemId);
         Parameters = JSON.stringify(formData);
-        UpdateItemEvent();
+        UpdateItemEvent(parentItemId,item);
     }
-    function attachement_SaveEvent() {
-        uploadAttachementFile();
+    function attachement_SaveEvent(parentItemId,item,parentItem) {
+        uploadAttachementFile(parentItemId,item,parentItem);
     }
-    function uploadAttachementFile() {
-        var formData = myApp.formToData('#my-attachment-form');
+    function uploadAttachementFile(parentItemId,item,parentItem) {
+        var formData = myApp.formToData('#my-attachment-form__'+parentItemId);
         parameters = JSON.stringify(formData);
         myApp.showPreloader();
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/AttachFile';
         var data = "{" +
-            "\"mainItemId\":\"" + itemId + "\"," +
-            "\"screenName\":\"" + divId + "\"," +
+            "\"mainItemId\":\"" + parentItemId + "\"," +
+            "\"screenName\":\"" + item + "\"," +
             "\"fileName\":\"" + fileUploadedName + "\"," +
             "\"fileData\":\"" + fileUploadedData + "\"," +
             "\"folder\":\"" + $("#h__none__folder_name option:selected").text() + "\"," +
@@ -441,7 +443,7 @@ var newEditableGridRows = [];
             success: function (data) {
                 if (data.status === "ok") {
                     myApp.hidePreloader();
-                    loadScreen(divId);
+                    loadScreen(divId,parentItemId,parentItem);
                         }
                     
                  else {
@@ -512,7 +514,7 @@ var newEditableGridRows = [];
 
 
     }
-    function fileDetail(name, type, status, description, rejectionComment, expiryDate, dateFormat, folder, subFolder, buttonListMenu) {
+    function fileDetail(name, type, status, description, rejectionComment, expiryDate, dateFormat, folder, subFolder, buttonListMenu,parentItemId,item) {
 
         var buttonsGroup = [];
         var actionSheetTitle = {};
@@ -533,7 +535,7 @@ var newEditableGridRows = [];
                 valueToPush["onClick"] = funcClick;
             }
             if (butType === "delete") {
-                var funcClick = function () { deleteAttachmentDocument(name, folder, subFolder)}
+                var funcClick = function () { deleteAttachmentDocument(name, folder, subFolder,item)}
                 valueToPush["onClick"] = funcClick;
                 valueToPush["color"] = "red";
             }
@@ -546,7 +548,7 @@ var newEditableGridRows = [];
                         var funcClick = function () { generateAttachmentPicture(name, folder, subFolder)}            
                         break;
                     case "pdf" : */
-                        var funcClick = function () { generateAttachmentPicture(name, folder, subFolder)}            
+                        var funcClick = function () { generateAttachmentPicture(name, folder, subFolder,parentItemId)}            
                        // break;
                 
                 valueToPush["onClick"] = funcClick;             
@@ -555,10 +557,10 @@ var newEditableGridRows = [];
         }
         myApp.actions(buttonsGroup);
     }
-    function UpdateItem() {
+    function UpdateItem(parentItemId) {
       var stringify= getGridonPoponsData("#my-mainData-form");
         var data = "{" +
-            "\"mainItemId\":\"" + itemId + "\"," +
+            "\"mainItemId\":\"" + parentItemId + "\"," +
             "\"screenName\":\"" + currentItem + "\"," +
             "\"userData\":"+sessionStorage.getItem("userData")+"," +
             "\"stringify\":"+stringify+"," +
@@ -596,11 +598,11 @@ var newEditableGridRows = [];
                     console.log("Error");
                 });
         }
-    function UpdateItemEvent() {
-var stringify= getGridonPoponsData("#my-mainData-form");
+    function UpdateItemEvent(parentItemId,item) {
+    var stringify= getGridonPoponsData("#my-mainData-form__"+parentItemId);
         var data = "{" +
-            "\"mainItemId\":\"" + itemId + "\"," +
-            "\"screenName\":\"" + currentItem + "\"," +
+            "\"mainItemId\":\"" + parentItemId + "\"," +
+            "\"screenName\":\"" + item + "\"," +
             "\"userData\":"+sessionStorage.getItem("userData")+","+
             "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
             "\"stringify\":"+stringify+"," +
@@ -609,7 +611,7 @@ var stringify= getGridonPoponsData("#my-mainData-form");
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/UpdateItemEvent';
 
         $.ajax({
-            type: 'POST',
+            type: 'POST',   
             url: url,
             contentType: "text/plain",
             dataType: "json",
@@ -617,7 +619,7 @@ var stringify= getGridonPoponsData("#my-mainData-form");
             success: function (data) {
                  if (data.status === "ok") {
                 myApp.hidePreloader();
-                manageUpdateItemResponse(data);
+                manageUpdateItemResponse(data,parentItemId);
                  }
                 
             },
@@ -631,7 +633,7 @@ var stringify= getGridonPoponsData("#my-mainData-form");
             }  
         });
     }
-    function manageUpdateItemResponse(data) {
+    function manageUpdateItemResponse(data,parentItemId) {
             console.log(data.behavior);
             if (data.behavior != null) {
 
@@ -644,14 +646,14 @@ var stringify= getGridonPoponsData("#my-mainData-form");
                     case "optionalAlert":
                         {
                             myApp.confirm(data.message, "Exception", function () {
-                                UpdateItem();
+                                UpdateItem(parentItemId);
                             });
                             break;
                         }
                     case "deviationAlert":
                         {
                           errorMsg = data.message;
-                            myApp.popup('<div class="popup" style="width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" ><div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">' + data.message + '</br></br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="saveProcessEngineComment_enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="saveBeforeUpdateItem_DeviationComment()" id="saveProcessEngineCommentButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
+                            myApp.popup('<div class="popup" style="width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" ><div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">' + data.message + '</br></br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="saveProcessEngineComment_enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="saveBeforeUpdateItem_DeviationComment('+parentItemId+')" id="saveProcessEngineCommentButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
                             break;
                                                                   
              
@@ -665,7 +667,7 @@ var stringify= getGridonPoponsData("#my-mainData-form");
                 myApp.alert(data.message,"MACP");
             }
      }
-    function saveBeforeUpdateItem_DeviationComment() {
+    function saveBeforeUpdateItem_DeviationComment(parentItemId) {
             var comment = document.getElementById("deviationComment").value;
             var updateId = relatedItemId;
             if (isDuplicate === "isDuplicate")
@@ -673,7 +675,7 @@ var stringify= getGridonPoponsData("#my-mainData-form");
             var data = "{" +
                 "\"screenName\":\"" + divId + "\"," +
                 "\"userId\":\"" + sessionStorage.getItem("userId") + "\"," +
-                "\"mainItemId\":\"" + itemId + "\"," +
+                "\"mainItemId\":\"" + parentItemId + "\"," +
                 "\"relatedItemId\":\"0\"," +
                 "\"comment\":\"" + comment + "\"," +
                 "\"errorMsg\":\"" + errorMsg + "\"," + 
@@ -710,3 +712,29 @@ var stringify= getGridonPoponsData("#my-mainData-form");
                 }
             });
         }
+
+function generateDocumentMenu(screenName,mainItemId,taskId) {
+        myApp.showPreloader();            
+        var url = "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetDocumentMenu";
+        var data = "{" +
+            "\"screenName\":\"" + screenName + "\"," +
+            "\"mainItemId\":\"" + mainItemId + "\"," +
+            "\"taskId\":\""+taskId+"\"}";
+        $.ajax({
+            type: 'POST',
+            url: url,  
+            contentType: "text/plain",
+            dataType: "json",
+            data: data, 
+            success: function (data) {
+                myApp.hidePreloader();   
+                if(data.DocumentMenu!="")
+                    myApp.popup('<div id="documentMenuPopup" class="popup" style="width: 60% !important; top: 10% !important;left: 20% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;" >' + data.DocumentMenu + '</div>', true);                             
+                    
+            },
+            error: function (e) {
+                myApp.hidePreloader();            
+                errorMessage(); 
+            }
+        });
+    }

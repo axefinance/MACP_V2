@@ -1,4 +1,5 @@
-
+var mainItemIdForRelatedScreen;
+var mainItemForRelatedScreen;
 
 function testclick(msg,msgTitle) {
         SuccessMsg = msg;
@@ -21,7 +22,7 @@ function UpdateRelatedItemEvent() {
             if (isDuplicate === "isDuplicate")
                 updateId = 0;
             var data = "{" +
-               "\"mainItemId\":\"" + itemId + "\"," +
+               "\"mainItemId\":\"" + mainItemIdForRelatedScreen + "\"," +
                "\"relatedItemId\":\"" + updateId + "\"," +
                "\"screenName\":\"" + divId + "\"," +
                "\"ipAddress\":\"" + sessionStorage.getItem("Ip_config") + "\"," +
@@ -40,7 +41,7 @@ function UpdateRelatedItemEvent() {
 
                     if (data.status === "ok") {
                         myApp.hidePreloader();
-                        manageSaveRelatedItemResponse(data);
+                        manageSaveRelatedItemResponse(data,divId);
                     }
                     else {
                         myApp.hidePreloader();
@@ -52,7 +53,7 @@ function UpdateRelatedItemEvent() {
                     console.log(e.message);
                     verifconnexion = false;
                     myApp.hidePreloader();
-            errorMessage();
+            errorMessage(); 
 
 
                 }
@@ -60,14 +61,14 @@ function UpdateRelatedItemEvent() {
 
         }
 
-function UpdateRelatedItem() {
+function UpdateRelatedItem(item) {
             var updateId = relatedItemId;
             if (isDuplicate === "isDuplicate")
                 updateId = 0;
             var data = "{" +
-               "\"mainItemId\":\"" + itemId + "\"," +
+               "\"mainItemId\":\"" + mainItemIdForRelatedScreen + "\"," +
                "\"relatedItemId\":\"" + updateId + "\"," +
-               "\"screenName\":\"" + divId + "\"," +
+               "\"screenName\":\"" + item + "\"," +
                "\"userData\":"+sessionStorage.getItem("userData")+"," +
                "\"ipAddress\":\"" + sessionStorage.getItem("Ip_config") + "\"," +
                "\"parameters\":" + Parameters + "}";
@@ -86,7 +87,7 @@ function UpdateRelatedItem() {
 
                         myApp.hidePreloader();
                         myApp.alert(SuccessMsg,"MACP", function () {
-                            loadScreen(divId);
+                            loadScreen(divId,mainItemIdForRelatedScreen,mainItemForRelatedScreen);
                              mainView.router.back({reloadPrevious:true});
                         });
 
@@ -108,7 +109,8 @@ function UpdateRelatedItem() {
             });
         }
 
-function manageSaveRelatedItemResponse(data) {
+function manageSaveRelatedItemResponse(data,item) {
+            myApp.alert(item);
             console.log(data.behavior);
             if (data.behavior != null) {
 
@@ -121,23 +123,23 @@ function manageSaveRelatedItemResponse(data) {
                     case "optionalAlert":
                         {
                             myApp.confirm(data.message, "Exception", function () {
-                                UpdateRelatedItem();
+                                UpdateRelatedItem(item);
                             });
                             break;
                         }
                     case "deviationAlert":
                         {
                             errorMsg = data.message;
-                            myApp.popup('<div class="popup" style="width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" ><div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">' + data.message + '</br></br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="saveProcessEngineComment_enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="saveBeforeUpdateRelatedItem_DeviationComment()" id="saveProcessEngineCommentButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
+                            myApp.popup('<div class="popup" style="width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important background : #f1f1f1 !important;" ><div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">' + data.message + '</br></br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="saveProcessEngineComment_enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="saveBeforeUpdateRelatedItem_DeviationComment('+item+')" id="saveProcessEngineCommentButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
                             break;
                         }
                 }
-            }
+            } 
             else {
 
                 myApp.hidePreloader();
                 myApp.alert(SuccessMsg, SuccesMsgTitle, function () {
-                            loadScreen(divId);
+                            loadScreen(divId,mainItemIdForRelatedScreen,mainItemForRelatedScreen);
                     mainView.router.back({reloadPrevious:true});
                 });
                 myApp.closeModal(".popup", true);
@@ -157,15 +159,15 @@ function saveProcessEngineComment_enabledButton(textarea) {
 
         };
 
-function saveBeforeUpdateRelatedItem_DeviationComment() {
+function saveBeforeUpdateRelatedItem_DeviationComment(item) {
             var comment = document.getElementById("deviationComment").value;
             var updateId = relatedItemId;
             if (isDuplicate === "isDuplicate")
                 updateId = 0;
             var data = "{" +
-                "\"screenName\":\"" + divId + "\"," +
+                "\"screenName\":\"" + item + "\"," +
                 "\"userData\":"+sessionStorage.getItem("userData")+"," +
-                "\"mainItemId\":\"" + itemId + "\"," +
+                "\"mainItemId\":\"" + mainItemIdForRelatedScreen + "\"," +
                 "\"relatedItemId\":\"0\"," +
                 "\"comment\":\"" + comment + "\"," +
                 "\"errorMsg\":\"" + errorMsg + "\"," +
@@ -185,7 +187,7 @@ function saveBeforeUpdateRelatedItem_DeviationComment() {
                         myApp.hidePreloader();
                         myApp.closeModal();
                         myApp.alert(SuccessMsg, SuccesMsgTitle, function () {
-                            loadScreen(divId);
+                            loadScreen(divId,mainItemIdForRelatedScreen,mainItemForRelatedScreen);
                              mainView.router.back({reloadPrevious:true});
                         });
                     }

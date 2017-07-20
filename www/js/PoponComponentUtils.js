@@ -2,71 +2,184 @@ var PoponComponentItem;
 var ComponentId;
 var DisplayProperty;
 
-function GetPoponComponentScreenContent()
-{
+function GetPoponComponentScreenContent() {
     myApp.showPreloader();
-    var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GenerateSearchOnPoponScreen";    
-    var data="{"+    
-      "\"item\":\""+PoponComponentItem+"\","+
-      "\"userData\":"+sessionStorage.getItem("userData")+"}"; 
-    console.log("SearchParams",data);        
-    $.ajax({              
-        type: 'POST',             
-        url: url,                                     
-        contentType: "text/plain",                            
-        dataType: "json",                            
-        dataType: "json",                               
-        data: data,         
-        success: function(data) {  
-            document.getElementById("poponComponentForm").innerHTML=data.content;
-            myApp.hidePreloader();  
-        },
-        error: function(e) { 
+    var url = "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GenerateSearchOnPoponScreen";
+    var data = "{" +
+      "\"item\":\"" + PoponComponentItem + "\"," +
+      "\"userData\":" + sessionStorage.getItem("userData") + "}";
+    console.log("SearchParams", data);
+    $.ajax({
+        type: 'POST',
+        url: url,
+        contentType: "text/plain",
+        dataType: "json",
+        dataType: "json",
+        data: data,
+        success: function (data) {
+            document.getElementById("poponComponentForm").innerHTML = data.content;
             myApp.hidePreloader();
-        }                
-    });  
+        },
+        error: function (e) {
+            myApp.hidePreloader();
+        }
+    });
 }
 
-function searchOnPoponButtonEvent()
-{
-  
-    var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetSearchResultPage';
+function searchOnPoponButtonEvent() {
+
+    var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/GetSearchResultPage';
     myApp.showPreloader();
-    lunchSearchResult(url,"searchOnPoponResult",PoponComponentItem);
-}  
-function poponComponentClick(item,idComponent,displayproperty)
-{
-    PoponComponentItem=item;
-    ComponentId=idComponent;
-    DisplayProperty=displayproperty;
-     mainView.router.load({url: "poponComponentScreen.html",reload:false});
-    /*
-    var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GenerateExistingQInputItemPopon";    
-    var data="{"+    
-      "\"item\":\""+currentItem+"\","+
-      "\"userData\":"+sessionStorage.getItem("userData")+","+
-      "\"mainItemId\":\"0\","+
-      "\"taskId\":\""+TaskId+"\"}"; 
-    console.log("SearchParams",data);        
-    $.ajax({              
-        type: 'POST',             
-        url: url,                                     
-        contentType: "text/plain",                            
-        dataType: "json",                            
-        dataType: "json",                               
-        data: data,         
-        success: function(data) {  
-            document.getElementById("existingQuickInputForm").innerHTML=data.content;
-            myApp.hidePreloader();  
-        },
-        error: function(e) { 
-            myApp.hidePreloader();
-        }                
-    });    
+    var formData = myApp.formToData('#my-poponComponent-form');
+    currentSearchParams = JSON.stringify(formData);
+    currentSearchItem = PoponComponentItem;
+    currentSearchType = "searchOnPoponResult";
+    lunchSearchResult();
+}
+function poponComponentClick(item, idComponent, displayproperty) {
+    var items = item.split(",");
+     ComponentId = idComponent;
+      DisplayProperty = displayproperty;
+    if (items.length === 1) {
+        PoponComponentItem = item;
+        mainView.router.load({ url: "poponComponentScreen.html", reload: false });
+        myApp.showPreloader();
+        var url = "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GenerateSearchOnPoponScreen";
+        var data = "{" +
+          "\"item\":\"" + PoponComponentItem + "\"," +
+          "\"userData\":" + sessionStorage.getItem("userData") + "}";
+        $.ajax({
+            type: 'POST',
+            url: url,
+            contentType: "text/plain",
+            dataType: "json",
+            dataType: "json",
+            data: data,
+            success: function (data) {
+                document.getElementById("poponComponentForm").innerHTML = data.content;
+                myApp.hidePreloader();
+            },
+            error: function (e) {
+                myApp.hidePreloader();
+            }
+        });
+    }
+    else {
+        var Htmllist = "";
+        for (var i = 0 ; i < items.length; i++) {
+            Htmllist = Htmllist + '<li  onclick="handle();"><label class="label-radio item-content">' +
+                  '<input type="radio" name="my-radio" value="' + items[i] + '" checked="checked">' +
+        '<div class="item-inner">' +
+              '<div class="item-title">' + items[i] + '</div>' +
+            '</div>' +
+          '</label>' +
+        '</li>';
+        }
+        var modal = myApp.modal({
+            title: '',
+            text: '',
+            afterText: '<div style="width: auto; margin:5px -15px -15px">' +
+                          '<form id="searchOnPopon-choicItem-form" class="list-block">' +
+                      '<ul>' +
+                     Htmllist +
+                     '</ul>' +
+                     '</form>' +
+                     '</div>'
+            
+        });
+
+       
+
+    }
+}
+function handle() {
+   
+    var formToData=JSON.stringify(myApp.formToData("#searchOnPopon-choicItem-form"));
+    obj = JSON.parse(formToData);
+     myApp.closeModal();
+    PoponComponentItem=obj["my-radio"]; 
+    mainView.router.load({ url: "poponComponentScreen.html", reload: false });
+        myApp.showPreloader();
+        var url = "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GenerateSearchOnPoponScreen";
+        var data = "{" +
+          "\"item\":\"" + PoponComponentItem + "\"," +
+          "\"userData\":" + sessionStorage.getItem("userData") + "}";
+        $.ajax({
+            type: 'POST',
+            url: url,
+            contentType: "text/plain",
+            dataType: "json",
+            dataType: "json",
+            data: data,
+            success: function (data) {
+                document.getElementById("poponComponentForm").innerHTML = data.content;
+                myApp.hidePreloader();
+            },
+            error: function (e) {
+                myApp.hidePreloader();
+            }
+        });
     
+}
+
+
+function poponInfoClick(item,idComponent) {
+        
+    itemRef=document.getElementById(idComponent+"__Value").value;
+    itemId=document.getElementById(idComponent).value;
+    if (itemId != "" || itemId != undefined)
+    {
+        var items = item.split(",");  
+        currentItem=item;    
+        var newPageContent = '<div class="navbar">'+
+  '<div class="navbar-inner">'+
+     '<div class="left theme-gray">'+
+        '<a id="backButton" href="#" class="back link">'+
+             '<i class="icon icon-back"></i>'+
+             '<span>Back</span>'+
+          '</a>'+
+           '<a class="navbarUserIcon navbarButton link create-profile-links-editScreen" id="userName_label_editScreen__'+itemId+'" aria-hidden="true">'+
+           'User</a>'+
+     '</div>'+ 
+     '<div id="title_editScreen__'+itemId+'" class="center sliding">Search</div>'+
+      
+    '<div class="right">'+
+            '<a id="lng_label_editScreen__'+itemId+'" class="navbarGlobeIcon link create-language-links-editScreen__'+itemId+' navbarButton" aria-hidden="true">'+
+           'EN</a>'+
+     '<a href="#" class="link icon-only open-panel navbarWestMenuIcon"></a>'+
+    '</div>'+
+  '</div>'+
+'<div class="pages">'+
+  '<div data-page="editScreen" class="page" >'+ 
+   
+   '<div class="page-content" >'+
+        '<div id="editScreenForm" class="newPage">'+
+          '<div id=id="dynamic__'+itemId+'" ></div>'+    
+       '</div>'+      
+          '</div>'+      
+         '<div class="toolbar">'+
+'<div id="edit-toolbarContent__'+itemId+'" class="toolbar-inner" style="align-parent:rigth !important" >'+
+
+       
+    '</div>'+  
+       '</div>'+
+  '</div>'+               
+'</div>';
+            mainView.router.loadContent(newPageContent);
+        }
+    else
+        myApp.alert("null");
+            
+}
+  
+function selectItem(itemId,itemShortName)
+{ 
+   var displayElement=document.getElementById(ComponentId+"__Value");
+   var valueElement= document.getElementById(ComponentId); 
+    displayElement.value=itemShortName;
+    valueElement.value=itemId;
+    $("#poponInfoButton_"+ComponentId).removeAttr("disabled");
+   myApp.closeModal();
+   mainView.router.back();  
     
-    
-    var popupHTML = "<div class='popup' style='width:100% !important; height:100% !important; left:0px !important; top:0px !important; margin-left:0px !important; margin-top:0px !important; margin-right:0px !important; overflow:hidden'><form id='my-search-form' class='list-block inset'><ul class='list-block-padding' style='overflow-y: none !important'><li><div class='item-content row no-gutter'><div class='textbox tablet-50 '><div class='item-inner '><div class='item-title label'>Name</div><div class='item-input'><input class='dataFont' type='text' id='a__counterparty__counterparty_name__c' name='a__counterparty__counterparty_name__c' onchange='handleRequiredIcon(this,'textbox','','','', '');'></div></div></div><div class='textbox tablet-50 '><div class='item-inner '><div class='item-title label'>Customer reference</div><div class='item-input'><input class='dataFont' type='text' id='a__counterparty__counterparty_shortname__c' name='a__counterparty__counterparty_shortname__c' onchange='handleRequiredIcon(this,'textbox', '', '', '', '');'></div></div></div></div></li><li><div class='item-content row no-gutter'><div class='combobox tablet-50 '><div class='item-content' style='padding-left : 0px !important;'><div class='item-inner  '><div class='item-title label'>Agency/DR</div><div class='item-input'></div></div></div></div><div class='combobox tablet-50 '><div class='item-content' style='padding-left : 0px !important;'><div class='item-inner  '><div class='item-title label'>Internal Segment</div><div class='item-input'><select class='dataFont' onchange='generateConnectedComboItems( '', 'searchSme',this, '','Counterparty', '', '')'  id='h__counterparty__internal_segment_id__c' name='h__counterparty__internal_segment_id__c'><option value=''  class='emptyOption'  selected></option><option value='11'>90000</option><option value='1013'>azeazee</option><option value='2'>Credit Direction</option><option value='5'>delete_test</option><option value='4'>Headquarter</option><option value='1'>Litigation Direction 02</option><option value='12'>Nothing Diection</option><option value='3'>Recovery Direction</option><option value='6'>Recovery Direction 01</option><option value='9'>Risk Direction </option><option value='13'>sdqda</option></select></div></div></div></div></div></li></ul></form><p class='buttons-row'><a href='#' class='button button-raised' onclick='launchQIPoponSearch(\""+item+"\")'>Search</a><a href='#' class='button button-raised' onclick='myApp.closeModal()'>Close</a></p><div id='selectOnPopon'></div></div>"; 
-    myApp.popup(popupHTML);  
-    */
 }
