@@ -3,7 +3,7 @@ var SearchScreen_JSFlag;
 
 function launchSearch(item)
 {
-    currentItem=item;
+    gSubItem=item;
     var isValidForm = requiredFormComponent('form');
     if(isValidForm)
     {

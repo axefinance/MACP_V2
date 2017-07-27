@@ -32,7 +32,7 @@ $$('.amortization-infinite-scroll').on('infinite', function () {
        "\"mainItemId\":\""+itemId+"\"," + 
        "\"screenTag\":\""+divId+"\"," +   
        "\"parentId\":\""+itemId+"\"," +  
-       "\"screenName\":\""+currentItem+"\","+
+       "\"screenName\":\""+gSubItem+"\","+
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
        "\"poponWidth\":\""+popupWidth+"\"," + 
        "\"poponHeight\":\""+popupHeight+"\"," +  

@@ -3,19 +3,20 @@ var loggingOutWindowMessage;
 var loggingOutWindowTitle;
 var ip_config;
 var ip_port; 
-var itemId;
 var tasks; 
 var totalRowNumber;
 var languagesList;
 var $$ = Dom7;
 var pageTitleContent;
 var pageTitleElement;
-var currentItem;
+var gSubItem;
+var gMainItemId;
+var gRelatedItemId=0;
+var gScreenName;
 var searchParams;
 var HomeBackButton;
 var docMenu;
 var eligibility;
-var relatedItemId=0;
 var stopWFMessage;
 var TaskId;
 var ExecutedWorkflowName;
@@ -80,7 +81,7 @@ function isScreenInCache(screenName){
     console.log("false");   
     return false;
 }
-function westMenuItem(item,title,screenName, xmlTag){ 
+function westMenuItem(subItem,title,screenName, xmlTag){ 
     if(isScreenInCache(screenName))
     {
         mainView.history=["#homePage"];
@@ -90,7 +91,7 @@ function westMenuItem(item,title,screenName, xmlTag){
         $$('.view-main .page-on-left').remove(screenName);
     }
     xmlTagNewInput = xmlTag;
-    currentItem=item;
+    gSubItem=subItem;
     pageTitleContent=title;
     fromNewInput=false;
     if(!checkInternetConnection())                                                   
@@ -183,13 +184,7 @@ function onDeviceReady() {
     document.addEventListener("online", checkInternetConnection, false);
     myApp.params.swipePanel=false;
     verifDeviceConfig();   
-} 
-/*myApp.onPageInit('home', function (page) {  
-     HomeBackButton=document.getElementById("homeBackButton");
-     myApp.params.swipePanel=false;
-    verifConfig();
-    verifDeviceConfig();        
-}).trigger();   */                    
+}                
 myApp.onPageInit('WSConfigurationScreen', function (page) {
     myApp.params.swipePanel=false;    
     document.getElementById('WSip').value=sessionStorage.getItem('Ip_config');
@@ -235,10 +230,7 @@ myApp.onPageInit('editScreen', function (page) {
     createLanguagesList('editScreen');
     createLogoutPopover('editScreen');
     myApp.params.swipePanel=false;
-    myApp.showPreloader();
-    if(fromNewInput===true)
-        document.getElementById("backButton").style.display = "none"; 
-    loadEditScreen(itemId,currentItem);
+    InitEditScreen();
     
 }); 
 myApp.onPageInit('newInputScreen', function (page) {
@@ -261,7 +253,7 @@ myApp.onPageInit('searchResultScreen', function (page) {
     pageTitleElement.textContent=pageTitleContent;
     setTemplate_HeaderData('searchResultScreen');   
     myApp.showPreloader();
-    currentSearchItem=currentItem; 
+    currentSearchItem=gSubItem; 
     currentSearchParams=searchParams;
     currentSearchType="searchResult";
     lunchSearchResult();
@@ -288,7 +280,7 @@ myApp.onPageInit('relatedItemScreen', function (page) {
     myApp.params.swipePanel=false;
     pageTitleElement=document.getElementById("title_relatedItemScreen");
     pageTitleElement.textContent=itemRef+" : "+ RelatedItemType;
-    GetRelatedItemScreen();
+    InitRelatedItemScreen();
     myApp.showPreloader();
 });
 myApp.onPageInit('pricingConditionScreen', function (page) {
@@ -315,18 +307,17 @@ myApp.onPageInit('relatedScreen', function (page) {
 });
 
 
-function GetRelatedItemScreen()
-{
+function InitRelatedItemScreen(){
     var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    
             
     var data="{"+    
-      "\"screenName\":\""+divId+"\","+
+      "\"screenName\":\""+gScreenName+"\","+
       "\"screenType\":\"relatedItemDetails\","+
       "\"userData\":"+sessionStorage.getItem("userData")+","+
       "\"taskId\":\""+TaskId+"\"," + 
-      "\"mainItemId\":\""+itemId+"\","+
+      "\"mainItemId\":\""+gMainItemId+"\","+
       "\"screenWidth\":\""+window.innerWidth+"\","+          
-      "\"relatedItemId\":\""+relatedItemId+"\"}"; 
+      "\"relatedItemId\":\""+gRelatedItemId+"\"}"; 
     console.log("SearchParams",data);        
     $.ajax({             
         type: 'POST',             
@@ -335,7 +326,7 @@ function GetRelatedItemScreen()
         dataType: "json",                            
         data: data,         
         success: function(data) { 
-            manageAutoCompleteComponent("my-relatedItemPopup-form",divId);   
+            manageAutoCompleteComponent("my-relatedItemPopup-form",gScreenName);   
             loadJSFile("js/RelatedItemScreen.js");
             document.getElementById("relatedItemForm").innerHTML=data.content;
             $('#relatedItem-toolbarContent').append(data.buttonsDiv);
@@ -362,86 +353,54 @@ function loadTaskList() {
     GetHomePage('http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/getHomePage');  
 } 
 function loadNewInputPage(){  
-    currentItem=currentItem.toLowerCase();
+    gSubItem=gSubItem.toLowerCase();
     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetNewInputScreen';
     GetNewInputScreen(url);
 }  
-function loadEditScreen(itemId,item){
+
+function InitEditScreen(){ 
     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetEditScreen';
-    GetEditScreen(url,itemId,item);
-} 
-function GetEditScreen(url,itemId,item){ 
-    console.log(item+"      "+itemId);
-    var data="{"+      
-       "\"screenName\":\""+item+"\","+
-       "\"screenParent\":\"\","+ 
-       "\"taskId\":\""+TaskId+"\"," +
-       "\"userData\":"+sessionStorage.getItem("userData")+","+  
-       "\"mainItemId\":\""+itemId+"\"," +
-       "\"targetTab\":\""+TargetTab+"\"," +  
-       "\"screenEngine\":\"empty\","+
-       "\"screenWidth\":\""+window.innerWidth+"\"," +
-       "\"screenHeight\":\""+window.innerHeight+"\"}";     
+     myApp.showPreloader(); 
+     var request="{"+      
+              "\"subItem\":\""+gSubItem+"\","+
+              "\"screenName\":\"" + gSubItem + "\"," +
+              "\"screenParent\":\"\","+ 
+              "\"taskId\":\"0\"," +
+              "\"userData\":"+sessionStorage.getItem("userData")+","+  
+              "\"mainItemId\":\""+gMainItemId+"\"," +
+              "\"targetTab\":\""+TargetTab+"\"," +  
+              "\"screenEngine\":\"empty\","+
+              "\"screenWidth\":\""+window.innerWidth+"\"," +
+              "\"screenHeight\":\""+window.innerHeight+"\"}";
+           var withBackButton=true;
     $.ajax({ 
-        type: "POST",     
+        type: "POST",  
         dataType:"json",  
         url: url,    
         contentType: "text/plain",                          
-        data: data,        
-        success: function(data) { 
-            var elms = document.querySelectorAll("#editScreenForm");
-            console.log(elms.length);
-            console.log(elms);
-            if(elms.length>1)
-            {
-                var ourEelement=elms[elms.length-1];
-                ourEelement.innerHTML=data.content;
-                console.log($('#edit-toolbarContent__'+itemId));
-                $('#edit-toolbarContent__'+itemId).append(data.buttonsDiv);
-                pageTitleElement=document.getElementById("title_editScreen__"+itemId);
-                pageTitleElement.textContent=itemRef;
-                setTemplate_HeaderData('editScreen__'+itemId);
-            }    
-            else
-            {
-                if(document.getElementById("title_editScreen")!=null)
-                    {
-                 document.getElementById("editScreenForm").innerHTML=data.content;
-                $('#edit-toolbarContent').append(data.buttonsDiv);
-                pageTitleElement=document.getElementById("title_editScreen");
-                pageTitleElement.textContent=itemRef;
-                setTemplate_HeaderData('editScreen');
-                    }
-                else
-                    {
-                var ourEelement=elms[elms.length-1];
-                ourEelement.innerHTML=data.content;
-                console.log($('#edit-toolbarContent__'+itemId));
-                $('#edit-toolbarContent__'+itemId).append(data.buttonsDiv);
-                pageTitleElement=document.getElementById("title_editScreen__"+itemId);
-                pageTitleElement.textContent=itemRef;
-                setTemplate_HeaderData('editScreen__'+itemId); 
-                    }
-            }
-    engine = data.screenEngine;                                
-    divId = data.divId;     
-    manageAutoCompleteComponent("my-mainData-form__"+itemId,item);         
-    loadJSFile("js/EditScreen.js");
-    loadJSFile("js/WorkflowManager.js");
-    loadJSFile("js/informativeGridInfiniteScroll.js");
-    myApp.attachInfiniteScroll($$('.informativeGrid-infinite-scroll'));
-    myApp.hidePreloader();
-    RelatedItemType=$(".selectedTab").text(); 
-},
-error: function(e) {
-    myApp.hidePreloader();                 
-    errorMessage();
-}    
-});         
-}                 
+        data: request,  
+        success: function(data) {     
+           document.getElementById('editScreenForm__'+gMainItemId).innerHTML=data.content;
+            console.log($('#editScreenForm__'+gMainItemId));
+            $('#edit-toolbarContent__'+gMainItemId).append(data.buttonsDiv);
+             pageTitleElement=document.getElementById("title_editScreen__"+gMainItemId);
+             pageTitleElement.textContent=itemRef;
+             setTemplate_HeaderData('editScreen__'+gMainItemId); 
+             loadJSFile("js/WorkflowManager.js");
+             loadJSFile("js/informativeGridInfiniteScroll.js");
+             myApp.attachInfiniteScroll($$('.informativeGrid-infinite-scroll'));
+             myApp.hidePreloader();
+        },
+        error: function(e) {
+            myApp.hidePreloader();
+            errorMessage();                         
+        }    
+    });      
+    
+}                
 function GetNewInputScreen(url){
     var data="{"+     
-       "\"currentItem\":\""+currentItem+"\","+
+       "\"subItem\":\""+gSubItem+"\","+
        "\"screenWidth\":\""+window.innerWidth+"\","+
        "\"xmlTag\":\""+xmlTagNewInput+"\","+
        "\"userData\":"+sessionStorage.getItem("userData")+"}";
@@ -454,7 +413,7 @@ function GetNewInputScreen(url){
         success: function(data) {     
             document.getElementById("newInputForm").innerHTML=data.content;
             document.getElementById("newInput-toolbarContent").innerHTML=data.button;
-            manageAutoCompleteComponent("my-newInput-form",currentItem);
+            manageAutoCompleteComponent("my-newInput-form",gSubItem);
             loadJSFile("js/NewInputScreen.js");
             //  loadJSFile("js/FormatUtils.js");
             myApp.hidePreloader();
@@ -467,7 +426,7 @@ function GetNewInputScreen(url){
 }
 function GetSearchPage(url){ 
     var data="{"+  
-       "\"currentItem\":\""+currentItem+"\","+
+       "\"subItem\":\""+gSubItem+"\","+
        "\"userData\":"+sessionStorage.getItem("userData")+"}";
     $.ajax({ 
         type: 'POST',                             
@@ -477,7 +436,7 @@ function GetSearchPage(url){
         data: data,
         success: function(data) { 
             document.getElementById("searchForm").innerHTML=data.content;
-            manageAutoCompleteComponent("my-search-form",currentItem);
+            manageAutoCompleteComponent("my-search-form",gSubItem);
             loadJSFile("js/SearchScreen.js");
             //  loadJSFile("js/FormatUtils.js");
             loadJSFile("js/accounting.js");
@@ -709,7 +668,7 @@ function lunchSearchResult(){
     }
     var data="{"+    
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
-       "\"item\":\""+currentSearchItem+"\","+
+       "\"subItem\":\""+currentSearchItem+"\","+
        "\"searchParams\":"+currentSearchParams+","+
        "\"start\":\"0\","+
        "\"limit\":\"30\","+      
@@ -879,8 +838,8 @@ function GetExecuteTaskScreen(url){
                 stopWFMessage=data.stopWFMessage;
                 eligibility=data.eligibility;
                 WithCollectQuestion=data.WithCollectQuestion;
-                currentItem=data.screenName;
-                manageAutoCompleteComponent("my-mainData-form__"+itemId,currentItem);
+                gSubItem=data.screenName;
+                manageAutoCompleteComponent("my-mainData-form__"+itemId,gSubItem);
                 document.getElementById("executeTaskContent").innerHTML=data.content;
                 pageTitleElement=document.getElementById("title_executeTaskScreen");
                 pageTitleElement.textContent=data.itemShortName;

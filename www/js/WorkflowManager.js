@@ -4,7 +4,7 @@ var WorkFlowName;
 var DeviatedMsg;
 var RequiredDocument;
 var RequiredMitigant;
-function startWorkflow_ButtonAction(itemId){
+function startWorkflow_ButtonAction(mainItemId){
     myApp.showPreloader();
     selectedItem=itemId;
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/StartWorkFlowButtonAction';
@@ -13,8 +13,8 @@ function startWorkflow_ButtonAction(itemId){
     popupWidth=Math.floor(popupWidth); 
      var data="{"+     
         "\"userData\":"+sessionStorage.getItem("userData")+","+
-        "\"entityName\":\""+currentItem+"\","+  
-        "\"itemId\":\""+itemId+"\"," + 
+        "\"entityName\":\""+gSubItems+"\","+  
+        "\"itemId\":\""+mainItemId+"\"," + 
         "\"popupWidth\":\""+popupWidth+"\","+
         "\"popupHeight\":\""+popunHeight+"\"}";    
     console.log("SearchParams",data);                
@@ -112,7 +112,7 @@ function startWorkFlowItem(){
         "\"workfloawId\":\""+WorkflowId+"\"," +
         "\"workflowName\":\""+WorkFlowName+"\"," + 
         "\"popupWidth\":\""+popupWidth+"\","+
-        "\"entityName\":\""+currentItem+"\"}";    
+        "\"subItem\":\""+gSubItem+"\"}";    
      $.ajax({             
         type: 'POST',                     
         url: url,                  
@@ -244,7 +244,7 @@ function checkWorkflowEligibility(){
      var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/CheckWorkflowEligibility';
       var data="{"+  
         "\"mainItemId\":\""+selectedItem+"\","+
-        "\"item\":\""+currentItem+"\","+
+        "\"subItem\":\""+gSubItem+"\","+
         "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"workflowId\":\""+WorkflowId+"\","+
         "\"workflowName\":\""+WorkFlowName+"\","+  
@@ -303,7 +303,7 @@ function saveStartWFDeviationComment(){
      var data="{"+       
        "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\""+selectedItem+"\","+
-        "\"item\":\""+currentItem+"\","+
+        "\"subItem\":\""+gSubItem+"\","+
         "\"workflowId\":\""+WorkflowId+"\","+
         "\"workflowName\":\""+WorkFlowName+"\","+ 
         "\"popupWidth\":\""+popupWidth+"\","+
@@ -343,7 +343,7 @@ function saveStartWorkflow_EligibilityComment(){
     var data="{"+  
         "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\""+selectedItem+"\","+
-        "\"item\":\""+currentItem+"\","+
+        "\"subItem\":\""+gSubItem+"\","+
         "\"workflowName\":\""+WorkFlowName+"\"," +
         "\"workflowId\":\""+WorkflowId+"\","+
         "\"eligibilityObject\":"+JSON.stringify(StartWfEligibilityObject)+","+
@@ -387,7 +387,7 @@ function saveStartWorkflow_RequiredMitigantComent()
         "\"requiredDocument\":\"\","+
         "\"requiredMitigant\":\""+RequiredMitigant+"\","+
         "\"mainItemId\":\""+selectedItem+"\","+
-        "\"item\":\""+currentItem+"\","+
+        "\"subItem\":\""+gSubItem+"\","+
         "\"workflowId\":\""+WorkflowId+"\","+
         "\"workflowName\":\""+WorkFlowName+"\"," +
         "\"comment\":\""+comment+"\"}";   
@@ -431,7 +431,7 @@ function saveStartWorkflow_RequiredDocumentComent(){
         "\"requiredDocument\":\""+RequiredDocument+"\","+
         "\"requiredMitigant\":\"\","+
         "\"mainItemId\":\""+selectedItem+"\","+
-        "\"item\":\""+currentItem+"\","+
+        "\"subItem\":\""+gSubItem+"\","+
         "\"workflowId\":\""+WorkflowId+"\","+
         "\"workflowName\":\""+WorkFlowName+"\"," +
         "\"comment\":\""+comment+"\"}";   

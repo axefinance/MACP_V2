@@ -19,7 +19,7 @@ $$('.newInput-form-to-data').on('click', function(){
 
 function saveNewInputEvent(parameters){
       var data="{"+    
-        "\"screenName\":\""+currentItem+"\","+
+        "\"screenName\":\""+gSubItem+"\","+
         "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
         "\"parameters\":"+parameters+"}";  
@@ -55,7 +55,7 @@ function saveNewInputEvent(parameters){
 function saveNewInput(parameters){
     
       var data="{"+    
-        "\"screenName\":\""+currentItem+"\","+
+        "\"screenName\":\""+gSubItem+"\","+
         "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," + 
         "\"parameters\":"+parameters+"}";  
@@ -164,7 +164,7 @@ function saveBeforeInsert_DeviationComment()
       var  parameters=JSON.stringify(formData);
        myApp.closeModal(); 
       var data="{"+    
-        "\"screenName\":\""+currentItem+"\","+
+        "\"screenName\":\""+gSubItem+"\","+
         "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\"0\"," +
         "\"relatedItemId\":\"0\"," +

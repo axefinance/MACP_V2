@@ -2,14 +2,17 @@ var loading = false;
 var selectedItem; 
 var SearchResultScreen_JSFlag;
 
-function editItem(id,reference,item,targettab){ 
-    itemId=id;
+function editItem(mainItemId,reference,subItem,targettab){ 
     itemRef=reference;
     TargetTab=targettab;
-    currentItem=item;
+    gSubItem=subItem;
+    gMainItemId=mainItemId;
     if(!checkInternetConnection())                                                   
         myApp.alert("please check your internet connection");
     else 
+       {
+           var withBackButton=true;
+           loadEditScreen(withBackButton);
+       }
        
-         mainView.router.load({url: "editScreen.html"});  
-}      
+}       

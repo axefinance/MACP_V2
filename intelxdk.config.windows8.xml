@@ -15,13 +15,13 @@
 <allow-intent href="sms:*"/>
 <allow-intent href="mailto:*"/>
 <allow-intent href="geo:*"/>
-<intelxdk:plugin intelxdk:name="StatusBar" intelxdk:value="cordova-plugin-statusbar" intelxdk:version="2.1.3" intelxdk:checksum="c0146fbc" intelxdk:type="file"/>
-<intelxdk:plugin intelxdk:name="Device" intelxdk:value="cordova-plugin-device" intelxdk:version="1.1.2" intelxdk:checksum="2373ccea" intelxdk:type="file"/>
-<intelxdk:plugin intelxdk:name="Splashscreen" intelxdk:value="cordova-plugin-splashscreen" intelxdk:version="3.2.2" intelxdk:checksum="47137083" intelxdk:type="file"/>
-<intelxdk:plugin intelxdk:name="Compat" intelxdk:value="cordova-plugin-compat" intelxdk:version="1.0.0" intelxdk:checksum="61c62eb" intelxdk:type="file"/>
-<intelxdk:plugin intelxdk:name="File" intelxdk:value="cordova-plugin-file" intelxdk:version="4.2.0" intelxdk:checksum="1fdd7f27" intelxdk:type="file"/>
+<intelxdk:plugin intelxdk:name="StatusBar" intelxdk:value="cordova-plugin-statusbar" intelxdk:version="2.1.3" intelxdk:checksum="b3898ba6" intelxdk:type="file"/>
+<intelxdk:plugin intelxdk:name="Device" intelxdk:value="cordova-plugin-device" intelxdk:version="1.1.2" intelxdk:checksum="171f3465" intelxdk:type="file"/>
+<intelxdk:plugin intelxdk:name="Splashscreen" intelxdk:value="cordova-plugin-splashscreen" intelxdk:version="3.2.2" intelxdk:checksum="8d6d5773" intelxdk:type="file"/>
+<intelxdk:plugin intelxdk:name="Compat" intelxdk:value="cordova-plugin-compat" intelxdk:version="1.0.0" intelxdk:checksum="b1ba27" intelxdk:type="file"/>
+<intelxdk:plugin intelxdk:name="File" intelxdk:value="cordova-plugin-file" intelxdk:version="4.2.0" intelxdk:checksum="b48b1bfe" intelxdk:type="file"/>
 <intelxdk:plugin intelxdk:name="InAppBrowser" intelxdk:value="cordova-plugin-inappbrowser" intelxdk:version="1.4.0" intelxdk:checksum="f88bc51f" intelxdk:type="file"/>
-<intelxdk:plugin intelxdk:name="Network Information" intelxdk:value="cordova-plugin-network-information" intelxdk:version="1.2.1" intelxdk:checksum="9d8331a4" intelxdk:type="file"/>
+<intelxdk:plugin intelxdk:name="Network Information" intelxdk:value="cordova-plugin-network-information" intelxdk:version="1.2.1" intelxdk:checksum="b9385022" intelxdk:type="file"/>
 <preference name="windows-publisher-display-name"/>
 <preference name="windows-publisher-id"/>
 <preference name="Fullscreen" value="false"/>

@@ -7,7 +7,7 @@ function westMenuItem(item,title,screenName){
         document.getElementById("lng_label_"+screenName.replace(".html","")).remove(); 
         $$('.view-main .page-on-left').remove(screenName);
         }
-      currentItem=item;
+      gSubItems=item;
       pageTitleContent=title;
       if(!checkInternetConnection())                                                   
           myApp.alert("please check your internet connection");
