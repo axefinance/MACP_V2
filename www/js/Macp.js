@@ -443,7 +443,7 @@ function GetNewInputScreen(url){
     var data="{"+     
        "\"currentItem\":\""+currentItem+"\","+
        "\"screenWidth\":\""+window.innerWidth+"\","+
-       "\"xmlTag\":\""+xmlTagNewInput+"\","+
+       "\"xmlTag\":\""+currentItem+"\","+
        "\"userData\":"+sessionStorage.getItem("userData")+"}";
     $.ajax({ 
         type: "POST",  
