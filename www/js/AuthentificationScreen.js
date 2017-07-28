@@ -3,10 +3,6 @@ function onClickLoginButton(){
       try {
           var login = document.getElementById('userName').value;
           var password = document.getElementById('password').value;
-          if(login==="")
-              login='""';
-          if(password==="")
-              password='""';
           myApp.showPreloader();
           var url ='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/Authentication';
           parseDataGet(url,login,password);   
@@ -44,7 +40,7 @@ $$('.Auth-confirm-ok-cancel').on('click', function () {
        navigator.app.exitApp();
       },
       function () {
-      }
+      }  
     );
 });
 
