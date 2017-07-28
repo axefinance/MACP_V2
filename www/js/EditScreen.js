@@ -69,7 +69,7 @@ var newEditableGridRows = [];
             }
         });
 }
-    function deleteAttachmentDocument(name, folder, subFolder,parentItemId) {
+    function deleteAttachmentDocument(name, folder, subFolder,parentItemId,engine) {
         myApp.showPreloader();
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/DeleteAttachmentDocument';
         var data = "{" +
@@ -89,7 +89,7 @@ var newEditableGridRows = [];
                 if (data.status === "ok") {
                     myApp.hidePreloader();
                     
-                    loadScreen(divId,parentItemId,divId);
+                    loadScreen(divId,parentItemId,divId,"attachment");
                     myApp.hidePreloader();
                     myApp.alert("error deleting","Error");
                 }
@@ -168,7 +168,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
         reader.readAsDataURL(file);
     }
 }
-    function loadScreen(screenName,mainItemId,subItem) {
+    function loadScreen(screenName,mainItemId,subItem,engine) {
               var data = "{" +
            "\"userData\":"+sessionStorage.getItem("userData")+","+
            "\"screenName\":\"" + screenName + "\"," +
@@ -274,7 +274,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
             success: function (data) {
                 myApp.hidePreloader();
                 myApp.alert(data.status,"MACP", function () {
-                    loadScreen(divId,parentItemId,screenParent);    
+                    loadScreen(divId,parentItemId,screenParent,"classicre");    
                 }); 
             },
             error: function (e) {
@@ -295,7 +295,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
         $('#' + butDiv).addClass('selectedTab');
         if (!($('#' + butDiv).hasClass('loaded'))) {
             $('#' + butDiv).addClass('loaded');
-            loadScreen(screenName,mainItemId,subItem);
+            loadScreen(screenName,mainItemId,subItem,screenEngine);
         }
         $("#"+screenName+"__"+mainItemId).siblings(".Active").removeClass('Active');
         $('#' + screenName+"__"+mainItemId).addClass('Active');
@@ -442,7 +442,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
                 if (data.status === "ok") {
                     myApp.hidePreloader();
                     var screenToLoad=subItem+'_attachment';
-                    loadScreen(screenToLoad,mainItemId,subItem);
+                    loadScreen(screenToLoad,mainItemId,subItem,"attachment");
                         }
                     
                  else {

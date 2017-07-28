@@ -303,7 +303,7 @@ myApp.onPageInit('relatedScreen', function (page) {
     myApp.params.swipePanel=false;
     pageTitleElement=document.getElementById("title_relatedScreen");
     pageTitleElement.textContent=itemRef+" : "+ RelatedItemType;
-    loadScreen(divId,mainItemIdForLink,mainItemForLink);  
+    loadScreen(divId,mainItemIdForLink,mainItemForLink,"classicre");  
 });
 
 
@@ -430,7 +430,7 @@ function GetSearchPage(url){
        "\"userData\":"+sessionStorage.getItem("userData")+"}";
     $.ajax({ 
         type: 'POST',                             
-        url: url,                                  
+        url: url,                                    
         contentType: "text/plain",                                    
         dataType: "json",                               
         data: data,

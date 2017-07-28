@@ -35,7 +35,7 @@ function manageAuthentifaction(result)
                    
           }
 }  
-   
+    
                      
 
 $$('.Auth-confirm-ok-cancel').on('click', function () {

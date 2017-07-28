@@ -96,7 +96,7 @@ function savePricingCondition(item){
         data: data,        
         success: function(data) { 
             myApp.hidePreloader();
-             loadScreen(divId,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen);
+             loadScreen(divId,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen,"classicre");
              mainView.router.back({reloadPrevious:true});
         
         },
@@ -194,7 +194,7 @@ function manageSaveConditionResponse(data,item) {
             else
             {
                 
-            loadScreen(divId,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen);
+            loadScreen(divId,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen,"classicre");
             mainView.router.back({reloadPrevious:true});
             }
 }
@@ -228,7 +228,7 @@ function saveBeforeSaveConditon_DeviationComment(item){
         success: function(data) { 
             myApp.hidePreloader();
             myApp.closeModal();
-            loadScreen(divId,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen);
+            loadScreen(divId,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen,"classicre");
             mainView.router.back({reloadPrevious:true});
         
         },

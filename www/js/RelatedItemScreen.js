@@ -1,6 +1,6 @@
 
 
-function testclick(msg,msgTitle) {
+function testclick(msg,msgTitle,mainItemId,screenName) {
         SuccessMsg = msg;
         SuccesMsgTitle = msgTitle;
         var isValidForm = requiredFormComponent();
@@ -8,18 +8,18 @@ function testclick(msg,msgTitle) {
            { var formData = myApp.formToData('#my-relatedItemPopup-form');
             Parameters = JSON.stringify(formData);
             
-                UpdateRelatedItemEvent();
+                UpdateRelatedItemEvent(mainItemId,screenName);
           
            }
     }
 
-function UpdateRelatedItemEvent() {
+function UpdateRelatedItemEvent(mainItemId,screenName) {
             if (isDuplicate === "isDuplicate")
                 updateId = 0;
             var data = "{" +
-               "\"mainItemId\":\"" + gMainItemId + "\"," +
+               "\"mainItemId\":\"" + mainItemId + "\"," +
                "\"relatedItemId\":\"" + gRelatedItemId + "\"," +
-               "\"screenName\":\"" + gScreenName + "\"," +
+               "\"screenName\":\"" + screenName + "\"," +
                "\"ipAddress\":\"" + sessionStorage.getItem("Ip_config") + "\"," +
                "\"userData\":"+sessionStorage.getItem("userData")+"," +
                "\"parameters\":" + Parameters + "}";
@@ -36,7 +36,7 @@ function UpdateRelatedItemEvent() {
 
                     if (data.status === "ok") {
                         myApp.hidePreloader();
-                        manageSaveRelatedItemResponse(data);
+                        manageSaveRelatedItemResponse(data,screenName);
                     }
                     else {
                         myApp.hidePreloader();
@@ -56,14 +56,14 @@ function UpdateRelatedItemEvent() {
 
         }
 
-function UpdateRelatedItem(item) {
+function UpdateRelatedItem(screenName) {
             var updateId = relatedItemId;
             if (isDuplicate === "isDuplicate")
                 updateId = 0;
             var data = "{" +
                "\"mainItemId\":\"" + mainItemIdForRelatedScreen + "\"," +
                "\"relatedItemId\":\"" + updateId + "\"," +
-               "\"screenName\":\"" + item + "\"," +
+               "\"screenName\":\"" + screenName + "\"," +
                "\"userData\":"+sessionStorage.getItem("userData")+"," +
                "\"ipAddress\":\"" + sessionStorage.getItem("Ip_config") + "\"," +
                "\"parameters\":" + Parameters + "}";
@@ -82,7 +82,7 @@ function UpdateRelatedItem(item) {
 
                         myApp.hidePreloader();
                         myApp.alert(SuccessMsg,"MACP", function () {
-                            loadScreen(gScreenName,gMainItemId,gSubItem);
+                            loadScreen(gScreenName,gMainItemId,gSubItem,"classicre");
                              mainView.router.back({reloadPrevious:true});
                         });
 
@@ -104,7 +104,7 @@ function UpdateRelatedItem(item) {
             });
         }
 
-function manageSaveRelatedItemResponse(data) {
+function manageSaveRelatedItemResponse(data,screenName) {
             console.log(data.behavior);
             if (data.behavior != null) {
 
@@ -117,7 +117,7 @@ function manageSaveRelatedItemResponse(data) {
                     case "optionalAlert":
                         {
                             myApp.confirm(data.message, "Exception", function () {
-                                UpdateRelatedItem();
+                                UpdateRelatedItem(screenName);
                             });
                             break;
                         }
@@ -134,7 +134,7 @@ function manageSaveRelatedItemResponse(data) {
 
                 myApp.hidePreloader();
                 myApp.alert(SuccessMsg, SuccesMsgTitle, function () {
-                            loadScreen(gScreenName,gMainItemId,gSubItem);
+                            loadScreen(gScreenName,gMainItemId,gSubItem,"classicre");
                     mainView.router.back({reloadPrevious:true});
                 });
                 myApp.closeModal(".popup", true);
@@ -182,7 +182,7 @@ function saveBeforeUpdateRelatedItem_DeviationComment(item) {
                         myApp.hidePreloader();
                         myApp.closeModal();
                         myApp.alert(SuccessMsg, SuccesMsgTitle, function () {
-                           loadScreen(gScreenName,gMainItemId,gSubItem);
+                           loadScreen(gScreenName,gMainItemId,gSubItem,"classicre");
                              mainView.router.back({reloadPrevious:true});
                         });
                     }
