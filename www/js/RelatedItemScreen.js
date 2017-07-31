@@ -1,30 +1,25 @@
-var mainItemIdForRelatedScreen;
-var mainItemForRelatedScreen;
 
-function testclick(msg,msgTitle) {
+
+function testclick(msg,msgTitle,mainItemId,screenName) {
         SuccessMsg = msg;
         SuccesMsgTitle = msgTitle;
         var isValidForm = requiredFormComponent();
-     /*   if (!isValid) {
-            $(x[indexToSelect]).next().children().first().focus();
-        } else {*/
-    if(isValidForm)
+        if(isValidForm)
            { var formData = myApp.formToData('#my-relatedItemPopup-form');
             Parameters = JSON.stringify(formData);
             
-                UpdateRelatedItemEvent();
+                UpdateRelatedItemEvent(mainItemId,screenName);
           
            }
     }
 
-function UpdateRelatedItemEvent() {
-            var updateId = relatedItemId;
+function UpdateRelatedItemEvent(mainItemId,screenName) {
             if (isDuplicate === "isDuplicate")
                 updateId = 0;
             var data = "{" +
-               "\"mainItemId\":\"" + mainItemIdForRelatedScreen + "\"," +
-               "\"relatedItemId\":\"" + updateId + "\"," +
-               "\"screenName\":\"" + divId + "\"," +
+               "\"mainItemId\":\"" + mainItemId + "\"," +
+               "\"relatedItemId\":\"" + gRelatedItemId + "\"," +
+               "\"screenName\":\"" + screenName + "\"," +
                "\"ipAddress\":\"" + sessionStorage.getItem("Ip_config") + "\"," +
                "\"userData\":"+sessionStorage.getItem("userData")+"," +
                "\"parameters\":" + Parameters + "}";
@@ -41,7 +36,7 @@ function UpdateRelatedItemEvent() {
 
                     if (data.status === "ok") {
                         myApp.hidePreloader();
-                        manageSaveRelatedItemResponse(data,divId);
+                        manageSaveRelatedItemResponse(data,screenName);
                     }
                     else {
                         myApp.hidePreloader();
@@ -61,14 +56,14 @@ function UpdateRelatedItemEvent() {
 
         }
 
-function UpdateRelatedItem(item) {
+function UpdateRelatedItem(screenName) {
             var updateId = relatedItemId;
             if (isDuplicate === "isDuplicate")
                 updateId = 0;
             var data = "{" +
                "\"mainItemId\":\"" + mainItemIdForRelatedScreen + "\"," +
                "\"relatedItemId\":\"" + updateId + "\"," +
-               "\"screenName\":\"" + item + "\"," +
+               "\"screenName\":\"" + screenName + "\"," +
                "\"userData\":"+sessionStorage.getItem("userData")+"," +
                "\"ipAddress\":\"" + sessionStorage.getItem("Ip_config") + "\"," +
                "\"parameters\":" + Parameters + "}";
@@ -87,7 +82,7 @@ function UpdateRelatedItem(item) {
 
                         myApp.hidePreloader();
                         myApp.alert(SuccessMsg,"MACP", function () {
-                            loadScreen(divId,mainItemIdForRelatedScreen,mainItemForRelatedScreen);
+                            loadScreen(gScreenName,gMainItemId,gSubItem,"classicre");
                              mainView.router.back({reloadPrevious:true});
                         });
 
@@ -109,8 +104,7 @@ function UpdateRelatedItem(item) {
             });
         }
 
-function manageSaveRelatedItemResponse(data,item) {
-            myApp.alert(item);
+function manageSaveRelatedItemResponse(data,screenName) {
             console.log(data.behavior);
             if (data.behavior != null) {
 
@@ -123,7 +117,7 @@ function manageSaveRelatedItemResponse(data,item) {
                     case "optionalAlert":
                         {
                             myApp.confirm(data.message, "Exception", function () {
-                                UpdateRelatedItem(item);
+                                UpdateRelatedItem(screenName);
                             });
                             break;
                         }
@@ -140,7 +134,7 @@ function manageSaveRelatedItemResponse(data,item) {
 
                 myApp.hidePreloader();
                 myApp.alert(SuccessMsg, SuccesMsgTitle, function () {
-                            loadScreen(divId,mainItemIdForRelatedScreen,mainItemForRelatedScreen);
+                            loadScreen(gScreenName,gMainItemId,gSubItem,"classicre");
                     mainView.router.back({reloadPrevious:true});
                 });
                 myApp.closeModal(".popup", true);
@@ -188,7 +182,7 @@ function saveBeforeUpdateRelatedItem_DeviationComment(item) {
                         myApp.hidePreloader();
                         myApp.closeModal();
                         myApp.alert(SuccessMsg, SuccesMsgTitle, function () {
-                            loadScreen(divId,mainItemIdForRelatedScreen,mainItemForRelatedScreen);
+                           loadScreen(gScreenName,gMainItemId,gSubItem,"classicre");
                              mainView.router.back({reloadPrevious:true});
                         });
                     }

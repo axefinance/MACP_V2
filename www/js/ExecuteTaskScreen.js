@@ -102,7 +102,7 @@ function endTaskEvent(formId,mainItemId){
         "\"userData\":"+sessionStorage.getItem("userData")+","+ 
         "\"mainItemId\":\""+mainItemId+"\","+
         "\"extendedProperties\":"+extendedProperties+","+
-        "\"screenName\":\""+currentItem+"\","+
+        "\"screenName\":\""+gSubItem+"\","+
         "\"taskId\":\""+TaskId+"\","+
         "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
         "\"parameters\":"+screenParameters+","+
@@ -202,7 +202,7 @@ function checkRequiredDocument(){
         "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\""+itemId+"\","+
         "\"extendedProperties\":"+extendedProperties+","+
-        "\"screenName\":\""+currentItem+"\","+
+        "\"screenName\":\""+gSubItems+"\","+
         "\"taskId\":\""+TaskId+"\","+
         "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
         "\"parameters\":"+screenParameters+"}";
@@ -253,7 +253,7 @@ function saveRequiredDocumentComent(){
         "\"deviatedMsg\":\""+deviatedMsg+"\","+
         "\"requiredDocument\":\""+requiredDocument+"\","+
         "\"mainItemId\":\""+itemId+"\","+
-        "\"screenName\":\""+currentItem+"\","+
+        "\"screenName\":\""+gSubItem+"\","+
         "\"taskId\":\""+TaskId+"\","+
         "\"extendedProperties\":"+extendedProperties+","+
         "\"comment\":\""+comment+"\","+
@@ -315,7 +315,7 @@ function saveDeviationComment(){
         "\"deviatedMsg\":\""+deviatedMsg+"\","+
         "\"requiredDocument\":\"\","+
         "\"mainItemId\":\""+itemId+"\","+
-        "\"screenName\":\""+currentItem+"\","+
+        "\"screenName\":\""+gSubItem+"\","+
         "\"taskId\":\""+TaskId+"\","+
          "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
          "\"extendedProperties\":"+extendedProperties+","+
@@ -391,7 +391,7 @@ function saveEligibilityComment(){
     var data="{"+  
         "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\""+itemId+"\","+
-        "\"screenName\":\""+currentItem+"\","+
+        "\"screenName\":\""+gSubItem+"\","+
         "\"parameters\":"+screenParameters+","+
         "\"taskId\":\""+TaskId+"\","+
         "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
@@ -482,7 +482,7 @@ function saveCollectQuestion(){
     var data="{"+  
         "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\""+itemId+"\","+
-        "\"screenName\":\""+currentItem+"\","+
+        "\"screenName\":\""+gSubItems+"\","+
         "\"parameters\":"+screenParameters+","+
         "\"collectQuestionParameters\":"+collectQuestionParameters+","+
         "\"taskId\":\""+TaskId+"\"}";

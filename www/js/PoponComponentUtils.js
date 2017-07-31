@@ -123,54 +123,20 @@ function handle() {
 }
 
 
-function poponInfoClick(item,idComponent) {
-        
+function poponInfoClick(subItem,idComponent) 
+{
+    
     itemRef=document.getElementById(idComponent+"__Value").value;
-    itemId=document.getElementById(idComponent).value;
-    if (itemId != "" || itemId != undefined)
-    {
-        var items = item.split(",");  
-        currentItem=item;    
-        var newPageContent = '<div class="navbar">'+
-  '<div class="navbar-inner">'+
-     '<div class="left theme-gray">'+
-        '<a id="backButton" href="#" class="back link">'+
-             '<i class="icon icon-back"></i>'+
-             '<span>Back</span>'+
-          '</a>'+
-           '<a class="navbarUserIcon navbarButton link create-profile-links-editScreen" id="userName_label_editScreen__'+itemId+'" aria-hidden="true">'+
-           'User</a>'+
-     '</div>'+ 
-     '<div id="title_editScreen__'+itemId+'" class="center sliding">Search</div>'+
-      
-    '<div class="right">'+
-            '<a id="lng_label_editScreen__'+itemId+'" class="navbarGlobeIcon link create-language-links-editScreen__'+itemId+' navbarButton" aria-hidden="true">'+
-           'EN</a>'+
-     '<a href="#" class="link icon-only open-panel navbarWestMenuIcon"></a>'+
-    '</div>'+
-  '</div>'+
-'<div class="pages">'+
-  '<div data-page="editScreen" class="page" >'+ 
-   
-   '<div class="page-content" >'+
-        '<div id="editScreenForm" class="newPage">'+
-          '<div id=id="dynamic__'+itemId+'" ></div>'+    
-       '</div>'+      
-          '</div>'+      
-         '<div class="toolbar">'+
-'<div id="edit-toolbarContent__'+itemId+'" class="toolbar-inner" style="align-parent:rigth !important" >'+
-
-       
-    '</div>'+  
-       '</div>'+
-  '</div>'+               
-'</div>';
-            mainView.router.loadContent(newPageContent);
-        }
+    gMainItemId=document.getElementById(idComponent).value;
+    if (gMainItemId != "" || gMainItemId != undefined)
+    {  
+        gSubItem=subItem;    
+        loadEditScreen(true);
+    }
     else
         myApp.alert("null");
             
-}
+}  
   
 function selectItem(itemId,itemShortName)
 { 

@@ -69,7 +69,7 @@ var newEditableGridRows = [];
             }
         });
 }
-    function deleteAttachmentDocument(name, folder, subFolder,parentItemId) {
+    function deleteAttachmentDocument(name, folder, subFolder,parentItemId,engine) {
         myApp.showPreloader();
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/DeleteAttachmentDocument';
         var data = "{" +
@@ -88,7 +88,8 @@ var newEditableGridRows = [];
             success: function (data) {
                 if (data.status === "ok") {
                     myApp.hidePreloader();
-                    loadScreen(divId,parentItemId,divId);
+                    
+                    loadScreen(divId,parentItemId,divId,"attachment");
                     myApp.hidePreloader();
                     myApp.alert("error deleting","Error");
                 }
@@ -103,7 +104,7 @@ var newEditableGridRows = [];
         });
 
     }
-    function loadRelatedItemPopup(id, isDuplicateAction,parentItemId,screenParent) {
+function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subItem,screenName) {
        
     if (engine === "attachment") {
         isUpdateAttachment = false;
@@ -123,19 +124,20 @@ var newEditableGridRows = [];
         $("#h__none__subfolder_name").children().remove();
         $('#h__none__subfolder_name').closest(".combobox").attr('disabled', false);
     }
-    else { 
+    else {  
         
-     relatedItemId = id;
         isDuplicate = isDuplicateAction;
-        if(divId.indexOf('_condition') > -1)
+        if(screenName.indexOf('_condition') > -1)
             { 
 
                 if(!checkInternetConnection())                                                   
                     myApp.alert("please check your internet connection");
                 else 
                     mainView.router.load({url: 'pricingConditionScreen.html',reload:false,ignoreCache:true});
-                    mainItemIdForPricingConditionScreen=parentItemId;
-                    mainItemForPricingConditionScreen=screenParent;
+                    gMainItemId=mainItemId;
+                    gSubItem=subItem;
+                    gRelatedItemId=relatedItemId;
+                    gScreenName=screenName;
             }
         else 
         {
@@ -144,15 +146,12 @@ var newEditableGridRows = [];
             else 
                 {
                    
-                    mainItemIdForRelatedScreen=parentItemId;
-                    mainItemForRelatedScreen=screenParent;
+                    gMainItemId=mainItemId;
+                    gSubItem=subItem;
+                    gRelatedItemId=relatedItemId;
+                    gScreenName=screenName;
                     mainView.router.load({url: 'relatedItemScreen.html',reload:false,ignoreCache:true}); 
-                    
-                   
-                   // myApp.alert("related Item   "+engine);
                 }
-                
-
 }}
 }
     function manageAttechementElement() {
@@ -169,12 +168,12 @@ var newEditableGridRows = [];
         reader.readAsDataURL(file);
     }
 }
-    function loadScreen(divID,parentItemId,parentItem) {
+    function loadScreen(screenName,mainItemId,subItem,engine) {
               var data = "{" +
            "\"userData\":"+sessionStorage.getItem("userData")+","+
-           "\"screenName\":\"" + divID + "\"," +
-           "\"screenParent\":\"" + parentItem + "\"," + 
-           "\"mainItemId\":\"" + parentItemId + "\"," +
+           "\"screenName\":\"" + screenName + "\"," +
+           "\"subItem\":\"" + subItem + "\"," + 
+           "\"mainItemId\":\"" + mainItemId + "\"," +
            "\"taskId\":\""+TaskId+"\"," +
            "\"screenEngine\":\"" + engine + "\"," +
            "\"screenWidth\":\"" + window.innerWidth + "\"," +
@@ -183,7 +182,7 @@ var newEditableGridRows = [];
         if(isRelatedFromLink==="true")
             {
         
-        $.ajax({
+        $.ajax({ 
             type: "POST",
             url: "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedFrameFromLink",
             contentType: "text/plain",
@@ -210,7 +209,7 @@ var newEditableGridRows = [];
             dataType: "json",
             data: data,
             success: function (data) {
-                document.getElementById(divID+"__"+parentItemId).innerHTML = data.content;
+                document.getElementById(screenName+"__"+mainItemId).innerHTML = data.content;
                 loadJSFile("js/informativeGridInfiniteScroll.js");
                 myApp.attachInfiniteScroll($$('.informativeGrid-infinite-scroll'));
                 myApp.hidePreloader();
@@ -223,19 +222,19 @@ var newEditableGridRows = [];
                         }
                     case ("classicre"):
                         {
-                            document.getElementById(divID+"__"+parentItemId).innerHTML = data.content;
+                            document.getElementById(screenName+"__"+mainItemId).innerHTML = data.content;
                             myApp.hidePreloader();
                             break; 
                         }
                     case ("classicms"):
                         {
-                            document.getElementById(divID+"__"+parentItemId).innerHTML = data.content;
+                            document.getElementById(screenName+"__"+mainItemId).innerHTML = data.content;
                             myApp.hidePreloader();
                             break;
                         }
                     case ("wflifecycle"):
                         {
-                            document.getElementById(divID+"__"+parentItemId).innerHTML = data.content;
+                            document.getElementById(screenName+"__"+mainItemId).innerHTML = data.content;
                             myApp.hidePreloader();
                             break;
                         }
@@ -275,7 +274,7 @@ var newEditableGridRows = [];
             success: function (data) {
                 myApp.hidePreloader();
                 myApp.alert(data.status,"MACP", function () {
-                    loadScreen(divId,parentItemId,screenParent);    
+                    loadScreen(divId,parentItemId,screenParent,"classicre");    
                 }); 
             },
             error: function (e) {
@@ -285,30 +284,30 @@ var newEditableGridRows = [];
         });
     }
 
-    function menuTabClick(divID, butDiv, screenEngine,parentItemId,parentItem) {
+    function menuTabClick(screenName, butDiv, screenEngine,mainItemId,subItem) {
         isRelatedFromLink="false";
-        divId = divID;
+       // divId = divID;
         engine = screenEngine;
         isUpdateAttachment = false;      
         var selectedDivId ;
-        selectedDivId = $('#' + divID+"__"+parentItemId).siblings(".Active").attr("id");
-        $("button").siblings(".selectedTab."+parentItemId).removeClass('selectedTab');
+        selectedDivId = $('#' + screenName+"__"+mainItemId).siblings(".Active").attr("id");
+        $("button").siblings(".selectedTab."+mainItemId).removeClass('selectedTab');
         $('#' + butDiv).addClass('selectedTab');
         if (!($('#' + butDiv).hasClass('loaded'))) {
             $('#' + butDiv).addClass('loaded');
-            loadScreen(divID,parentItemId,parentItem);
+            loadScreen(screenName,mainItemId,subItem,screenEngine);
         }
-        $("#"+divID+"__"+parentItemId).siblings(".Active").removeClass('Active');
-        $('#' + divID+"__"+parentItemId).addClass('Active');
-        $('#'+divID+'__'+parentItemId+'_buttons').removeClass("displayNone");
+        $("#"+screenName+"__"+mainItemId).siblings(".Active").removeClass('Active');
+        $('#' + screenName+"__"+mainItemId).addClass('Active');
+        $('#'+screenName+'__'+mainItemId+'_buttons').removeClass("displayNone");
         $('#'+selectedDivId+'_buttons').addClass("displayNone");
         RelatedItemType=$(".selectedTab").text();  
     }
    
-     function startworkflowButtonEvent(parentItemId)
-    {
-           startWorkflow_ButtonAction(parentItemId);
-    }
+     function startworkflowButtonEvent(mainItemId)
+     {
+           startWorkflow_ButtonAction(mainItemId);
+     } 
 
     function generateDocument(documentName, item, fileType) {
         myApp.showPreloader();
@@ -393,20 +392,20 @@ var newEditableGridRows = [];
         myApp.hidePreloader();
         window.open(folderpath + "//" + filename, "_system", 'location=yes');
     }
-    function saveButtonEvent(parentItemId,item,parentItem) {
+    function saveButtonEvent(mainItemId,subItem) {
     var indexToSelect = 1;
         if (engine === "classicms") {
-            formId = "#my-mainData-form__"+parentItemId;
+            formId = "#my-mainData-form__"+mainItemId;
 
         } else if (engine === "attachment") {
-            formId = "#my-attachment-form__"+parentItemId;
+            formId = "#my-attachment-form__"+mainItemId;
         }
          var isValidForm = requiredFormComponent(formId); 
         if(isValidForm){
             if (engine === "classicms") {
-                mainData_SaveEvent(parentItemId,item);
+                mainData_SaveEvent(parentItemId,subItem);
             } else if (engine === "attachment") {
-                attachement_SaveEvent(parentItemId,item,parentItem);
+                attachement_SaveEvent(mainItemId,subItem);
             }
         }
      }
@@ -416,17 +415,17 @@ var newEditableGridRows = [];
         Parameters = JSON.stringify(formData);
         UpdateItemEvent(parentItemId,item);
     }
-    function attachement_SaveEvent(parentItemId,item,parentItem) {
+    function attachement_SaveEvent(mainItemId,subItem) {
         uploadAttachementFile(parentItemId,item,parentItem);
     }
-    function uploadAttachementFile(parentItemId,item,parentItem) {
-        var formData = myApp.formToData('#my-attachment-form__'+parentItemId);
+    function uploadAttachementFile(mainItemId,subItem) {
+        var formData = myApp.formToData('#my-attachment-form__'+mainItemId);
         parameters = JSON.stringify(formData);
         myApp.showPreloader();
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/AttachFile';
         var data = "{" +
-            "\"mainItemId\":\"" + parentItemId + "\"," +
-            "\"screenName\":\"" + item + "\"," +
+            "\"mainItemId\":\"" + mainItemId + "\"," +
+            "\"subItem\":\"" + subItem + "\"," +
             "\"fileName\":\"" + fileUploadedName + "\"," +
             "\"fileData\":\"" + fileUploadedData + "\"," +
             "\"folder\":\"" + $("#h__none__folder_name option:selected").text() + "\"," +
@@ -442,7 +441,8 @@ var newEditableGridRows = [];
             success: function (data) {
                 if (data.status === "ok") {
                     myApp.hidePreloader();
-                    loadScreen(divId,parentItemId,parentItem);
+                    var screenToLoad=subItem+'_attachment';
+                    loadScreen(screenToLoad,mainItemId,subItem,"attachment");
                         }
                     
                  else {
@@ -560,7 +560,7 @@ var newEditableGridRows = [];
       var stringify= getGridonPoponsData("#my-mainData-form");
         var data = "{" +
             "\"mainItemId\":\"" + parentItemId + "\"," +
-            "\"screenName\":\"" + currentItem + "\"," +
+            "\"screenName\":\"" + gSubItem + "\"," +
             "\"userData\":"+sessionStorage.getItem("userData")+"," +
             "\"stringify\":"+stringify+"," +
             "\"parameters\":" + Parameters + "}";
@@ -568,7 +568,7 @@ var newEditableGridRows = [];
         var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/UpdateItem';
 
         $.ajax({
-            type: 'POST',
+            type: 'POST', 
             url: url,
             contentType: "text/plain",
             dataType: "json",
@@ -738,3 +738,47 @@ function generateDocumentMenu(screenName,mainItemId,taskId) {
             }
         });
     }
+
+
+function loadEditScreen(withBackButton){
+            if(withBackButton===true)
+                {
+                 backButtonHtml=  '<a id="backButton" href="#" class="back link">'+
+             '<i class="icon icon-back"></i>'+
+             '<span>Back</span>'+
+               '</a>' ;
+                }
+            else
+                {
+                backButtonHtml="";
+                }
+     var editScreenContent = '<div class="navbar">'+
+             '<div class="navbar-inner">'+
+             '<div class="left theme-gray">'+
+              backButtonHtml+
+             '<a class="navbarUserIcon navbarButton link create-profile-links-editScreen" id="userName_label_editScreen__'+gMainItemId+'" aria-hidden="true">'+
+             'User</a>'+
+             '</div>'+ 
+             '<div id="title_editScreen__'+gMainItemId+'" class="center sliding">Search</div>'+
+             '<div class="right">'+
+             '<a id="lng_label_editScreen__'+gMainItemId+'" class="navbarGlobeIcon link create-language-links-editScreen__'+gMainItemId+' navbarButton" aria-hidden="true">'+
+             'EN</a>'+
+             '<a href="#" class="link icon-only open-panel navbarWestMenuIcon"></a>'+
+             '</div>'+
+             '</div>'+
+             '<div class="pages">'+
+             '<div data-page="editScreen" class="page" >'+ 
+             '<div class="page-content" >'+
+             '<div id="editScreenForm" class="newPage">'+
+             '<div id="editScreenForm__'+gMainItemId+'" ></div>'+    
+             '</div>'+      
+             '</div>'+      
+             '<div class="toolbar">'+
+             '<div id="edit-toolbarContent__'+gMainItemId+'" class="toolbar-inner" style="align-parent:rigth !important" >'+  
+             '</div>'+  
+             '</div>'+
+             '</div>'+               
+             '</div>';
+        mainView.router.loadContent(editScreenContent);
+      
+}

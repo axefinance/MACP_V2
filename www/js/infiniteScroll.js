@@ -36,7 +36,7 @@ $$('.infinite-scroll').on('infinite', function () {
           }
        var data="{"+    
         "\"userData\":"+sessionStorage.getItem("userData")+","+ 
-        "\"item\":\""+currentSearchItem+"\","+
+        "\"subItem\":\""+currentSearchItem+"\","+
         "\"searchParams\":"+currentSearchParams+","+
         "\"start\":\""+lastIndex+"\","+
         "\"limit\":\"10\","+      
