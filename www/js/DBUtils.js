@@ -6,19 +6,15 @@ document.addEventListener('deviceready', function() {
 });
 function manageDB()
 {
-   console.log("manageDB");
     db.transaction(function (tx) {  
     tx.executeSql('CREATE TABLE IF NOT EXISTS WS (IPaddress, port)');
 }, function(error) {
-    console.log('Transaction ERROR: ' + error.message);
   }, function() {
-    console.log('Populated database OK');
   }); 
 }
 
 function getWSConfiguration()
 {
-    console.log("getWSConfigurationWITH DB");
     db.transaction(function (tx) {
    tx.executeSql('SELECT * FROM WS', [], function (tx, results) {
        if(results.rows.length !=0)
@@ -37,7 +33,6 @@ function getWSConfiguration()
 
 function saveWSConfiguration(ipAddress,port)
 {
-     console.log("saveWSConfiguration WITH DB");
      db.transaction(function (tx) {
        tx.executeSql('UPDATE WS SET IPaddress='+2+' AND port='+port+')');  
 });

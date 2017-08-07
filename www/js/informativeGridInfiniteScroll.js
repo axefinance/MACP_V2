@@ -28,7 +28,6 @@ $$('.informativeGrid-infinite-scroll').on('infinite', function () {
           "\"start\":\""+lastIndex+"\","+
           "\"limit\":\"10\","+      
           "\"windowWidth\":\""+window.innerWidth+"\"}"; 
-        console.log("SearchParams",data);        
         $.ajax({             
             type: 'POST',             
             url: url,                                     
@@ -48,10 +47,10 @@ $$('.informativeGrid-infinite-scroll').on('infinite', function () {
             
             }, 
             error: function(e) { 
-                console.log(e.message);  
+                 
                 verifconnexion = false;        
                 myApp.hidePreloader();
-                errorMessage();
+                errorMessage(e.message);
                  
             }           
         }); 

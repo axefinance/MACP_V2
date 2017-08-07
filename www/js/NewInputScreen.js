@@ -43,10 +43,10 @@ function saveNewInputEvent(parameters){
             }
         },
         error: function(e) { 
-            console.log(e.message);  
+            
             verifconnexion = false;        
              myApp.hidePreloader();
-            errorMessage();
+            errorMessage(e.message);
      }                           
     });    
 }
@@ -88,10 +88,10 @@ function saveNewInput(parameters){
                 }
         },
         error: function(e) { 
-            console.log(e.message);  
+            
             verifconnexion = false;        
              myApp.hidePreloader();
-            errorMessage();
+            errorMessage(e.message);
 
                                  
         }                           
@@ -101,7 +101,7 @@ function saveNewInput(parameters){
 
 function manageSaveInputResponse(data)
 {
-    console.log(data.behavior);
+    myApp.alert(data.behavior);
     if(data.behavior!=null)
     {
        
@@ -199,10 +199,10 @@ function saveBeforeInsert_DeviationComment()
         }
         },
         error: function(e) { 
-            console.log(e.message);  
+              
             verifconnexion = false;        
              myApp.hidePreloader();
-            errorMessage();
+            errorMessage(e.message);
 
                                  
         }                           

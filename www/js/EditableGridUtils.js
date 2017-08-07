@@ -11,7 +11,6 @@ function loadEditableGridOnPopon_popon(gridId,columnsCount,sourcetag,stringifyDa
     clickedEditableGridColumnsCount=columnsCount;
     GetEditableGridPoponContent(sourcetag,"",stringifyData);
     SaveAction="new";
-    console.log(SaveAction);
 }
 function GetGridDataFromHtml(gridId)
 {
@@ -21,7 +20,6 @@ function GetGridDataFromHtml(gridId)
     for(var i=0; i<existingGridDataRows.length;i++)
     {
         var arr=[];
-        console.log(existingGridDataRows[i]);
         for(var j=0 ; j<existingGridDataRows[i].children.length ; j++)
         {
             var value=existingGridDataRows[i].children[j].innerText;
@@ -36,7 +34,6 @@ function GetGridDataFromHtml(gridId)
  
 function GetEditableGridPoponContent(sourcetag,spname,stringifyData){
     SaveAction="edit";
-    console.log(SaveAction);
     var screenName=divId;
     var data = "{" +
           "\"sourcetag\":\"" + sourcetag + "\"," +
@@ -60,10 +57,10 @@ function GetEditableGridPoponContent(sourcetag,spname,stringifyData){
             myApp.hidePreloader();
         },
         error: function (e) {
-            console.log(e.message);
+            
             verifconnexion = false;
             myApp.hidePreloader();
-            myApp.alert("error occured"); 
+            errorMessage(e.message);
         }
     }); 
 } 
@@ -137,7 +134,6 @@ function saveInGridOnPopon(){
             if(existingGridData===undefined)
                 existingGridData="";
             var count = $("#"+clickedEditableGridId+" ul").children().length;
-            console.log(existingGridData);
             var formData = myApp.formToData('#my-editableGridPopon-form');
             // var dataToSave= GetObjectFromFormToData(formData); 
             var dataToSave= GenertateRowObject("my-editableGridPopon-form");        
@@ -254,7 +250,6 @@ function GetEditableGridRowObject(selectedGridId,rowIdToEdit,selectedGrid)
     var existingGridDataRows=$("#"+rowIdToEdit+" tr td");
     
     var arr=[];
-    console.log(existingGridDataRows[i]);
     for(var j=0 ; j<table.length ; j++)
     {
         var entity=  table[j].getAttribute("name");

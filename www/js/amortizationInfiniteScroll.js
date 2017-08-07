@@ -58,12 +58,12 @@ $$('.amortization-infinite-scroll').on('infinite', function () {
             
         },
         error: function(e) { 
-            console.log(e.message);  
+            
             verifconnexion = false;        
             myApp.hidePreloader();
-            myApp.alert("error occured");  
+            errorMessage(e.message);
                     
         }           
     });  
   }, 1000);
-});           
+})           

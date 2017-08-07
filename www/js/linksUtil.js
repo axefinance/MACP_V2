@@ -9,7 +9,6 @@ function OpenReportWindowFromLink(reportpath,fileType)
 function OpenRelatedItemFromLink(property,relatedtype,sourcetag,parentItemId,parentItem)
 {
    isRelatedFromLink="true";
-    console.log("OpenRelatedItemFromLink isRelatedFromLink",isRelatedFromLink);
     divId=sourcetag;
     engine="classicre";
     RelatedItemType=relatedtype;

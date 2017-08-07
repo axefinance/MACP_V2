@@ -8,7 +8,6 @@ function GetPoponComponentScreenContent() {
     var data = "{" +
       "\"item\":\"" + PoponComponentItem + "\"," +
       "\"userData\":" + sessionStorage.getItem("userData") + "}";
-    console.log("SearchParams", data);
     $.ajax({
         type: 'POST',
         url: url,

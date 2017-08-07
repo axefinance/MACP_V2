@@ -69,16 +69,13 @@ function checkInternetConnection() {
 
 function isScreenInCache(screenName){
     var history=mainView.history;
-    console.log(screenName);
     for(var i=0 ; i<history.length ; i++)
     {
         if(history[i]===screenName)
         {
-            console.log("true");    
             return true;
         } 
     }
-    console.log("false");   
     return false;
 }
 function westMenuItem(subItem,title,screenName, xmlTag){ 
@@ -92,7 +89,7 @@ function westMenuItem(subItem,title,screenName, xmlTag){
     }
     xmlTagNewInput = xmlTag;
     gSubItem=subItem;
-    pageTitleContent=title;
+    pageTitleContent=title; 
     fromNewInput=false;
     if(!checkInternetConnection())                                                   
         myApp.alert("please check your internet connection");
@@ -104,9 +101,7 @@ myApp.onPageReinit('homePage', function (page) {
     {
         document.getElementById("tasks").innerHTML=null;
         document.getElementById("homePage-toolbarContent").innerHTML=null;
-
         reInitHomePage();
-        console.log(mainView.history);
     }
     else
     {
@@ -134,14 +129,13 @@ function reInitHomePage(){
         success: function(data) {
             document.getElementById("tasks").innerHTML=data.TasksContent;
             document.getElementById("homePage-toolbarContent").innerHTML=data.buttonsDiv;
-            console.log("success");
             myApp.hidePreloader();
             GetHomePageScripts(); 
         },
         error: function(e) {
             
             myApp.hideIndicator();
-            errorMessage();
+            errorMessage(e.message);
         }         
     });   
 }
@@ -197,15 +191,12 @@ myApp.onPageInit('homePage', function (page) {
     loadTaskList();
 });                  
 myApp.onPageInit('searchScreen', function (page) {
-    console.log("Init search screen");
     HomeBackButton.style.visibility="visible";    
     createLanguagesList('searchScreen');
     createLogoutPopover('searchScreen');  
     myApp.params.swipePanel=false;
     pageTitleElement=document.getElementById("title_searchScreen");
-    console.log(pageTitleElement);
     pageTitleElement.textContent=pageTitleContent;  
-    console.log(pageTitleContent);
     myApp.showPreloader();
     setTemplate_HeaderData('searchScreen');  
     loadsearchScreen();
@@ -268,7 +259,6 @@ myApp.onPageInit('executeTaskScreen', function (page) {
     setTemplate_HeaderData('executeTaskScreen'); 
     myApp.showPreloader();
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetExecuteTaskScreen';
-    console.log("URL",url);
     GetExecuteTaskScreen(url);
 });
 myApp.onPageInit('relatedItemScreen', function (page) {
@@ -318,7 +308,6 @@ function InitRelatedItemScreen(){
       "\"mainItemId\":\""+gMainItemId+"\","+
       "\"screenWidth\":\""+window.innerWidth+"\","+          
       "\"relatedItemId\":\""+gRelatedItemId+"\"}"; 
-    console.log("SearchParams",data);        
     $.ajax({             
         type: 'POST',             
         url: url,                                      
@@ -334,7 +323,7 @@ function InitRelatedItemScreen(){
         },
         error: function(e) { 
             myApp.hidePreloader();
-            errorMessage();
+            errorMessage(e.message);
         }           
     });  
 }
@@ -381,7 +370,6 @@ function InitEditScreen(){
         data: request,  
         success: function(data) {     
            document.getElementById('editScreenForm__'+gMainItemId).innerHTML=data.content;
-            console.log($('#editScreenForm__'+gMainItemId));
             $('#edit-toolbarContent__'+gMainItemId).append(data.buttonsDiv);
              pageTitleElement=document.getElementById("title_editScreen__"+gMainItemId);
              pageTitleElement.textContent=itemRef;
@@ -393,7 +381,7 @@ function InitEditScreen(){
         },
         error: function(e) {
             myApp.hidePreloader();
-            errorMessage();                         
+            errorMessage(e.message);                         
         }    
     });      
     
@@ -402,7 +390,7 @@ function GetNewInputScreen(url){
     var data="{"+     
        "\"subItem\":\""+gSubItem+"\","+
        "\"screenWidth\":\""+window.innerWidth+"\","+
-       "\"xmlTag\":\""+xmlTagNewInput+"\","+
+       "\"screenName\":\""+xmlTagNewInput+"\","+
        "\"userData\":"+sessionStorage.getItem("userData")+"}";
     $.ajax({ 
         type: "POST",  
@@ -420,7 +408,7 @@ function GetNewInputScreen(url){
         },
         error: function(e) {
             myApp.hidePreloader();
-            errorMessage();                         
+            errorMessage(e.message);                         
         }    
     });         
 }
@@ -444,7 +432,7 @@ function GetSearchPage(url){
         },
         error: function(e) {
             myApp.hidePreloader();
-            errorMessage();
+            errorMessage(e.message);
         }  
                  
     });    
@@ -509,7 +497,7 @@ function GetHomePage(url) {
         }, 
         error: function(e) {  
             myApp.hidePreloader();                
-            errorMessage();
+            errorMessage(e.message);
         }
     });          
                
@@ -536,7 +524,7 @@ function GetTeamTasks(url) {
         }, 
         error: function(e) {  
             myApp.hidePreloader();                
-            errorMessage();
+            errorMessage(e.message);
         }
     });           
                
@@ -605,7 +593,7 @@ function switchLanguage(property){
             },
             error: function(e) {               
                 myApp.hidePreloader();    
-                errorMessage();    
+                errorMessage(e.message);    
             }
         }); 
     },
@@ -705,10 +693,9 @@ function lunchSearchResult(){
             
         },    
         error: function(e) { 
-            console.log(e.message);  
             verifconnexion = false;  
             myApp.hidePreloader();
-            errorMessage();
+            errorMessage(e.message);
                          
         }                           
     });      
@@ -749,10 +736,10 @@ function connectedComboOptions(url,idChild,val,child,entity,screenTagName,shared
             });                                    
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            console.log(errorThrown+'  in processing!'+textStatus);
+            myApp.alert(errorThrown+'  in processing!'+textStatus);
         }                   
     });          
-};
+}
 function HomeBack(){
     HomeBackButton.style.visibility="hidden";       
     mainView.router.back({force:true,pageName:"homePage"});  
@@ -861,12 +848,10 @@ function GetExecuteTaskScreen(url){
                 myApp.hidePreloader();
             }
         },
-        error: function(e) {         
-             
-            console.log(e.message);  
+        error: function(e) {                      
             verifconnexion = false;                           
             myApp.hidePreloader();
-            errorMessage();
+            errorMessage(e.message);
         }                             
     });       
 }         
@@ -893,7 +878,6 @@ function GetPricingConditionScreen(){
       "\"taskId\":\""+TaskId+"\"," +
       "\"screenWidth\":\""+window.innerWidth+"\"," +
       "\"relatedItemId\":\""+relatedItemId+"\"}"; 
-    console.log("SearchParams",data);        
     $.ajax({              
         type: 'POST',             
         url: url,                                     

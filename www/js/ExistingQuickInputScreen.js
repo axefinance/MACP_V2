@@ -10,7 +10,7 @@
             {
                 var gridResult=document.getElementById("search-QI-form-to-data-GridResult");
                 var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetSearchResultPage';
-                console.log("URL",url);
+                myApp.alert("URL",url);
                // lunchSearchResult(url,"selectOnPopon",item); 
             }  
     

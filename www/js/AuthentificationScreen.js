@@ -65,7 +65,7 @@ function parseDataGet(url,login,password) {
         error: function(e) {
            // if(e.status===0)
              myApp.hidePreloader();    
-             errorMessage();   
+             errorMessage(e.message);   
         }
     });
 

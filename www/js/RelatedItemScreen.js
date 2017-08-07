@@ -1,24 +1,21 @@
-
-
-function testclick(msg,msgTitle,mainItemId,screenName) {
-        SuccessMsg = msg;
-        SuccesMsgTitle = msgTitle;
-        var isValidForm = requiredFormComponent();
-        if(isValidForm)
-           { var formData = myApp.formToData('#my-relatedItemPopup-form');
-            Parameters = JSON.stringify(formData);
-            
-                UpdateRelatedItemEvent(mainItemId,screenName);
-          
-           }
+function relatedItemSaveButtonClick(msg,msgTitle,mainItemId,screenName) {
+    SuccessMsg = msg;
+    SuccesMsgTitle = msgTitle;
+    var isValidForm = requiredFormComponent();
+    if(isValidForm){                          
+        var formData = myApp.formToData('#my-relatedItemPopup-form');
+        Parameters = JSON.stringify(formData);           
+        UpdateRelatedItemEvent(mainItemId,screenName);          
     }
+}
 
 function UpdateRelatedItemEvent(mainItemId,screenName) {
+                var updateId = gRelatedItemId;
             if (isDuplicate === "isDuplicate")
                 updateId = 0;
             var data = "{" +
                "\"mainItemId\":\"" + mainItemId + "\"," +
-               "\"relatedItemId\":\"" + gRelatedItemId + "\"," +
+               "\"relatedItemId\":\"" + updateId + "\"," +
                "\"screenName\":\"" + screenName + "\"," +
                "\"ipAddress\":\"" + sessionStorage.getItem("Ip_config") + "\"," +
                "\"userData\":"+sessionStorage.getItem("userData")+"," +
@@ -44,11 +41,11 @@ function UpdateRelatedItemEvent(mainItemId,screenName) {
                     }
                 },
                 error: function (e) {
-
-                    console.log(e.message);
+ 
+                    
                     verifconnexion = false;
                     myApp.hidePreloader();
-            errorMessage(); 
+            errorMessage(e.message); 
 
 
                 }
@@ -57,7 +54,7 @@ function UpdateRelatedItemEvent(mainItemId,screenName) {
         }
 
 function UpdateRelatedItem(screenName) {
-            var updateId = relatedItemId;
+            var updateId = gRelatedItemId;
             if (isDuplicate === "isDuplicate")
                 updateId = 0;
             var data = "{" +
@@ -94,10 +91,10 @@ function UpdateRelatedItem(screenName) {
                 },
                 error: function (e) {
 
-                    console.log(e.message);
+                    
                     verifconnexion = false;
                     myApp.hidePreloader();
-            errorMessage();
+            errorMessage(e.message);
 
 
                 }
@@ -105,7 +102,6 @@ function UpdateRelatedItem(screenName) {
         }
 
 function manageSaveRelatedItemResponse(data,screenName) {
-            console.log(data.behavior);
             if (data.behavior != null) {
 
                 switch (data.behavior) {
@@ -193,10 +189,10 @@ function saveBeforeUpdateRelatedItem_DeviationComment(item) {
                 },
                 error: function (e) {
 
-                    console.log(e.message);
+                    
                     verifconnexion = false;
                     myApp.hidePreloader();
-            errorMessage();
+            errorMessage(e.message);
 
 
                 }
