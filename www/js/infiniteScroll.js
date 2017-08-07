@@ -69,10 +69,10 @@ $$('.infinite-scroll').on('infinite', function () {
               lastIndex=lastIndex+itemsPerLoad; 
             },
             error: function(e) { 
-                console.log(e.message);  
+                 
                 verifconnexion = false;        
                 myApp.hidePreloader();
-                errorMessage();
+                errorMessage(e.message);
                  
             }           
         }); 

@@ -62,10 +62,9 @@ var newEditableGridRows = [];
             },
             error: function (e) {
 
-                console.log(e.message);
                 verifconnexion = false;
                 myApp.hidePreloader();
-                errorMessage();  
+                errorMessage(e.message);  
             }
         });
 }
@@ -96,10 +95,10 @@ var newEditableGridRows = [];
             },
             error: function (e) {
 
-                console.log(e.message); 
+                
                 verifconnexion = false;
                 myApp.hidePreloader();
-                errorMessage();
+                errorMessage(e.message);
             }
         });
 
@@ -161,8 +160,6 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
         fileUploadedName = file.name;
         var reader = new FileReader();
         reader.onloadend = function (evt) {
-            console.log("read success");
-            console.log(evt.target.result);
             fileUploadedData = evt.target.result.split(',')[1];
         };
         reader.readAsDataURL(file);
@@ -196,7 +193,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
             },
             error: function (e) {
                 myApp.hidePreloader();
-                errorMessage();
+                errorMessage(e.message);
             }
         });
             }
@@ -243,21 +240,23 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
             },
             error: function (e) {
                 myApp.hidePreloader();
-                errorMessage();
+                errorMessage(e.message);
             }
         });
         
           }
     }
-    function deleteRelatedItem(id, culture, confirmationMessage,parentItemId,screenParent) {
+
+//TODO check parenItemId parameters
+    function deleteRelatedItem(relatedItemId, mainItemId, culture, confirmationMessage,screenParent, screenName) {
         myApp.confirm(confirmationMessage, function () {
-            deleteItem(id, culture,parentItemId,screenParent);
+            deleteItem(relatedItemId,mainItemId, culture,screenParent,screenName);
         });
     }
-    function deleteItem(id, culture,parentItemId,screenParent) {
+    function deleteItem(relatedItemId,mainItemId, culture,screenParent,screenName) {
         var data = "{" +
-       "\"screenName\":\"" + divId + "\"," +
-       "\"itemId\":\"" + id + "\"," +
+       "\"screenName\":\"" + screenName + "\"," +
+       "\"itemId\":\"" + relatedItemId + "\"," +
        "\"beforeCheck\":\"false\"," +
        "\"remoteAddress\":\"\"," +
        "\"userData\":"+sessionStorage.getItem("userData")+","+
@@ -274,12 +273,12 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
             success: function (data) {
                 myApp.hidePreloader();
                 myApp.alert(data.status,"MACP", function () {
-                    loadScreen(divId,parentItemId,screenParent,"classicre");    
+                    loadScreen(screenName,mainItemId,screenParent,"classicre");    
                 }); 
             },
             error: function (e) {
                 myApp.hidePreloader();            
-                errorMessage();   
+                errorMessage(e.message);   
             }
         });
     }
@@ -304,7 +303,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
         RelatedItemType=$(".selectedTab").text();  
     }
    
-     function startworkflowButtonEvent(mainItemId)
+     function startworkflowButtonEvent(mainItemId) 
      {
            startWorkflow_ButtonAction(mainItemId);
      } 
@@ -335,7 +334,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
             },
             error: function (e) {
                 myApp.hidePreloader();            
-                errorMessage();
+                errorMessage(e.message);
             }
         });
     }
@@ -371,17 +370,11 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
     }
     function savebase64AsPDF(folderpath, filename, content, contentType) {
         var DataBlob = b64toBlob(content, contentType);
-
-        console.log("Starting to write the file :3");
-
         window.resolveLocalFileSystemURL(folderpath, function (dir) {
-            console.log("Access to the directory granted succesfully");
             dir.getFile(filename, {
                 create: true
             }, function (file) {
-                console.log("File created succesfully.");
                 file.createWriter(function (fileWriter) {
-                    console.log("Writing content to file");
                     fileWriter.write(DataBlob);
 
                 }, function () {
@@ -392,7 +385,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
         myApp.hidePreloader();
         window.open(folderpath + "//" + filename, "_system", 'location=yes');
     }
-    function saveButtonEvent(mainItemId,subItem) {
+    function saveButtonEvent(mainItemId,screenName,subItem) {
     var indexToSelect = 1;
         if (engine === "classicms") {
             formId = "#my-mainData-form__"+mainItemId;
@@ -403,7 +396,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
          var isValidForm = requiredFormComponent(formId); 
         if(isValidForm){
             if (engine === "classicms") {
-                mainData_SaveEvent(parentItemId,subItem);
+                mainData_SaveEvent(mainItemId,subItem);
             } else if (engine === "attachment") {
                 attachement_SaveEvent(mainItemId,subItem);
             }
@@ -416,7 +409,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
         UpdateItemEvent(parentItemId,item);
     }
     function attachement_SaveEvent(mainItemId,subItem) {
-        uploadAttachementFile(parentItemId,item,parentItem);
+        uploadAttachementFile(mainItemId,subItem);
     }
     function uploadAttachementFile(mainItemId,subItem) {
         var formData = myApp.formToData('#my-attachment-form__'+mainItemId);
@@ -452,10 +445,10 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
             },
             error: function (e) {
 
-                console.log(e.message);
+                
                 verifconnexion = false;
                 myApp.hidePreloader();
-                errorMessage();
+                errorMessage(e.message);
             }
         });
 
@@ -578,10 +571,9 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
                 myApp.alert(data.message,"MACP");
             },
             error: function (e) {
-                console.log(e.message);
                 verifconnexion = false;
                 myApp.hidePreloader();
-                errorMessage();
+                errorMessage(e.message);
             }
         });
     }
@@ -591,10 +583,8 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
             var fileTransfer = new FileTransfer();
             fileTransfer.download(assetURL, store + fileName,
                 function (entry) {
-                    console.log("Success!");
                 },
                 function (err) {
-                    console.log("Error");
                 });
         }
     function UpdateItemEvent(parentItemId,item) {
@@ -623,7 +613,6 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
                 
             },
             error: function (e) {
-                console.log(e.message);
                 verifconnexion = false;
                 myApp.hidePreloader();
                 myApp.alert("error occured");
@@ -633,7 +622,6 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
         });
     }
     function manageUpdateItemResponse(data,parentItemId) {
-            console.log(data.behavior);
             if (data.behavior != null) {
 
                 switch (data.behavior) {
@@ -703,11 +691,10 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
                 },
                 error: function (e) {
 
-                    console.log(e.message);
+                    
                     verifconnexion = false;
                     myApp.hidePreloader();
-                    myApp.alert("error occured");
-
+                    errorMessage(e.message);
 
                 }
             });
@@ -734,7 +721,7 @@ function generateDocumentMenu(screenName,mainItemId,taskId) {
             },
             error: function (e) {
                 myApp.hidePreloader();            
-                errorMessage(); 
+                errorMessage(e.message); 
             }
         });
     }

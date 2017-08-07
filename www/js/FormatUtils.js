@@ -155,13 +155,18 @@ function goToNextField(event) {
             {
                 $(elements[i+1]).children().first().focus();
             }
-    }
+    } 
 }
-function errorMessage(){
+function errorMessage(message){
     if(!checkInternetConnection())                                                   
         myApp.alert("please check your internet connection");
-    else                                          
-        myApp.alert("error occured","Error");                                
+    else
+        {
+            if(message ==null ||message == "")                
+                myApp.alert("error occured","Error"); 
+            else
+                myApp.alert(message,"Error");                                 
+        }
 }
 
 function handleKeyboardButton(event){
@@ -391,41 +396,28 @@ function ManagePricingCnditionComponents() {
         document.getElementById('f__transaction_condition__first_payment_date').addEventListener("change", function () {
             var tenorUnit = '';
             firstPaymentDateValue = $('#f__transaction_condition__first_payment_date').val();
-            console.log("amortizationType", $('#h__conditionEntity__amortization_type_id').find("select").find("option:selected").val());
             if ($('#h__conditionEntity__amortization_type_id').find("select").find("option:selected").val() != undefined && $('#h__conditionEntity__amortization_type_id').find("option:selected").val() != '') {
                 amortizationTypeSelectedValue = $('#h__conditionEntity__amortization_type_id').find("option:selected").val().split('__')[1];
             }
 
-            console.log("tenorUnit", tenorUnit);
             if (document.getElementById('h__transaction_condition__tenor_unit') != null && $("#h__transaction_condition__tenor_unit").find("option:selected").val() != "")
                 tenorUnit = $("#h__transaction_condition__tenor_unit").find("option:selected").val();
             else
                 tenorUnit = "month";
-            console.log("tenorUnitValue", tenorUnit);
-            console.log("tenorUnitValue", tenorUnit);
             if (firstPaymentDateValue != '') {
-                console.log("firstPaymentDate", firstPaymentDateValue);
                 if (document.getElementById("n__transaction_condition__tenor") != null && $('#n__transaction_condition__tenor').val() != undefined) {
                     amortizationTonorValue = $('#n__transaction_condition__tenor').val();
-                    console.log("amortizationTonorValue", amortizationTonorValue);
                     if (amortizationTonorValue != '' && $('#h__transaction_condition__tenor_unit').val() != '') {
                         var firstPaymentDate = new Date(firstPaymentDateValue);
                         var date;
                         var amortizationFrequencySelectedValue = $('#h__transaction_condition__amortization_frequency').find("option:selected").val();
                         if (document.getElementById('h__transaction_condition__amortization_frequency') != null && amortizationFrequencySelectedValue != undefined && amortizationFrequencySelectedValue.indexOf("daily") == 0 || $('#h__conditionEntity__amortization_type_id').find("option:selected").val() == "short_term" || tenorUnit == 'day') {
                             date = firstPaymentDate.addDays(amortizationTonorValue - 1);
-                            console.log("DATE2", date);
-                            console.log("amortizationFrequencySelectedValue", amortizationFrequencySelectedValue);
                         }
                         else {
-                            console.log("month")
                             date = firstPaymentDate.addMonths(amortizationTonorValue - 1);
                         }
                         if (document.getElementById('f__transaction_condition__end_date') != null) {
-
-
-                            console.log("Day", date.getDate());
-                            console.log("Day", date.getMonth());
                             calendarDateFormat(myDateFormat.toLowerCase(), "f__transaction_condition__end_date", date.getFullYear(), date.getMonth(), date.getDate());
 
                         }
@@ -449,12 +441,10 @@ function ManagePricingCnditionComponents() {
                 var tenorUnitSelectedValue = '';
                 if (document.getElementById('h__transaction_condition__amortization_type_id') != null && $('#h__transaction_condition__amortization_type_id').find("option:selected").val() != undefined) {
                     amortizationType = $('#h__transaction_condition__amortization_type_id').find("option:selected").val().split('__')[1];
-                    console.log("amortizationType", amortizationType);
                 }
                 if (document.getElementById('h__transaction_condition__tenor_unit') != null) {
                     if ($('#h__transaction_condition__tenor_unit').find("option:selected").val() != undefined)
                         tenorUnitSelectedValue = $('#h__transaction_condition__tenor_unit').find("option:selected").val();
-                    console.log("tenorUnitSelectedValue", tenorUnitSelectedValue);
                 }
                 else {
                     tenorUnit = 'month';
@@ -462,8 +452,6 @@ function ManagePricingCnditionComponents() {
 
                 if (startDate != '') {
                     if (document.getElementById('n__transaction_condition__tenor') != null && $('#n__transaction_condition__tenor') != undefined) {
-                        console.log("transaction condition tenor", $('#n__transaction_condition__tenor').val())
-
                         if ($('#n__transaction_condition__tenor').val() != undefined && $('#n__transaction_condition__tenor').val() != '') {
 
                             var startPaymentDate = new Date(startDate);
@@ -715,7 +703,7 @@ function manageAutoCompleteComponent(formId,item){
                         }, 
                         error: function(e) {  
                             myApp.hidePreloader();                  
-                            errorMessage();
+                            errorMessage(e.message);
                         }
                     });  
                 }

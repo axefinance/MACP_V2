@@ -39,10 +39,10 @@ function stopWorkflow(){
                 }
         },
         error: function(e) {         
-            console.log(e.message);  
+             
             verifconnexion = false;        
             myApp.hidePreloader();                   
-            errorMessage();
+            errorMessage(e.message);
 
         }                             
     });     
@@ -159,10 +159,10 @@ function endTaskEvent(formId,mainItemId){
                 }  
         },  
         error: function(e) {         
-            console.log(e.message);  
+            
             verifconnexion = false;
              myApp.hidePreloader();
-            errorMessage();
+            errorMessage(e.message);
 
         }                                         
     });      
@@ -296,10 +296,10 @@ function saveRequiredDocumentComent(){
                 }
         },  
         error: function(e) {           
-            console.log(e.message);  
+             
             verifconnexion = false;        
              myApp.hidePreloader();
-            errorMessage();
+            errorMessage(e.message);
 
         }                                         
     }); 
@@ -359,10 +359,10 @@ function saveDeviationComment(){
                 }
         },
         error: function(e) {         
-            console.log(e.message);  
+             
             verifconnexion = false;          
              myApp.hidePreloader();
-            errorMessage();
+            errorMessage(e.message);
                 
         }                                         
     });       
@@ -436,10 +436,10 @@ function saveEligibilityComment(){
                 }
         },
         error: function(e) {         
-            console.log(e.message);  
+            
             verifconnexion = false;        
             myApp.hidePreloader(); 
-            errorMessage();
+            errorMessage(e.message);
 
         }                                         
     });      
@@ -514,10 +514,10 @@ function saveCollectQuestion(){
                 }
         },
         error: function(e) {         
-            console.log(e.message);  
+             
             verifconnexion = false;        
             myApp.hidePreloader(); 
-            errorMessage();
+            errorMessage(e.message);
 
         }                                         
     });      

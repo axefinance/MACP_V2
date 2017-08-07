@@ -119,7 +119,7 @@ function loadGroupMembersPopup(tableId) {
 		},
 		error: function (e) {
 			myApp.hidePreloader();
-			errorMessage();
+			errorMessage(e.message);
 		}
 	});
 }
@@ -152,7 +152,7 @@ function ReassignTasks(userShortName, confirmMessage) {
 				},
 				error: function (e) {
 					myApp.hidePreloader();
-					errorMessage();
+					errorMessage(e.message);
 				}
 			});
 		},

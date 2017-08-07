@@ -166,7 +166,6 @@ function saveProcessEngineComment_enabledButton(textarea) {
         };
 
 function manageSaveConditionResponse(data,item) {
-            console.log(data.behavior);
             if (data.behavior != null) {
 
                 switch (data.behavior) {
