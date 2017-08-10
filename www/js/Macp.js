@@ -78,7 +78,7 @@ function isScreenInCache(screenName){
     }
     return false;
 }
-function westMenuItem(subItem,title,screenName, xmlTag){ 
+function westMenuItem(subItem,title,screenName, xmlTag){     
     if(isScreenInCache(screenName))
     {
         mainView.history=["#homePage"];
@@ -87,9 +87,12 @@ function westMenuItem(subItem,title,screenName, xmlTag){
         document.getElementById("lng_label_"+screenName.replace(".html","")).remove(); 
         $$('.view-main .page-on-left').remove(screenName);
     }
+    screenNameArray = screenName.split(".");
+    engine = screenNameArray[0];
     xmlTagNewInput = xmlTag;
     gSubItem=subItem;
     pageTitleContent=title; 
+    gTransactionConditionId = 0;
     fromNewInput=false;
     if(!checkInternetConnection())                                                   
         myApp.alert("please check your internet connection");
@@ -99,6 +102,7 @@ function westMenuItem(subItem,title,screenName, xmlTag){
 myApp.onPageReinit('homePage', function (page) {
     if(!isSwitchLanguage)
     {
+        gTransactionConditionId = 0;
         document.getElementById("tasks").innerHTML=null;
         document.getElementById("homePage-toolbarContent").innerHTML=null;
         reInitHomePage();
@@ -720,7 +724,7 @@ function connectedComboOptions(url,idChild,val,child,entity,screenTagName,shared
     $.ajax({   
         type: 'POST',           
         url: url,                       
-        contentType: "text/plain",                          
+        contentType: "text/plain",                            
         dataType: "json",                            
         data: data,
         success: function(data) {
@@ -898,4 +902,54 @@ function GetPricingConditionScreen(){
             myApp.hidePreloader();
         }              
     });  
+}
+
+
+
+myApp.onPageInit('existingQuickInputScreen', function (page) {
+    HomeBackButton.style.visibility="visible";    
+    createLanguagesList('existingQuickInputScreen');
+    createLogoutPopover('existingQuickInputScreen');  
+    myApp.params.swipePanel=false;
+    pageTitleElement=document.getElementById("title_existingQuickInputScreen");
+    pageTitleElement.textContent=pageTitleContent;  
+    myApp.showPreloader();
+    setTemplate_HeaderData('existingQuickInputScreen');  
+    loadExistingQuickInputScreen();
+  
+}); 
+
+function loadExistingQuickInputScreen(){
+        GetExistingQuickInputScreen('http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GenerateExistingQInputItemPopon');
+}
+
+
+function GetExistingQuickInputScreen(url){
+     var data="{"+  
+       "\"subItem\":\""+gSubItem+"\","+
+       "\"taskId\":\"0\","+
+       "\"mainItemId\":\"0\","+
+       "\"userData\":"+sessionStorage.getItem("userData")+"}";
+    $.ajax({ 
+        type: 'POST',                             
+        url: url,                                    
+        contentType: "text/plain",                                    
+        dataType: "json",                               
+        data: data,
+        success: function(data) { 
+            document.getElementById("existingQuickInputForm").innerHTML=data.content;
+            $('#existingItemQI-popon-toolbarContent').append(data.buttonsDiv);
+
+            manageAutoCompleteComponent("my-existingItemQIPopon-form","QI_existing"+gSubItem.toLowerCase());
+            loadJSFile("js/ExistingQuickInputScreen.js");
+            //  loadJSFile("js/FormatUtils.js");
+            loadJSFile("js/accounting.js");
+            myApp.hidePreloader();
+        },
+        error: function(e) {
+            myApp.hidePreloader();
+            errorMessage(e.message);
+        }  
+                 
+    }); 
 }

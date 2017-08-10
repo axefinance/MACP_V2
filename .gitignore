@@ -13,3 +13,6 @@
 !/app.json
 !/screenshot.png
 !/icon.png
+*.json
+*.xdke
+*.xdk
