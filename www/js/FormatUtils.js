@@ -636,6 +636,10 @@ function manageAutoCompleteComponent(formId,item){
         screenName="search"+item;    
     }
     else
+        if(formId==="my-existingItemQIPopon-form"){
+            screenName=item;
+        }
+    else
     {
         screenName=item.toLowerCase();
     }
