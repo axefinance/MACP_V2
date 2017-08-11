@@ -249,7 +249,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
 
 //TODO check parenItemId parameters
     function deleteRelatedItem(relatedItemId, mainItemId, culture, confirmationMessage,screenParent, screenName) {
-        myApp.confirm(confirmationMessage, function () {
+        myApp.confirm(confirmationMessage,"MACP", function () {
             deleteItem(relatedItemId,mainItemId, culture,screenParent,screenName);
         });
     }
