@@ -40,7 +40,7 @@ function UpdateRelatedItemEvent() {
                 success: function (data) {
 
                     if (data.status === "ok") {
-                        myApp.hidePreloader();
+                        myApp.hidePreloader();                         
                         manageSaveRelatedItemResponse(data,divId);
                     }
                     else {

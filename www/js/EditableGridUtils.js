@@ -104,7 +104,7 @@ function GenertateRowObject(formId){
         var property=input.getAttribute("id").split('__')[2];
         if(input.localName==="input")
         {
-            var display=input.innerText;
+            var display=input.value;
             diplay=display.replace("\n","");
             caseObject["type"]="text";
             caseObject["display"]=diplay; 
@@ -144,7 +144,7 @@ function saveInGridOnPopon(){
             var arr = [];
             var content="";
             myApp.closeModal(); 
-            var line="<li id='"+count+"_"+clickedEditableGridId+"' class='swipeout' style='background-color:#fff;border-radius: 15px !important;'><div class='swipeout-content item-content noPadding-left'><div class='item-inner gridRow'><div><table><tr>";
+            var line="<li id='"+count+"_"+clickedEditableGridId+"' class='swipeout' style='background-color:#fff;border-radius: 15px !important;'><div class='swipeout-content item-content noPadding-left'><div class='item-inner gridRow'><div style='width : "+window.innerWidth+"px !important'><table style='width : "+window.innerWidth+"px !important'><tr>";
             var table=$('#'+clickedEditableGridId+"_header").find(".tasksTableTD.tasksTableElement:not(.displayNone)");
             var padding=1;
             for(var i=0 ; i<table.length ;i++)

@@ -251,7 +251,7 @@ var newEditableGridRows = [];
           }
     }
     function deleteRelatedItem(id, culture, confirmationMessage,parentItemId,screenParent) {
-        myApp.confirm(confirmationMessage, function () {
+        myApp.confirm(confirmationMessage,"MACP", function () {
             deleteItem(id, culture,parentItemId,screenParent);
         });
     }
