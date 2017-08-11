@@ -193,8 +193,9 @@ function manageSaveConditionResponse(data,item) {
             else
             {
                 
-            loadScreen(divId,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen,"classicre");
+           myApp.alert(data.successMsg,"MACP", function () { loadScreen(divId,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen,"classicre");
             mainView.router.back({reloadPrevious:true});
+                                                           });
             }
 }
 
