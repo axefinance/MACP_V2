@@ -27,9 +27,9 @@ function GetAmortizationPopon(stringify,item){
      var data="{"+ 
        "\"limit\":\"30\","+
        "\"start\":\"0\","+ 
-       "\"mainItemId\":\""+mainItemIdForPricingConditionScreen+"\"," + 
-       "\"screenTag\":\""+divId+"\"," +   
-       "\"parentId\":\""+mainItemIdForPricingConditionScreen+"\"," +  
+       "\"mainItemId\":\""+gMainItemId+"\"," + 
+       "\"screenTag\":\""+item+"\"," +   
+       "\"parentId\":\""+gMainItemId+"\"," +  
        "\"screenName\":\""+item+"\","+
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
        "\"poponWidth\":\""+popupWidth+"\"," + 
@@ -76,14 +76,14 @@ function savePricingCondition(item){
      var parameters=JSON.stringify(formData);
      var data="{"+ 
        "\"mainItemId\":\""+mainItemIdForPricingConditionScreen+"\"," + 
-       "\"screenTag\":\""+divId+"\"," +   
+       "\"screenTag\":\""+gScreenName+"\"," +   
        "\"parentId\":\""+mainItemIdForPricingConditionScreen+"\"," +    
        "\"relatedItemId\":\""+relatedItemId+"\"," +  
        "\"remoteIp\":\""+sessionStorage.getItem('Ip_config')+"\"," + 
        "\"transactionAmountStringList\":\""+transactionAmountStringList+"\"," +      
        "\"transactionAmountFeesListObject\":"+transactionAmountFeesListObject+"," +   
        "\"transactionAmountEventFeesListObject\":"+transactionAmountEventFeesListObject+"," + 
-       "\"screenName\":\""+item+"\","+ 
+       "\"screenName\":\""+gScreenName+"\","+ 
        "\"stringify\":"+stringify+"," +     
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
        "\"parameters\":"+parameters+"}" ;  
@@ -96,7 +96,7 @@ function savePricingCondition(item){
         data: data,        
         success: function(data) { 
             myApp.hidePreloader();
-             loadScreen(divId,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen,"classicre");
+             loadScreen(gScreenName,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen,"classicre");
              mainView.router.back({reloadPrevious:true});
         
         },
@@ -119,23 +119,23 @@ function savePricingConditionEvent(parentItemId,item){
      var formData = myApp.formToData('#my-relatedItemPopup-form');
      var parameters=JSON.stringify(formData);
      var data="{"+ 
-       "\"mainItemId\":\""+mainItemIdForPricingConditionScreen+"\"," + 
-       "\"screenTag\":\""+divId+"\"," +   
-       "\"parentId\":\""+parentItemId+"\"," +    
-       "\"relatedItemId\":\""+relatedItemId+"\"," +  
+       "\"mainItemId\":\""+gMainItemId+"\"," + 
+       "\"screenTag\":\""+gScreenName+"\"," +    
+    //   "\"parentId\":\""+parentItemId+"\"," +    
+       "\"relatedItemId\":\""+gRelatedItemId+"\"," +  
        "\"remoteIp\":\""+sessionStorage.getItem('Ip_config')+"\"," + 
        "\"transactionAmountStringList\":\""+transactionAmountStringList+"\"," +      
        "\"transactionAmountFeesListObject\":"+transactionAmountFeesListObject+"," +   
        "\"transactionAmountEventFeesListObject\":"+transactionAmountEventFeesListObject+"," + 
-       "\"screenName\":\""+item+"\","+
-       "\"stringify\":"+stringify+"," +      
+       "\"screenName\":\""+gScreenName+"\","+
+       "\"stringify\":"+stringify+"," +       
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
        "\"parameters\":"+parameters+"}" ;  
     $.ajax({ 
         type: "POST",  
         dataType:"json",    
         url: url,    
-        contentType: "text/plain",                           
+        contentType: "text/plain",                            
         dataType: "json",                         
         data: data,        
         success: function(data) { 
@@ -150,7 +150,10 @@ function savePricingConditionEvent(parentItemId,item){
     });  
     }
 }
-
+window.onerror = function(msg, url, linenumber) {
+    alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);  
+    return true;
+}
 
 function saveProcessEngineComment_enabledButton(textarea) {
 
@@ -193,7 +196,7 @@ function manageSaveConditionResponse(data,item) {
             else
             {
                 
-           myApp.alert(data.successMsg,"MACP", function () { loadScreen(divId,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen,"classicre");
+           myApp.alert(data.successMsg,"MACP", function () { loadScreen(gScreenName,gMainItemId,gSubItem,"classicre");
             mainView.router.back({reloadPrevious:true});
                                                            });
             }
@@ -228,7 +231,7 @@ function saveBeforeSaveConditon_DeviationComment(item){
         success: function(data) { 
             myApp.hidePreloader();
             myApp.closeModal();
-            loadScreen(divId,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen,"classicre");
+            loadScreen(gScreenName,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen,"classicre");
             mainView.router.back({reloadPrevious:true});
         
         },
