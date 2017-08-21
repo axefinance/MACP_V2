@@ -43,7 +43,7 @@ function poponComponentClick(item, idComponent, displayproperty) {
         PoponComponentItem = item;
         mainView.router.load({ url: "poponComponentScreen.html", reload: false });
         myApp.showPreloader();
-        var url = "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GenerateSearchOnPoponScreen";
+        var url = "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GenerateSearchOnPoponScreen"; 
         var data = "{" +
           "\"item\":\"" + PoponComponentItem + "\"," +
           "\"userData\":" + sessionStorage.getItem("userData") + "}";
@@ -61,7 +61,7 @@ function poponComponentClick(item, idComponent, displayproperty) {
             error: function (e) {
                 myApp.hidePreloader();
             }
-        });
+        }); 
     }
     else {
         var Htmllist = "";

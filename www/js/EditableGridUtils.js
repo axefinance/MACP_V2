@@ -38,8 +38,8 @@ function GetEditableGridPoponContent(sourcetag,spname,stringifyData){
     var data = "{" +
           "\"sourcetag\":\"" + sourcetag + "\"," +
           "\"spname\":\"" + spname + "\"," + 
-          "\"mainItemId\":\"" + itemId + "\"," + 
-          "\"screenName\":\"" + screenName + "\"," + 
+          "\"mainItemId\":\"" + gMainItemId + "\"," + 
+          "\"screenName\":\"" + sourcetag + "\"," + 
           "\"taskId\":\"" + TaskId + "\"," +
           "\"screenWidth\":\""+window.innerWidth+ "\"," +
           "\"stringifyData\":" + stringifyData +"," +   
@@ -118,9 +118,32 @@ function GenertateRowObject(formId){
             caseObject["display"]=display;    
             rowObject[property]=caseObject;  
         }
-            
+ 
   
     }
+       var checkBox=$("#"+formId).find("div.checkbox label.label-checkbox");
+    for (i = 0; i < checkBox.length; i++)
+    {
+        var checkboxElement = $(checkBox[i]).find("input");
+    var checkboxProperty=checkboxElement.attr("id").split('__')[2];
+
+        var checkboxCaseObject={}
+
+            checkboxCaseObject["type"]="checkbox";
+ 
+            
+        if(checkboxElement.is(":checked")===false)
+        {
+            checkboxCaseObject["value"]="";  
+            checkboxCaseObject["display"]="";   
+        }else
+            {
+                checkboxCaseObject["value"]=true   
+                checkboxCaseObject["display"]=true;   
+            }
+        rowObject[checkboxProperty]=checkboxCaseObject; 
+    }
+ 
     return rowObject;
 }
 
@@ -136,22 +159,22 @@ function saveInGridOnPopon(){
             var count = $("#"+clickedEditableGridId+" ul").children().length;
             var formData = myApp.formToData('#my-editableGridPopon-form');
             // var dataToSave= GetObjectFromFormToData(formData); 
-            var dataToSave= GenertateRowObject("my-editableGridPopon-form");        
+            var dataToSave= GenertateRowObject("my-editableGridPopon-form");             
             var arr = [];
             var content="";
             myApp.closeModal(); 
-+            var line="<li id='"+count+"_"+clickedEditableGridId+"' class='swipeout' style='background-color:#fff;border-radius: 15px !important;'><div class='swipeout-content item-content noPadding-left'><div class='item-inner gridRow'><div style='width : "+window.innerWidth+"px !important'><table style='width : "+window.innerWidth+"px !important'><tr>";
+            var line="<li id='"+count+"_"+clickedEditableGridId+"' class='swipeout' style='background-color:#fff;border-radius: 15px !important;'><div class='swipeout-content item-content noPadding-left'><div class='item-inner gridRow'><div style='width : "+window.innerWidth+"px !important'><table style='width : "+window.innerWidth+"px !important'><tr>";
 
             var table=$('#'+clickedEditableGridId+"_header").find(".tasksTableTD.tasksTableElement:not(.displayNone)");
             var padding=1;
             for(var i=0 ; i<table.length ;i++)
             {
-                var entity=$(table[i]).attr("name");
-                var display="";
+                var entity=$(table[i]).attr("name");                
                 if(dataToSave[entity]!==undefined)
                 {
-                    display=dataToSave[entity]["display"]; 
+                    display=dataToSave[entity]["display"];                     
                 }
+
                 if(dataToSave[entity]!=null || dataToSave[entity]!=undefined)
                 {
                     if (dataToSave[entity]["type"]==="text")
@@ -161,13 +184,20 @@ function saveInGridOnPopon(){
                         padding=padding+2;
                     }
                     else if (dataToSave[entity]["type"]==="combobox")
-                    {
+                    {    
                         var value=dataToSave[entity]["value"];       
                         var entity=  table[i].getAttribute("name");
                         line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-2-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+display+"<div id='"+value+"'</div></td>";
                         padding=padding+2;  
                     }
-                }
+                     else if (dataToSave[entity]["type"]==="checkbox")
+                         {
+                        var entity=  table[i].getAttribute("name");
+                        line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-2-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+display+"</td>";
+                        padding=padding+2;
+                         }
+                             
+                } 
                 else 
                 {
                     line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-2-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important; padding-left:5px !important;' ></td>";
@@ -277,8 +307,6 @@ function GetEditableGridRowObject(selectedGridId,rowIdToEdit,selectedGrid)
 }
 
 function GetGridData(gridId){
-    
-   
     var table=$('#'+gridId+"_header").find(".tasksTableTD.tasksTableElement:not(.displayNone)");
     var arr=[];
     var gridRows=$('#'+gridId+" li");
@@ -312,7 +340,6 @@ function GetGridData(gridId){
         arr.push(myObject);
     }
     return arr;
-    
 }
 
 

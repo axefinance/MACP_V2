@@ -285,8 +285,8 @@ myApp.onPageInit('pricingConditionScreen', function (page) {
     myApp.params.swipePanel=false;
     pageTitleElement=document.getElementById("title_pricingConditionScreen");
     pageTitleElement.textContent=itemRef+" : "+ RelatedItemType;
-    GetPricingConditionScreen(); 
     myApp.showPreloader();
+    GetPricingConditionScreen(); 
 });
 
 myApp.onPageInit('relatedScreen', function (page) {
@@ -858,7 +858,8 @@ function GetExecuteTaskScreen(url){
             errorMessage(e.message);
         }                             
     });       
-}         
+}     
+
 function manageInstructionGuideResponse(data){
     if(data.instructionGuide!==undefined)  
     {
@@ -875,13 +876,13 @@ function GetPricingConditionScreen(){
     var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    
 
     var data="{"+    
-      "\"screenName\":\""+divId+"\","+
+      "\"screenName\":\""+gScreenName+"\","+
       "\"screenType\":\"pricingCondition\","+
       "\"userData\":"+sessionStorage.getItem("userData")+","+
-      "\"mainItemId\":\""+itemId+"\","+
+      "\"mainItemId\":\""+gMainItemId+"\","+
       "\"taskId\":\""+TaskId+"\"," +
       "\"screenWidth\":\""+window.innerWidth+"\"," +
-      "\"relatedItemId\":\""+relatedItemId+"\"}"; 
+      "\"relatedItemId\":\""+gRelatedItemId+"\"}"; 
     $.ajax({              
         type: 'POST',             
         url: url,                                     
