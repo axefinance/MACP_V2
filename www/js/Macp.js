@@ -704,13 +704,13 @@ function lunchSearchResult(){
         }                           
     });      
 }         
-function generateConnectedComboItems(idChild,screenTagName,val,child,entity,sharedConfig,property){ 
+function generateConnectedComboItems(idChild,screenTagName,val,child,entity,sharedConfig,property,formId){ 
     var url =  "http://"+sessionStorage.getItem('Ip_config')+":"+sessionStorage.getItem('Ip_port')+"/MobileAPI.svc/ConnectedComboOptions"; 
-    connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property);
+    connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property,formId);
 
 } 
 
-function connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property) {
+function connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property,formId) {
     var childs=idChild.split(",");
     var data="{"+    
       "\"userData\":"+sessionStorage.getItem("userData")+","+ 
@@ -735,7 +735,7 @@ function connectedComboOptions(url,idChild,val,child,entity,screenTagName,shared
                 var value = myObj[key];
                 Object.keys(value).forEach(function(key2){
                     var value2 = value[key2];
-                    document.getElementById(key2).innerHTML=value2;
+                    $("#"+formId).find("#"+key2).html(value2);
                 });
             });                                    
         },
