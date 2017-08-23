@@ -33,29 +33,20 @@ function saveExistingQIPoponEvent(parameters){
         dataType: "json",                            
         data: data,             
         success: function(data) {  
-            /*
-            document.getElementById("existingQuickInputForm").innerHTML=data.content;
-            pageTitleElement=document.getElementById("title_existingQuickInputScreen");
-            pageTitleElement.textContent=data.navBarTitle;
-            document.getElementById('existingItemQI-popon-toolbarContent').innerHTML=data.buttonsDiv;
 
-            myApp.hidePreloader();
-            */
             if(data.verifSave===true)
                 {
                    gQITransactionId=data.transactionID;
                    gQICounterpartyId=data.counterpartyID;
                    gQICreditFIldId=data.creditFileID;
-                   mainView.router.load({url: "existingQuickInputScreen.html",reload:true});
-                     
+                   mainView.router.load({url: "existingQuickInputScreen.html",reload:true});                                      
                 }
             else
                 {  
                      errorMessage(data.errorMessage);
                 }
-
         },
-        error: function(e) { 
+        error: function(e) {  
             
             verifconnexion = false;        
              myApp.hidePreloader();
@@ -104,7 +95,7 @@ function saveExistingQIEvent(parmeters,transactionId, counterpartyId, creditFile
 
         },
         error: function(e) { 
-            
+             
             verifconnexion = false;        
              myApp.hidePreloader();
             errorMessage(e.message);

@@ -5,9 +5,6 @@ function createPopup(popupContainer,popupToolbar,top,left,width,height){
     myApp.popup('<div class="popup macp-popup" style=" background : #f1f1f1 !important;top : '+top+' !important; left : '+left+' !important; width : '+width+' !important; height : '+height+' !important; " ><div class="popup-container">' +popupContainer+'</div><div  class="popup-toolbar">'+popupToolbar+'</div></div>', true);
 }
 
-
-
-
 var dateFormat = function () {
     var    token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
         timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
@@ -86,7 +83,7 @@ var dateFormat = function () {
         });
     };
 }();
-    
+   
 // Some common format strings
 dateFormat.masks = {
     "default":      "ddd mmm dd yyyy HH:MM:ss",
@@ -122,6 +119,7 @@ Date.prototype.format = function (mask, utc) {
 Date.prototype.addDays = function (value) {
     return this.addMilliseconds(value * 86400000); 
 };
+
 Date.prototype.addMilliseconds = function (value) {
     this.setMilliseconds(this.getMilliseconds() + value); return this; 
 };
@@ -131,6 +129,7 @@ Date.prototype.monthDays= function(){
     var d= new Date(this.getFullYear(), this.getMonth()+1, 0);
     return d.getDate();
 };
+
 Date.prototype.addMonths = function (value) {
     var n = this.getDate();
     this.setDate(1);
@@ -145,8 +144,6 @@ Date.prototype.addDays = function (value) {
     return dat;
 }; 
 
-
-
 function goToNextField(event) {
     {
         var elements = $(".item-input");
@@ -157,6 +154,7 @@ function goToNextField(event) {
             }
     } 
 }
+
 function errorMessage(message){
     if(!checkInternetConnection())                                                   
         myApp.alert("please check your internet connection");
@@ -203,19 +201,19 @@ function handleKeyboardButton(event){
     
 }
 
-function calendarDateFormat(cssClass,idComponent,year,month,day){
+function calendarDateFormat(cssClass,idComponent,year,month,day, formId){
     if(month ===-1)
     {
 
         myApp.calendar({    
-            input: '#'+idComponent,    
+            input: $('#'+formId).find('#'+idComponent),    
             dateFormat: cssClass,
             closeOnSelect : false,
             value : []
         }); 
     }else{
         myApp.calendar({    
-            input: '#'+idComponent,    
+            input: $('#'+formId).find('#'+idComponent),
             dateFormat: cssClass,
             closeOnSelect : false,
             value : [new Date(year,month,day)]
@@ -233,8 +231,7 @@ function AmountFormat(elementId,decimalprecision,groupseparator,decimalseparator
     
 } 
 
-function percentageFormat(elementId,decimalprecision,decimalseparator)
-{
+function percentageFormat(elementId,decimalprecision,decimalseparator){
     var element = document.getElementById(elementId); 
     var value=element.value; 
     if(value!=="")
@@ -290,8 +287,8 @@ function handleRequiredIcon(component,componentType,elementId,decimalprecision,g
     //$(component).siblings("div.item-inner").removeClass("requiredIcon");
     
 }
-function NumericFormat(elementId,groupSeparator)
-{
+
+function NumericFormat(elementId,groupSeparator){
     var element = document.getElementById(elementId); 
     var value=element.value;
     if(value!="")
@@ -378,47 +375,49 @@ function requiredFormComponent(formToDataId){
     return isValid;
    
 }
-function ManagePricingCnditionComponents() {
-    var myDateFormat=sessionStorage.getItem("dateFormat");
+
+
+function ManagePricingCnditionComponents(formId) {
+    var myDateFormat = sessionStorage.getItem("dateFormat");
     var existFirstPaymentDate = false;
-    var useOfTenorUnit = false;
+    var useOfTenorUnit = false;    
     /*DATA*/
-    var firstPaymentDateValue = '';
+    var firstPaymentDateValue = ''; 
     var amortizationTypeSelectedValue = '';
     var amortizationTonorValue = '';
 
     var endDateValue = '';
-    if (document.getElementById('h__transaction_condition__tenor_unit') != null) {
+    if ($('#'+formId).find('#h__transaction_condition__tenor_unit') != null) {
         useOfTenorUnit = true;
     }
-    if (document.getElementById('f__transaction_condition__first_payment_date') != null) {
+    if ($('#'+formId).find('#f__transaction_condition__first_payment_date') != null) {
         existFirstPaymentDate = true;
-        document.getElementById('f__transaction_condition__first_payment_date').addEventListener("change", function () {
+        $('#'+formId).find('#f__transaction_condition__first_payment_date').change(function () {
             var tenorUnit = '';
-            firstPaymentDateValue = $('#f__transaction_condition__first_payment_date').val();
-            if ($('#h__conditionEntity__amortization_type_id').find("select").find("option:selected").val() != undefined && $('#h__conditionEntity__amortization_type_id').find("option:selected").val() != '') {
-                amortizationTypeSelectedValue = $('#h__conditionEntity__amortization_type_id').find("option:selected").val().split('__')[1];
+            firstPaymentDateValue = $('#'+formId).find('#f__transaction_condition__first_payment_date').val();
+            if ($('#'+formId).find('#h__conditionEntity__amortization_type_id').find("select").find("option:selected").val() != undefined && $('#'+formId).find('#h__conditionEntity__amortization_type_id').find("option:selected").val() != '') {
+                amortizationTypeSelectedValue = $('#'+formId).find('#h__conditionEntity__amortization_type_id').find("option:selected").val().split('__')[1];
             }
 
-            if (document.getElementById('h__transaction_condition__tenor_unit') != null && $("#h__transaction_condition__tenor_unit").find("option:selected").val() != "")
-                tenorUnit = $("#h__transaction_condition__tenor_unit").find("option:selected").val();
+            if ($('#'+formId).find('#h__transaction_condition__tenor_unit') != null && $('#'+formId).find("#h__transaction_condition__tenor_unit").find("option:selected").val() != "")
+                tenorUnit = $('#'+formId).find("#h__transaction_condition__tenor_unit").find("option:selected").val();
             else
                 tenorUnit = "month";
             if (firstPaymentDateValue != '') {
-                if (document.getElementById("n__transaction_condition__tenor") != null && $('#n__transaction_condition__tenor').val() != undefined) {
-                    amortizationTonorValue = $('#n__transaction_condition__tenor').val();
-                    if (amortizationTonorValue != '' && $('#h__transaction_condition__tenor_unit').val() != '') {
+                if ($('#'+formId).find("n__transaction_condition__tenor") != null && $('#'+formId).find('#n__transaction_condition__tenor').val() != undefined) {
+                    amortizationTonorValue = $('#'+formId).find('#n__transaction_condition__tenor').val();
+                    if (amortizationTonorValue != '' && $('#'+formId).find('#h__transaction_condition__tenor_unit').val() != '') {
                         var firstPaymentDate = new Date(firstPaymentDateValue);
                         var date;
-                        var amortizationFrequencySelectedValue = $('#h__transaction_condition__amortization_frequency').find("option:selected").val();
-                        if (document.getElementById('h__transaction_condition__amortization_frequency') != null && amortizationFrequencySelectedValue != undefined && amortizationFrequencySelectedValue.indexOf("daily") == 0 || $('#h__conditionEntity__amortization_type_id').find("option:selected").val() == "short_term" || tenorUnit == 'day') {
+                        var amortizationFrequencySelectedValue = $('#'+formId).find('#h__transaction_condition__amortization_frequency').find("option:selected").val();
+                        if ($('#'+formId).find('#h__transaction_condition__amortization_frequency') != null && amortizationFrequencySelectedValue != undefined && amortizationFrequencySelectedValue.indexOf("daily") == 0 || $('#'+formId).find('#h__conditionEntity__amortization_type_id').find("option:selected").val() == "short_term" || tenorUnit == 'day') {
                             date = firstPaymentDate.addDays(amortizationTonorValue - 1);
                         }
                         else {
                             date = firstPaymentDate.addMonths(amortizationTonorValue - 1);
                         }
-                        if (document.getElementById('f__transaction_condition__end_date') != null) {
-                            calendarDateFormat(myDateFormat.toLowerCase(), "f__transaction_condition__end_date", date.getFullYear(), date.getMonth(), date.getDate());
+                        if ($('#'+formId).find('#f__transaction_condition__end_date') != null) {
+                            calendarDateFormat(myDateFormat.toLowerCase(), "f__transaction_condition__end_date", date.getFullYear(), date.getMonth(), date.getDate(), formId);
 
                         }
 
@@ -434,39 +433,39 @@ function ManagePricingCnditionComponents() {
 
     else {
         existFirstPaymentDate = false;
-        if (document.getElementById('f__transaction_condition__start_date') != null && $('#f__transaction_condition__start_date') != undefined) {
-            document.getElementById('f__transaction_condition__start_date').addEventListener("change", function () {
-                var startDate = $('#f__transaction_condition__start_date').val();
+        if ($('#'+formId).find('#f__transaction_condition__start_date') != null && $('#'+formId).find('#f__transaction_condition__start_date') != undefined) {
+            $('#'+formId).find('#f__transaction_condition__start_date').change(function () {
+                var startDate = $('#'+formId).find('#f__transaction_condition__start_date').val();
                 var amortizationType = '';
                 var tenorUnitSelectedValue = '';
-                if (document.getElementById('h__transaction_condition__amortization_type_id') != null && $('#h__transaction_condition__amortization_type_id').find("option:selected").val() != undefined) {
-                    amortizationType = $('#h__transaction_condition__amortization_type_id').find("option:selected").val().split('__')[1];
+                if ($('#'+formId).find('#h__transaction_condition__amortization_type_id') != null && $('#'+formId).find('#h__transaction_condition__amortization_type_id').find("option:selected").val() != undefined) {
+                    amortizationType = $('#'+formId).find('#h__transaction_condition__amortization_type_id').find("option:selected").val().split('__')[1];
                 }
-                if (document.getElementById('h__transaction_condition__tenor_unit') != null) {
-                    if ($('#h__transaction_condition__tenor_unit').find("option:selected").val() != undefined)
-                        tenorUnitSelectedValue = $('#h__transaction_condition__tenor_unit').find("option:selected").val();
+                if ($('#'+formId).find('#h__transaction_condition__tenor_unit') != null) {
+                    if ($('#'+formId).find('#h__transaction_condition__tenor_unit').find("option:selected").val() != undefined)
+                        tenorUnitSelectedValue = $('#'+formId).find('#h__transaction_condition__tenor_unit').find("option:selected").val();
                 }
                 else {
                     tenorUnit = 'month';
                 }
 
                 if (startDate != '') {
-                    if (document.getElementById('n__transaction_condition__tenor') != null && $('#n__transaction_condition__tenor') != undefined) {
-                        if ($('#n__transaction_condition__tenor').val() != undefined && $('#n__transaction_condition__tenor').val() != '') {
+                    if ($('#'+formId).find('#n__transaction_condition__tenor') != null && $('#'+formId).find('#n__transaction_condition__tenor') != undefined) {
+                        if ($('#'+formId).find('#n__transaction_condition__tenor').val() != undefined && $('#'+formId).find('#n__transaction_condition__tenor').val() != '') {
 
                             var startPaymentDate = new Date(startDate);
                             var date;
-                            if (document.getElementById('h__transaction_condition__amortization_frequency') != null && $('#h__transaction_condition__amortization_frequency').find("option:selected").val() != undefined
-                            && ($('#h__transaction_condition__amortization_frequency').find("option:selected").val().indexOf('daily') == 0) || amortizationType == "short_term" || tenorUnitSelectedValue == 'day') {
-                                date = startPaymentDate.addDays($('#n__transaction_condition__tenor').val() - 1);
+                            if ($('#'+formId).find('#h__transaction_condition__amortization_frequency') != null && $('#'+formId).find('#h__transaction_condition__amortization_frequency').find("option:selected").val() != undefined
+                            && ($('#'+formId).find('#h__transaction_condition__amortization_frequency').find("option:selected").val().indexOf('daily') == 0) || amortizationType == "short_term" || tenorUnitSelectedValue == 'day') {
+                                date = startPaymentDate.addDays($('#'+formId).find('#n__transaction_condition__tenor').val() - 1);
                             }
                             else {
 
-                                date = startPaymentDate.addMonths($('#n__transaction_condition__tenor').val() - 1);
+                                date = startPaymentDate.addMonths($('#'+formId).find('#n__transaction_condition__tenor').val() - 1);
                             }
-                            if (document.getElementById('f__transaction_condition__end_date') != null && $('#f__transaction_condition__end_date') != undefined) {
+                            if ($('#'+formId).find('#f__transaction_condition__end_date') != null && $('#'+formId).find('#f__transaction_condition__end_date') != undefined) {
                                 // $('#f__transaction_condition__end_date').text(date.format(GetDateFormat("mm/dd/yyyy").toString()));
-                                calendarDateFormat(myDateFormat.toLowerCase(), "f__transaction_condition__end_date", date.getFullYear(), date.getMonth(), date.getDate());
+                                calendarDateFormat(myDateFormat.toLowerCase(), "f__transaction_condition__end_date", date.getFullYear(), date.getMonth(), date.getDate(), formId);
                             }
                         }
 
@@ -480,103 +479,103 @@ function ManagePricingCnditionComponents() {
 
 
     if (existFirstPaymentDate == true) {
-        if (document.getElementById('n__transaction_condition__tenor') != null) {
-            document.getElementById('n__transaction_condition__tenor').addEventListener('change', function () {
-                var NewValue = $('#n__transaction_condition__tenor').val();
+        if ($('#'+formId).find('#n__transaction_condition__tenor') != null) {
+            $('#'+formId).find('#n__transaction_condition__tenor').change(function () {
+                var NewValue = $('#'+formId).find('#n__transaction_condition__tenor').val();
                 var amortizationType = '';
                 var tenorUnit = '';
                 if (useOfTenorUnit) {
-                    if ($('#h__transaction_condition__tenor_unit').find("option:selected").val() != undefined)
-                        tenorUnit = $('#h__transaction_condition__tenor_unit').find("option:selected").val();
+                    if ($('#'+formId).find('#h__transaction_condition__tenor_unit').find("option:selected").val() != undefined)
+                        tenorUnit = $('#'+formId).find('#h__transaction_condition__tenor_unit').find("option:selected").val();
                 }
                 else {
                     tenorUnit = 'month';
                 }
-                if (document.getElementById('h__transaction_condition__amortization_type_id') != null
-                && $('#h__transaction_condition__amortization_type_id').find("option:selected").val() != null) {
-                    amortizationType = $('#h__transaction_condition__amortization_type_id').find("option:selected").val().split('__')[1];
+                if ($('#'+formId).find('#h__transaction_condition__amortization_type_id') != null
+                && $('#'+formId).find('#h__transaction_condition__amortization_type_id').find("option:selected").val() != null) {
+                    amortizationType = $('#'+formId).find('#h__transaction_condition__amortization_type_id').find("option:selected").val().split('__')[1];
                 }
                 if ((NewValue != '') &&
-                document.getElementById('f__transaction_condition__first_payment_date') != null
-                && $('#f__transaction_condition__first_payment_date').find("option:selected").val() != undefined && $('#f__transaction_condition__first_payment_date').find("option:selected").val() != '') {
-                    var firstPaymentDate = new Date($('#f__transaction_condition__first_payment_date').find("option:selected").val());
+                $('#'+formId).find('#f__transaction_condition__first_payment_date') != null
+                && $('#'+formId).find('#f__transaction_condition__first_payment_date').find("option:selected").val() != undefined && $('#'+formId).find('#f__transaction_condition__first_payment_date').find("option:selected").val() != '') {
+                    var firstPaymentDate = new Date($('#'+formId).find('#f__transaction_condition__first_payment_date').find("option:selected").val());
                     var date;
                     //Daily Case 
-                    if (document.getElementById('h__transaction_condition__amortization_frequency') != null
-                    && $('#h__transaction_condition__amortization_frequency').find("option:selected").val() != null
-                    && ($('#h__transaction_condition__amortization_frequency').find("option:selected").val().indexOf('daily') == 0) || amortizationType == "short_term" || tenorUnit == 'day') {
-                        date = firstPaymentDate.addDays($('#n__transaction_condition__tenor').val() - 1);
+                    if ($('#'+formId).find('#h__transaction_condition__amortization_frequency') != null
+                    && $('#'+formId).find('#h__transaction_condition__amortization_frequency').find("option:selected").val() != null
+                    && ($('#'+formId).find('#h__transaction_condition__amortization_frequency').find("option:selected").val().indexOf('daily') == 0) || amortizationType == "short_term" || tenorUnit == 'day') {
+                        date = firstPaymentDate.addDays($('#'+formId).find('#n__transaction_condition__tenor').val() - 1);
                     }
                         //Others
                     else {
-                        date = date.addMonths($('#n__transaction_condition__tenor').val() - 1);
+                        date = date.addMonths($('#'+formId).find('#n__transaction_condition__tenor').val() - 1);
                     }
-                    if (document.getElementById('f__transaction_condition__end_date') != null && document.getElementById('f__transaction_condition__end_date') != undefined) {
-                        //  document.getElementById('f__transaction_condition__end_date').text(date.format(GetDateFormat("mm/dd/yyyy").toString()));
-                        calendarDateFormat(myDateFormat.toLowerCase(), "f__transaction_condition__end_date", date.getFullYear(), date.getMonth(), date.getDate());
+                    if ($('#'+formId).find('#f__transaction_condition__end_date') != null && $('#'+formId).find('#f__transaction_condition__end_date') != undefined) {
+                        //  $('#'+formId).find('#f__transaction_condition__end_date').text(date.format(GetDateFormat("mm/dd/yyyy").toString()));
+                        calendarDateFormat(myDateFormat.toLowerCase(), "f__transaction_condition__end_date", date.getFullYear(), date.getMonth(), date.getDate(), formId);
                     }
                 }
             });
 
         }
         else {
-            if (document.getElementById('n__transaction_condition__tenor') != null) {
-                document.getElementById('n__transaction_condition__tenor').addEventListener('change', function () {
-                    var NewValue = $('#n__transaction_condition__tenor').val();
+            if ($('#'+formId).find('#n__transaction_condition__tenor') != null) {
+                $('#'+formId).find('#n__transaction_condition__tenor').change(function () {
+                    var NewValue = $('#'+formId).find('#n__transaction_condition__tenor').val();
                     var amortizationType = '';
                     var tenorUnit = '';
                     if (useOfTenorUnit) {
-                        if ($('h__transaction_condition__tenor_unit').find("option:selected").val() != null)
-                            tenorUnit = $('h__transaction_condition__tenor_unit').find("option:selected").val();
+                        if ($('#'+formId).find('h__transaction_condition__tenor_unit').find("option:selected").val() != null)
+                            tenorUnit = $('#'+formId).find('h__transaction_condition__tenor_unit').find("option:selected").val();
                     }
                     else {
                         tenorUnit = 'month';
                     }
-                    if (document.getElementById('h__transaction_condition__amortization_type_id') != null && $('#h__transaction_condition__amortization_type_id').find("option:selected").val() != null) {
-                        amortizationType = $('#h__transaction_condition__amortization_type_id').find("option:selected").val().split('__')[1];
+                    if ($('#'+formId).find('#h__transaction_condition__amortization_type_id') != null && $('#'+formId).find('#h__transaction_condition__amortization_type_id').find("option:selected").val() != null) {
+                        amortizationType = $('#'+formId).find('#h__transaction_condition__amortization_type_id').find("option:selected").val().split('__')[1];
                     }
-                    if (NewValue != '' && document.getElementById('f__transaction_condition__start_date') != null && document.getElementById('f__transaction_condition__start_date') != undefined
+                    if (NewValue != '' && $('#'+formId).find('#f__transaction_condition__start_date') != null && $('#'+formId).find('#f__transaction_condition__start_date') != undefined
                     && $('#f__transaction_condition__start_date').val() != '') {
-                        var startDate = new Date($('#f__transaction_condition__start_date').val());
+                        var startDate = new Date($('#'+formId).find('#f__transaction_condition__start_date').val());
                         var date;
-                        if (document.getElementById('h__transaction_condition__amortization_frequency') != null
-                        && $('h__transaction_condition__amortization_frequency').find("option:selected").val() != undefined
+                        if ($('#'+formId).find('#h__transaction_condition__amortization_frequency') != null
+                        && $('#'+formId).find('h__transaction_condition__amortization_frequency').find("option:selected").val() != undefined
                         && (currentFrame.Ext.getCmp('h__transaction_condition__amortization_frequency').find("option:selected").val().indexOf('daily') == 0)
                             || amortizationType == "short_term"
                             || tenorUnit == 'day') {
-                            date = startDate.addDays($('#n__transaction_condition__tenor').val());
+                            date = startDate.addDays($('#'+formId).find('#n__transaction_condition__tenor').val());
                         }
                             //Others
                         else {
-                            date = startDate.addMonths($('#n__transaction_condition__tenor').val());
+                            date = startDate.addMonths($('#'+formId).find('#n__transaction_condition__tenor').val());
                         }
-                        if (document.getElementById('f__transaction_condition__end_date') != null && document.getElementById('f__transaction_condition__end_date') != undefined) {
-                            // document.getElementById('f__transaction_condition__end_date').text(date.format(GetDateFormat("mm/dd/yyyy").toString()));
-                            calendarDateFormat(myDateFormat.toLowerCase(), "f__transaction_condition__end_date", date.getFullYear(), date.getMonth(), date.getDate());
+                        if ($('#'+formId).find('#f__transaction_condition__end_date') != null && $('#'+formId).find('#f__transaction_condition__end_date') != undefined) {
+                            // $('#'+formId).find('#f__transaction_condition__end_date').text(date.format(GetDateFormat("mm/dd/yyyy").toString()));
+                            calendarDateFormat(myDateFormat.toLowerCase(), "f__transaction_condition__end_date", date.getFullYear(), date.getMonth(), date.getDate(), formId);
                         }
                     }
                 });
             }
         }
         if (existFirstPaymentDate == true) {
-            document.getElementById('h__transaction_condition__tenor_unit').addEventListener('change', function () {
-                var NewValue = $('#h__transaction_condition__tenor_unit').val();
-                if (NewValue != '' && $('#f__transaction_condition__first_payment_date').val() != null && $('#f__transaction_condition__first_payment_date').val() != ''
-                    && $('#n__transaction_condition__tenor').val() != null
-                    && $('#n__transaction_condition__tenor').val() != '') {
-                    var firstPaymentDate = new Date($('#f__transaction_condition__first_payment_date').val());
+            $('#'+formId).find('#h__transaction_condition__tenor_unit').change(function () {
+                var NewValue = $('#'+formId).find('#h__transaction_condition__tenor_unit').val();
+                if (NewValue != '' && $('#'+formId).find('#f__transaction_condition__first_payment_date').val() != null && $('#'+formId).find('#f__transaction_condition__first_payment_date').val() != ''
+                    && $('#'+formId).find('#n__transaction_condition__tenor').val() != null
+                    && $('#'+formId).find('#n__transaction_condition__tenor').val() != '') {
+                    var firstPaymentDate = new Date($('#'+formId).find('#f__transaction_condition__first_payment_date').val());
                     var date;
                     //Daily Case 
                     if (NewValue == 'day') {
-                        date = firstPaymentDate.addDays($('#n__transaction_condition__tenor').val() - 1);
+                        date = firstPaymentDate.addDays($('#'+formId).find('#n__transaction_condition__tenor').val() - 1);
                     }
                         //Others
                     else {
-                        date = firstPaymentDate.addMonths($('#n__transaction_condition__tenor').val() - 1);
+                        date = firstPaymentDate.addMonths($('#'+formId).find('#n__transaction_condition__tenor').val() - 1);
                     }
-                    if (document.getElementById('f__transaction_condition__end_date') != null && $('#f__transaction_condition__end_date') != undefined) {
+                    if ($('#'+formId).find('#f__transaction_condition__end_date') != null && $('#'+formId).find('#f__transaction_condition__end_date') != undefined) {
                         // $('f__transaction_condition__end_date').text(date.format(GetDateFormat("mm/dd/yyyy").toString()));
-                        calendarDateFormat(myDateFormat.toLowerCase(), "f__transaction_condition__end_date", date.getFullYear(), date.getMonth(), date.getDate());
+                        calendarDateFormat(myDateFormat.toLowerCase(), "f__transaction_condition__end_date", date.getFullYear(), date.getMonth(), date.getDate(), formId);
                     }
                 }
 
@@ -586,25 +585,25 @@ function ManagePricingCnditionComponents() {
             /*#######Start Date Use: Setting handler on tenor CHange*/
         else {
             if (useOfTenorUnit == true) {
-                document.getElementById('h__transaction_condition__tenor_unit').addEventListener('change', function (tenor, NewValue, OldValue) {
+                $('#'+formId).find('#h__transaction_condition__tenor_unit').change(function (tenor, NewValue, OldValue) {
                     if (NewValue != ''
-                        && $('#f__transaction_condition__start_date').val() != null
-                        && $('#f__transaction_condition__start_date').val() != ''
-                        && $('#n__transaction_condition__tenor').val() != null
-                        && $('#n__transaction_condition__tenor').val() != '') {
-                        var startDate = new Date(document.getElementById('f__transaction_condition__start_date').val());
-                        var date ;
+                        && $('#'+formId).find('#f__transaction_condition__start_date').val() != null
+                        && $('#'+formId).find('#f__transaction_condition__start_date').val() != ''
+                        && $('#'+formId).find('#n__transaction_condition__tenor').val() != null
+                        && $('#'+formId).find('#n__transaction_condition__tenor').val() != '') {
+                        var startDate = new Date($('#'+formId).find('#f__transaction_condition__start_date').val());
+                        var date;
                         //Daily Case 
                         if (NewValue == 'day') {
-                            date = startDate.addDays($('#n__transaction_condition__tenor').val() - 1);
+                            date = startDate.addDays($('#'+formId).find('#n__transaction_condition__tenor').val() - 1);
                         }
                             //Others
                         else {
-                            date = startDate.addMonths($('#n__transaction_condition__tenor').val() - 1);
+                            date = startDate.addMonths($('#'+formId).find('#n__transaction_condition__tenor').val() - 1);
                         }
-                        if (document.getElementById('f__transaction_condition__end_date') != null
-                        && document.getElementById('f__transaction_condition__end_date') != undefined) {
-                            calendarDateFormat(myDateFormat, "f__transaction_condition__end_date", date.getFullYear(), date.getMonth(), date.getDate());
+                        if ($('#'+formId).find('#f__transaction_condition__end_date') != null
+                        && $('#'+formId).find('#f__transaction_condition__end_date') != undefined) {
+                            calendarDateFormat(myDateFormat, "f__transaction_condition__end_date", date.getFullYear(), date.getMonth(), date.getDate(), formId);
                         }
                     }
 
@@ -613,7 +612,8 @@ function ManagePricingCnditionComponents() {
 
         }
     }
-}	
+}
+	
 
 function getGridonPoponsData(formdDataId){
     var grids=$(formdDataId).find("div.editableGridOnPopon");

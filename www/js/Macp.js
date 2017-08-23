@@ -364,6 +364,7 @@ function InitRelatedItemScreen(){
             document.getElementById("relatedItemForm").innerHTML=data.content;
             $('#relatedItem-toolbarContent').append(data.buttonsDiv);
             myApp.hidePreloader();
+            ManagePricingCnditionComponents("my-relatedItemPopup-form");
         },
         error: function(e) { 
             myApp.hidePreloader();
@@ -744,13 +745,13 @@ function lunchSearchResult(){
         }                           
     });      
 }         
-function generateConnectedComboItems(idChild,screenTagName,val,child,entity,sharedConfig,property){ 
+function generateConnectedComboItems(idChild,screenTagName,val,child,entity,sharedConfig,property,formId){ 
     var url =  "http://"+sessionStorage.getItem('Ip_config')+":"+sessionStorage.getItem('Ip_port')+"/MobileAPI.svc/ConnectedComboOptions"; 
-    connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property);
+    connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property,formId);
 
 } 
 
-function connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property) {
+function connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property,formId) {
     var childs=idChild.split(",");
     var data="{"+    
       "\"userData\":"+sessionStorage.getItem("userData")+","+ 
@@ -770,12 +771,11 @@ function connectedComboOptions(url,idChild,val,child,entity,screenTagName,shared
         success: function(data) {
             var json=JSON.stringify(data.content);
             var myObj=JSON.parse(json)
-
             Object.keys(myObj).forEach(function(key){
                 var value = myObj[key];
                 Object.keys(value).forEach(function(key2){
                     var value2 = value[key2];
-                    document.getElementById(key2).innerHTML=value2;
+                    $("#"+formId).find("#"+key2).html(value2);
                 });
             });                                    
         },
@@ -937,7 +937,7 @@ function GetPricingConditionScreen(){
             loadJSFile("js/PricingConditionScreen.js");
             loadJSFile("js/amortizationInfiniteScroll.js");
             myApp.hidePreloader();  
-            ManagePricingCnditionComponents();
+            ManagePricingCnditionComponents("my-relatedItemPopup-form");
         },
         error: function(e) { 
             myApp.hidePreloader();
