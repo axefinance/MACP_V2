@@ -10,6 +10,7 @@ function OpenRelatedItemFromLink(property,relatedtype,sourcetag,parentItemId,par
 {
    isRelatedFromLink="true";
     divId=sourcetag;
+    itemRef=parentItemId+".AUTO GENERATED";
     engine="classicre";
     RelatedItemType=relatedtype;
      mainItemIdForRelatedScreen=parentItemId;

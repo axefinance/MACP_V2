@@ -13,6 +13,9 @@ var gSubItem;
 var gMainItemId;
 var gRelatedItemId=0;
 var gScreenName;
+var gQITransactionId;
+var gQICounterpartyId;
+var gQICreditFIldId;
 var searchParams;
 var HomeBackButton;
 var docMenu;
@@ -287,7 +290,7 @@ myApp.onPageInit('pricingConditionScreen', function (page) {
     pageTitleElement.textContent=itemRef+" : "+ RelatedItemType;
     myApp.showPreloader();
     GetPricingConditionScreen(); 
-});
+}); 
 
 myApp.onPageInit('relatedScreen', function (page) {
     HomeBackButton.style.visibility="visible";
@@ -299,6 +302,43 @@ myApp.onPageInit('relatedScreen', function (page) {
     pageTitleElement.textContent=itemRef+" : "+ RelatedItemType;
     loadScreen(divId,mainItemIdForLink,mainItemForLink,"classicre");  
 });
+
+
+myApp.onPageInit('existingQuickInputScreen', function (page) {
+    var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GenerateExistingItemQIScreen";    
+     var data="{"+    
+        "\"screenWidth\":\""+window.innerWidth+"\","+
+        "\"subItem\":\""+gSubItem.toLowerCase()+"\","+
+        "\"screenName\":\""+gSubItem.toLowerCase()+"\","+ 
+        "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
+        "\"transactionID\":\""+gQITransactionId+"\","+   
+        "\"counterpartyID\":\""+gQICounterpartyId+"\","+  
+        "\"creditFileID\":\""+gQICreditFIldId+"\","+  
+        "\"userData\":"+sessionStorage.getItem("userData")+"}";
+    $.ajax({             
+        type: 'POST',             
+        url: url,                                      
+        contentType: "text/plain",                             
+        dataType: "json",                            
+        data: data,         
+        success: function(data) {
+            document.getElementById("existingQuickInputScreenForm").innerHTML=data.content;
+            pageTitleElement=document.getElementById("title_existingQuickInputScreen");
+            pageTitleElement.textContent=data.navBarTitle;
+            document.getElementById('existingItemQI-screen-toolbarContent').innerHTML=data.buttonsDiv;
+            createLanguagesList('existingQuickInputScreen'); 
+            createLogoutPopover('existingQuickInputScreen'); 
+            setTemplate_HeaderData('existingQuickInputScreen');
+            loadJSFile("js/informativeGridInfiniteScroll.js");
+            myApp.hidePreloader();
+        },
+        error: function(e) { 
+            myApp.hidePreloader();
+            errorMessage(e.message);
+        }            
+    });  
+});
+
 
 
 function InitRelatedItemScreen(){
@@ -907,25 +947,25 @@ function GetPricingConditionScreen(){
 
 
 
-myApp.onPageInit('existingQuickInputScreen', function (page) {
+myApp.onPageInit('existingQuickInputPopon', function (page) {
     HomeBackButton.style.visibility="visible";    
-    createLanguagesList('existingQuickInputScreen');
-    createLogoutPopover('existingQuickInputScreen');  
+    createLanguagesList('existingQuickInputPopon');
+    createLogoutPopover('existingQuickInputPopon');  
     myApp.params.swipePanel=false;
-    pageTitleElement=document.getElementById("title_existingQuickInputScreen");
+    pageTitleElement=document.getElementById("title_existingQuickInputPopon");
     pageTitleElement.textContent=pageTitleContent;  
     myApp.showPreloader();
-    setTemplate_HeaderData('existingQuickInputScreen');  
-    loadExistingQuickInputScreen();
+    setTemplate_HeaderData('existingQuickInputPopon');  
+    loadExistingQuickInputPopon();
   
 }); 
 
-function loadExistingQuickInputScreen(){
-        GetExistingQuickInputScreen('http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GenerateExistingQInputItemPopon');
+function loadExistingQuickInputPopon(){
+        GetExistingQuickInputPopon('http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GenerateExistingQInputItemPopon');
 }
 
 
-function GetExistingQuickInputScreen(url){
+function GetExistingQuickInputPopon(url){
      var data="{"+  
        "\"subItem\":\""+gSubItem+"\","+
        "\"taskId\":\"0\","+
@@ -938,12 +978,10 @@ function GetExistingQuickInputScreen(url){
         dataType: "json",                               
         data: data,
         success: function(data) { 
-            document.getElementById("existingQuickInputForm").innerHTML=data.content;
+            document.getElementById("existingQuickInputPoponForm").innerHTML=data.content;
             $('#existingItemQI-popon-toolbarContent').append(data.buttonsDiv);
-
             manageAutoCompleteComponent("my-existingItemQIPopon-form","QI_existing"+gSubItem.toLowerCase());
             loadJSFile("js/ExistingQuickInputScreen.js");
-            //  loadJSFile("js/FormatUtils.js");
             loadJSFile("js/accounting.js");
             myApp.hidePreloader();
         },

@@ -1,22 +1,4 @@
 
-/*function launchQIPoponSearch(item)
-{
-   
-        var formData = myApp.formToData('#search-QI-popon-form-to-data');
-        searchParams=JSON.stringify(formData);
-        if(!checkInternetConnection())                                                   
-            myApp.alert("please check your internet connection");
-        else 
-            {
-                var gridResult=document.getElementById("search-QI-form-to-data-GridResult");
-                var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetSearchResultPage';
-                myApp.alert("URL",url);
-               // lunchSearchResult(url,"selectOnPopon",item); 
-            }  
-    
-}*/
-
- 
 function saveQIExistingPoponButtonEvent(){
     var isValidForm = requiredFormComponent("#my-existingItemQIPopon-form"); 
     if(isValidForm)
@@ -50,13 +32,27 @@ function saveExistingQIPoponEvent(parameters){
         contentType: "text/plain",                          
         dataType: "json",                            
         data: data,             
-        success: function(data) {     
+        success: function(data) {  
+            /*
             document.getElementById("existingQuickInputForm").innerHTML=data.content;
             pageTitleElement=document.getElementById("title_existingQuickInputScreen");
             pageTitleElement.textContent=data.navBarTitle;
             document.getElementById('existingItemQI-popon-toolbarContent').innerHTML=data.buttonsDiv;
 
             myApp.hidePreloader();
+            */
+            if(data.verifSave===true)
+                {
+                   gQITransactionId=data.transactionID;
+                   gQICounterpartyId=data.counterpartyID;
+                   gQICreditFIldId=data.creditFileID;
+                   mainView.router.load({url: "existingQuickInputScreen.html",reload:true});
+                     
+                }
+            else
+                {  
+                     errorMessage(data.errorMessage);
+                }
 
         },
         error: function(e) { 

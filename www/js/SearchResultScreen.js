@@ -6,6 +6,7 @@ function editItem(mainItemId,reference,subItem,targettab){
     itemRef=reference;
     TargetTab=targettab;
     gSubItem=subItem;
+    gScreenName=subItem;
     gMainItemId=mainItemId;
     if(!checkInternetConnection())                                                   
         myApp.alert("please check your internet connection");
