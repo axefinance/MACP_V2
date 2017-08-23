@@ -20,10 +20,10 @@ $$('.informativeGrid-infinite-scroll').on('infinite', function () {
         }      
       
         var data="{"+    
-          "\"screenName\":\""+divId+"\","+
+          "\"screenName\":\""+gScreenName+"\","+
           "\"spName\":\""+spName+"\","+  
-          "\"mainItemId\":\""+itemId+"\","+  
-          "\"relatedItemId\":\""+relatedItemId+"\","+  
+          "\"mainItemId\":\""+gMainItemId+"\","+  
+          "\"relatedItemId\":\""+gRelatedItemId+"\","+  
           "\"userData\":"+sessionStorage.getItem("userData")+","+
           "\"start\":\""+lastIndex+"\","+
           "\"limit\":\"10\","+      

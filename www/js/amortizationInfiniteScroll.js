@@ -29,9 +29,9 @@ $$('.amortization-infinite-scroll').on('infinite', function () {
      var data="{"+ 
        "\"limit\":\"10\","+
        "\"start\":\""+lastIndex+"\","+
-       "\"mainItemId\":\""+itemId+"\"," + 
-       "\"screenTag\":\""+divId+"\"," +   
-       "\"parentId\":\""+itemId+"\"," +  
+       "\"mainItemId\":\""+gMainItemId+"\"," + 
+       "\"screenTag\":\""+gScreenName+"\"," +   
+       "\"parentId\":\""+gMainItemId+"\"," +  
        "\"screenName\":\""+gSubItem+"\","+
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
        "\"poponWidth\":\""+popupWidth+"\"," + 

@@ -1,6 +1,7 @@
 var PoponComponentItem;
 var ComponentId;
 var DisplayProperty;
+var FormId;
 
 function GetPoponComponentScreenContent() {
     myApp.showPreloader();
@@ -35,9 +36,10 @@ function searchOnPoponButtonEvent() {
     currentSearchType = "searchOnPoponResult";
     lunchSearchResult();
 }
-function poponComponentClick(item, idComponent, displayproperty) {
+function poponComponentClick(item, idComponent,formId, displayproperty) {
     var items = item.split(",");
      ComponentId = idComponent;
+     FormId=formId;
       DisplayProperty = displayproperty;
     if (items.length === 1) {
         PoponComponentItem = item;
@@ -139,11 +141,10 @@ function poponInfoClick(subItem,idComponent)
   
 function selectItem(itemId,itemShortName)
 { 
-   var displayElement=document.getElementById(ComponentId+"__Value");
-   var valueElement= document.getElementById(ComponentId); 
-    displayElement.value=itemShortName;
-    valueElement.value=itemId;
-    $("#poponInfoButton_"+ComponentId).removeAttr("disabled");
+    
+  $('#'+FormId).find('#'+ComponentId+"__Value").val(itemShortName);  // document.getElementById(FormId).getElementById(ComponentId+"__Value");
+  $('#'+FormId).find('#'+ComponentId).val(itemId);
+  $("#poponInfoButton_"+ComponentId).removeAttr("disabled");
    myApp.closeModal();
    mainView.router.back();  
     
