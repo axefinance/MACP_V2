@@ -330,6 +330,7 @@ myApp.onPageInit('existingQuickInputScreen', function (page) {
             createLogoutPopover('existingQuickInputScreen'); 
             setTemplate_HeaderData('existingQuickInputScreen');
             loadJSFile("js/informativeGridInfiniteScroll.js");
+            ManagePricingCnditionComponents("my-existingItemQI-form");  
             myApp.hidePreloader();
         },
         error: function(e) { 
