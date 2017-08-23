@@ -57,9 +57,10 @@ function saveExistingQIPoponEvent(parameters){
             document.getElementById('existingItemQI-popon-toolbarContent').innerHTML=data.buttonsDiv;
 
             myApp.hidePreloader();
+            ManagePricingCnditionComponents("my-existingItemQI-form");
 
         },
-        error: function(e) { 
+        error: function(e) {  
             
             verifconnexion = false;        
              myApp.hidePreloader();
@@ -108,7 +109,7 @@ function saveExistingQIEvent(parmeters,transactionId, counterpartyId, creditFile
 
         },
         error: function(e) { 
-            
+             
             verifconnexion = false;        
              myApp.hidePreloader();
             errorMessage(e.message);

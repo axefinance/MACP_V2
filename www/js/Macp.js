@@ -324,6 +324,7 @@ function InitRelatedItemScreen(){
             document.getElementById("relatedItemForm").innerHTML=data.content;
             $('#relatedItem-toolbarContent').append(data.buttonsDiv);
             myApp.hidePreloader();
+            ManagePricingCnditionComponents("my-relatedItemPopup-form");
         },
         error: function(e) { 
             myApp.hidePreloader();
@@ -730,7 +731,6 @@ function connectedComboOptions(url,idChild,val,child,entity,screenTagName,shared
         success: function(data) {
             var json=JSON.stringify(data.content);
             var myObj=JSON.parse(json)
-
             Object.keys(myObj).forEach(function(key){
                 var value = myObj[key];
                 Object.keys(value).forEach(function(key2){
@@ -897,7 +897,7 @@ function GetPricingConditionScreen(){
             loadJSFile("js/PricingConditionScreen.js");
             loadJSFile("js/amortizationInfiniteScroll.js");
             myApp.hidePreloader();  
-            ManagePricingCnditionComponents();
+            ManagePricingCnditionComponents("my-relatedItemPopup-form");
         },
         error: function(e) { 
             myApp.hidePreloader();
