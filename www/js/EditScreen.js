@@ -388,16 +388,16 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
     function saveButtonEvent(mainItemId,screenName,subItem) {
     var indexToSelect = 1;
         if (engine === "classicms") {
-            formId = "#my-mainData-form__"+mainItemId;
+            formId = "#my-mainData-form__"+mainItemId; 
 
-        } else if (engine === "attachment") {
+        } else if (engine === "attachment" || engine === "attachmentFromLink") {
             formId = "#my-attachment-form__"+mainItemId;
         }
          var isValidForm = requiredFormComponent(formId); 
         if(isValidForm){
             if (engine === "classicms") {
                 mainData_SaveEvent(mainItemId,subItem);
-            } else if (engine === "attachment") {
+            } else if (engine === "attachment" || engine === "attachmentFromLink") {
                 attachement_SaveEvent(mainItemId,subItem);
             }
         }
@@ -434,9 +434,15 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
             success: function (data) {
                 if (data.status === "ok") {
                     myApp.hidePreloader();
-                    var screenToLoad=subItem+'_attachment';
-                    loadScreen(screenToLoad,mainItemId,subItem,"attachment");
+                    if(engine ==="attachment")
+                        {
+                            var screenToLoad=subItem+'_attachment';
+                            loadScreen(screenToLoad,mainItemId,subItem,"attachment");
+                        }else
+                        {
+                            GetAttachmentScreen();
                         }
+                    }
                     
                  else {
                     myApp.hidePreloader();

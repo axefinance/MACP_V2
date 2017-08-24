@@ -60,8 +60,53 @@ $$('.firstWS-confirm-ok-cancel').on('click', function () {
     );
     
 });   
-
- 
+myApp.onPageInit('attachmentScreen', function (page) {
+    TaskId = 0;
+    createLanguagesList('attachmentScreen');
+    createLogoutPopover('attachmentScreen');
+    myApp.params.swipePanel=false;
+    myApp.showPreloader();
+    if(fromNewInput===true)
+        document.getElementById("backButton").style.display = "none"; 
+  /*  pageTitleElement=document.getElementById("title_attachmentScreen");
+    pageTitleElement.textContent=navbarTitle;*/
+    setTemplate_HeaderData('attachmentScreen');
+    GetAttachmentScreen();
+    
+});  
+function GetAttachmentScreen(){
+     var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetAttachmentScreen";    
+     var data="{"+    
+        "\"screenName\":\""+gScreenName+"\","+ 
+        "\"mainItemId\":\""+gMainItemId+"\","+ 
+        "\"taskId\":\"0\","+ 
+        "\"windowWidth\":\""+window.innerWidth+"\","+
+        "\"windowHeight\":\""+(window.innerHeight-90)+"\","+
+        "\"userData\":"+sessionStorage.getItem("userData")+"}";
+    $.ajax({             
+        type: 'POST',             
+        url: url,                                      
+        contentType: "text/plain",                             
+        dataType: "json",                            
+        data: data,         
+        success: function(data) {
+            pageTitleElement=document.getElementById("title_attachmentScreen");
+            pageTitleElement.textContent=itemRef+" : "+ RelatedItemType;
+            createLanguagesList('attachmentScreen'); 
+            createLogoutPopover('attachmentScreen'); 
+            setTemplate_HeaderData('attachmentScreen');
+            document.getElementById("attachmentScreenForm").innerHTML=data.content;            
+            document.getElementById('attachment-toolbarContent').innerHTML=data.buttonsDiv;
+            myApp.accordionOpen(".accordion-item");
+            manageAttechementElement();
+            myApp.hidePreloader();
+        },
+        error: function(e) { 
+            myApp.hidePreloader();
+            errorMessage(e.message);
+        }            
+    });  
+} 
 function checkInternetConnection() {
     // Handle the online event 
     var networkState = navigator.connection.type; 

@@ -23,3 +23,17 @@ function OpenInformativeGridFromLink(sourcetag)
 { 
     myApp.alert("informative");      
 }   
+function OpenAttachmentFromLink(mainItemId, sourceTag, relatedtype){
+    gMainItemId = mainItemId;
+    gScreenName = sourceTag;
+    itemRef=mainItemId+".AUTO GENERATED";
+    RelatedItemType=relatedtype;
+    engine = "attachmentFromLink";
+    mainView.router.load({url: 'attachmentScreen.html',reload:false,ignoreCache:true});
+
+   /* isRelatedFromLink="true";
+    gScreenName = sourceTag;
+    engine = "attachment";
+    mainView.router.load({url: 'relatedScreen.html',reload:false,ignoreCache:true});*/
+
+}
