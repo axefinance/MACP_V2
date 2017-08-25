@@ -170,7 +170,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
            "\"userData\":"+sessionStorage.getItem("userData")+","+
            "\"screenName\":\"" + screenName + "\"," +
            "\"subItem\":\"" + subItem + "\"," + 
-           "\"mainItemId\":\"" + mainItemId + "\"," +
+           "\"mainItemId\":\"" + mainItemId + "\"," + 
            "\"taskId\":\""+TaskId+"\"," +
            "\"screenEngine\":\"" + engine + "\"," +
            "\"screenWidth\":\"" + window.innerWidth + "\"," +
