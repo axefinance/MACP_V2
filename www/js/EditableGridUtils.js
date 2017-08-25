@@ -5,11 +5,11 @@ var rowToEditIndex=-1;
 var rowIdToEdit="";
 var SaveAction="";
 var RowNumberToEdit;
-function loadEditableGridOnPopon_popon(gridId,columnsCount,sourcetag,stringifyData){
+function loadEditableGridOnPopon_popon(gridId,columnsCount,sourcetag,stringifyData,mainItemId){
     clickedEditableGridId=gridId;
     clickEditableGridSourceTag=sourcetag;
     clickedEditableGridColumnsCount=columnsCount;
-    GetEditableGridPoponContent(sourcetag,"",stringifyData);
+    GetEditableGridPoponContent(sourcetag,"",stringifyData,mainItemId);
     SaveAction="new";
 }
 function GetGridDataFromHtml(gridId)
@@ -32,13 +32,13 @@ function GetGridDataFromHtml(gridId)
 
 
  
-function GetEditableGridPoponContent(sourcetag,spname,stringifyData){
+function GetEditableGridPoponContent(sourcetag,spname,stringifyData,mainItemId){
     SaveAction="edit";
     var screenName=divId;
     var data = "{" +
           "\"sourcetag\":\"" + sourcetag + "\"," +
           "\"spname\":\"" + spname + "\"," + 
-          "\"mainItemId\":\"" + gMainItemId + "\"," + 
+          "\"mainItemId\":\"" + mainItemId + "\"," +  
           "\"screenName\":\"" + sourcetag + "\"," + 
           "\"taskId\":\"" + TaskId + "\"," +
           "\"screenWidth\":\""+window.innerWidth+ "\"," +
@@ -237,7 +237,7 @@ function saveInGridOnPopon(){
                     }
                     else if (dataToSave[entity]["type"]==="combobox")
                     {
-                        var value= display=dataToSave[entity]["value"];       
+                        var value=dataToSave[entity]["value"];       
                         var entity=  table[i].getAttribute("name");
                         line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+display+"<div id='"+value+"'</div></td>";
                         padding=padding+2;  

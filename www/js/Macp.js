@@ -335,7 +335,7 @@ myApp.onPageInit('existingQuickInputScreen', function (page) {
         },
         error: function(e) { 
             myApp.hidePreloader();
-            errorMessage(e.message);
+            errorMessage(e.message); 
         }            
     });  
 });
