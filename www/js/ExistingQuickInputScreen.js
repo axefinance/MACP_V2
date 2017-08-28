@@ -1,6 +1,11 @@
 var qi_transactionAmountStringList=null;
 var qi_transactionAmountFeesListObject=null;
 var qi_transactionAmountEventFeesListObject=null;
+var TransactionId;
+var CounterpartyId;
+var CreditFileId;
+var DeviationComment;
+var ErrorMsg;
 function saveQIExistingPoponButtonEvent(){
     var isValidForm = requiredFormComponent("#my-existingItemQIPopon-form"); 
     if(isValidForm)
@@ -11,7 +16,7 @@ function saveQIExistingPoponButtonEvent(){
     }
 }
 
-function saveExistingQIPoponEvent(parameters){       
+function saveExistingQIPoponEvent(parameters){      
      var data="{"+    
         "\"screenWidth\":\""+window.innerWidth+"\","+
         "\"subItem\":\""+gSubItem.toLowerCase()+"\","+
@@ -35,7 +40,7 @@ function saveExistingQIPoponEvent(parameters){
         dataType: "json",                            
         data: data,             
         success: function(data) {  
-
+            
             if(data.verifSave===true)
                 {
                    gQITransactionId=data.transactionID;
@@ -57,23 +62,71 @@ function saveExistingQIPoponEvent(parameters){
     });  
 }
 
-function saveQIExistingButtonEvent(transactionId, counterpartyId, creditFileId){
+function saveQIExistingButtonEvent(transactionId, counterpartyId, creditFileId,screenName){
+     TransactionId=transactionId;
+     CounterpartyId=counterpartyId;
+     CreditFileId=creditFileId;
         var isValidForm = requiredFormComponent("#my-existingItemQI-form"); 
     if(isValidForm)
     {
         var formData = myApp.formToData('#my-existingItemQI-form');
         parameters=JSON.stringify(formData);
-        saveExistingQIEvent(parameters, transactionId, counterpartyId, creditFileId);
+        saveExistingQIEvent(parameters,screenName);
     }    
 }
-function saveExistingQIEvent(parmeters,transactionId, counterpartyId, creditFileId){
+function saveExistingQIEvent(parmeters,screenName){
       var stringify= getGridonPoponsData("#my-existingItemQI-form");
          var data="{"+    
-        "\"subItem\":\""+gSubItem.toLowerCase()+"\","+
+        "\"screenName\":\""+screenName+"\","+
         "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
-        "\"transactionId\":\""+transactionId+"\"," +  
-        "\"counterpartyId\":\""+counterpartyId+"\"," +  
-        "\"creditFileId\":\""+creditFileId+"\"," +  
+        "\"transactionId\":\""+TransactionId+"\"," +  
+        "\"counterpartyId\":\""+CounterpartyId+"\"," +  
+        "\"creditFileId\":\""+CreditFileId+"\"," +  
+        "\"transactionShotrname\":\"0\"," +  
+        "\"transactionConditionId\":\""+gTransactionConditionId+"\"," +  
+        "\"transactionAmountListObj\":"+qi_transactionAmountStringList+"," +  
+        "\"transactionAmountFeesObjects\":"+qi_transactionAmountFeesListObject+"," +  
+        "\"transactionAmountEventFeesObject\":"+qi_transactionAmountEventFeesListObject+"," +  
+        "\"transactionConditionTemplate\":"+null+"," +  
+        "\"stringify\":"+stringify+"," +     
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
+        "\"parameters\":"+parameters+"}";  
+     myApp.showPreloader();
+     var url="http://"+sessionStorage.getItem('Ip_config')+":"+sessionStorage.getItem('Ip_port')+"/MobileAPI.svc/SaveDetailsQuickinputEvent";
+     $.ajax({             
+        type: 'POST',           
+        url: url,                  
+        contentType: "text/plain",                          
+        dataType: "json",                            
+        data: data,             
+        success: function(data) {    
+            if(data.status ==="ok")
+                {
+                    myApp.hidePreloader();
+                    manageSaveQIDetailsResponse(data,data.transactionConditionId,screenName);
+                }
+            else
+                {
+                    myApp.hidePreloader();
+                   errorMessage(data.errorMessage);
+                }
+        },
+        error: function(e) {  
+            verifconnexion = false;        
+             myApp.hidePreloader();
+            errorMessage(e.message);
+     }                           
+    }); 
+}
+
+function saveExistingQI(screenName){
+      var stringify= getGridonPoponsData("#my-existingItemQI-form");
+         var data="{"+    
+        "\"screenName\":\""+screenName+"\","+
+        "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
+        "\"transactionId\":\""+TransactionId+"\"," +  
+        "\"counterpartyId\":\""+CounterpartyId+"\"," +  
+        "\"creditFileId\":\""+CreditFileId+"\"," +  
         "\"transactionShotrname\":\"0\"," +  
         "\"transactionConditionId\":\""+gTransactionConditionId+"\"," +  
         "\"transactionAmountListObj\":"+qi_transactionAmountStringList+"," +  
@@ -92,11 +145,12 @@ function saveExistingQIEvent(parmeters,transactionId, counterpartyId, creditFile
         dataType: "json",                            
         data: data,             
         success: function(data) {    
-            if(data.status ==="true")
+            if(data.status ==="ok")
                 {
+                    myApp.hidePreloader();
                     $(".startWF-From-ExistingQI-Screen-form-to-data").removeClass("disabledButton")
                     gTransactionConditionId = data.transactionConditionId;
-                     myApp.hidePreloader();
+                    myApp.hidePreloader();
                     myApp.alert(data.successMessage);
                 }
             else
@@ -111,9 +165,8 @@ function saveExistingQIEvent(parmeters,transactionId, counterpartyId, creditFile
             errorMessage(e.message);
      }                           
     }); 
-}
-function simalteInQIScreenEvent(screenName)
-{
+} 
+function simalteInQIScreenEvent(screenName){
     var isValidForm = requiredFormComponent("#my-existingItemQI-form");  
   var stringify= getGridonPoponsData("#my-existingItemQI-form");
     if(isValidForm)
@@ -163,3 +216,112 @@ function GetQIAmortizationPopon(stringify,item){
         }   
     });         
 }
+function manageSaveQIDetailsResponse(data,parentItemId,screenName) {
+            if (data.behavior != null) {
+
+                switch (data.behavior) {
+                    case "blockingAlert":
+                        {
+                            myApp.alert(data.message, "Exception");
+                            break;
+                        }
+                    case "optionalAlert":
+                        {
+                            myApp.confirm(data.message, "Exception", function () {
+                                saveExistingQI(screenName);
+                            });
+                            break;
+                        }
+                    case "deviationAlert":
+                        {
+                            ErrorMsg = data.message;
+                            ErrorMsg=escapeNewLineChars(ErrorMsg);
+                            myApp.popup("<div class='popup' style='width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;' ><div class='content-block-title' style='word-wrap: break-word !important;white-space : inherit !important;'>" + data.message + "</br></br></div><div class='list-block' ><ul><li class='align-top'><div class='item-content'><div class='item-media'></div><div class='item-inner'><div class='item-input'><textarea id='QIdeviationComment' onkeyup='saveQIDetailsComment_enabledButton(this)'></textarea></div></div></div></li></ul></<div><br><br><div class='row'><div class='col-50'><a href='#' class='button button-fill disabled' onclick='SaveQIDetails_LogDeviation(\""+screenName+"\")' id='saveQIDetailsCommentButton'>Yes</a></div><div class='col-50'><a href='#' class='button button-fill active' onclick='myApp.closeModal()'>No</a></div></div></div>", true);
+                            break;
+                                                                  
+             
+                                        
+                        }
+                }
+            }
+            else {
+
+                myApp.hidePreloader();
+                 $(".startWF-From-ExistingQI-Screen-form-to-data").removeClass("disabledButton")
+                    gTransactionConditionId = data.transactionConditionId;
+                     myApp.hidePreloader();
+                    myApp.alert(data.successMessage);
+            } 
+     }
+function escapeNewLineChars(valueToEscape) {
+    if (valueToEscape != null && valueToEscape != "") {
+        return valueToEscape.replace(/\n/g, "\\n");
+    } else {
+        return valueToEscape;
+    }
+}
+function SaveQIDetails_LogDeviation(screenName){
+    DeviationComment = document.getElementById("QIdeviationComment").value;
+ var stringify= getGridonPoponsData("#my-existingItemQI-form");
+         var data="{"+    
+        "\"screenName\":\""+screenName+"\","+
+        "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
+        "\"transactionId\":\""+TransactionId+"\"," +  
+        "\"counterpartyId\":\""+CounterpartyId+"\"," +  
+        "\"creditFileId\":\""+CreditFileId+"\"," +  
+        "\"transactionShotrname\":\"0\"," +  
+        "\"transactionConditionId\":\""+gTransactionConditionId+"\"," +  
+        "\"transactionAmountListObj\":"+qi_transactionAmountStringList+"," +  
+        "\"transactionAmountFeesObjects\":"+qi_transactionAmountFeesListObject+"," +  
+        "\"transactionAmountEventFeesObject\":"+qi_transactionAmountEventFeesListObject+"," +  
+        "\"transactionConditionTemplate\":"+null+"," +  
+        "\"stringify\":"+stringify+"," +
+        "\"deviationComment\":\""+DeviationComment+"\"," +
+        "\"errorMsg\":\""+ErrorMsg+"\"," +     
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
+        "\"parameters\":"+parameters+"}";  
+     myApp.showPreloader();
+     var url="http://"+sessionStorage.getItem('Ip_config')+":"+sessionStorage.getItem('Ip_port')+"/MobileAPI.svc/SaveQIDetails_LogDeviation";
+     $.ajax({             
+        type: 'POST',           
+        url: url,                  
+        contentType: "text/plain",                          
+        dataType: "json",                            
+        data: data,              
+        success: function(data) { 
+            
+            if(data.status ==="ok")
+                {
+                    myApp.hidePreloader();
+                    $(".startWF-From-ExistingQI-Screen-form-to-data").removeClass("disabledButton")
+                    gTransactionConditionId = data.transactionConditionId;
+                    myApp.hidePreloader();
+                    myApp.closeModal();
+                    myApp.alert(data.successMessage);
+                }
+            else
+                {
+                    myApp.hidePreloader();
+                   errorMessage(data.errorMessage);
+                }
+        },
+        error: function(e) {  
+            verifconnexion = false;        
+             myApp.hidePreloader();
+            errorMessage(e.message);
+     }                           
+    }); 
+}
+
+function saveQIDetailsComment_enabledButton(textarea) {
+
+            var saveProcessEngineCommentButton = document.getElementById("saveQIDetailsCommentButton");
+            if (textarea.value.length != 0) {
+                saveProcessEngineCommentButton.className = "button button-fill active";
+            }
+            else {
+                saveProcessEngineCommentButton.className = "button button-fill disabled";
+            }
+
+
+        };
