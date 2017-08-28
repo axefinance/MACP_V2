@@ -790,7 +790,40 @@ function lunchSearchResult(){
                          
         }                           
     });      
-}         
+}   
+
+function fillTransactionForm(selectedValue, counterpartyId, transactionId, formId){
+    myApp.showPreloader();
+            var formData = myApp.formToData('#'+formId);
+        parameters=JSON.stringify(formData);
+    var url =  "http://"+sessionStorage.getItem('Ip_config')+":"+sessionStorage.getItem('Ip_port')+"/MobileAPI.svc/GetPricingTemplate"; 
+    var data="{"+    
+      "\"userData\":"+sessionStorage.getItem("userData")+","+ 
+      "\"transactionTypeID\":\""+selectedValue.value+"\","+
+      "\"transactionID\":\""+transactionId+"\","+
+      "\"counterpartyID\":\""+counterpartyId+"\","+
+      "\"subItem\":\""+gSubItem+"\","+ 
+      "\"SpecificAgreementID\":\"0\","+        
+      "\"parameters\":"+parameters+"}"; 
+    
+     $.ajax({   
+        type: 'POST',           
+        url: url,                       
+        contentType: "text/plain",                            
+        dataType: "json",                            
+        data: data, 
+        success: function(data) {
+            myApp.hidePreloader();
+            myApp.formFromData('#'+formId, data);
+        },
+        error: function(e) {                      
+            verifconnexion = false;                           
+            myApp.hidePreloader();
+            errorMessage(e.message);
+        }                   
+    }); 
+    
+}
 function generateConnectedComboItems(idChild,screenTagName,val,child,entity,sharedConfig,property,formId){ 
     var url =  "http://"+sessionStorage.getItem('Ip_config')+":"+sessionStorage.getItem('Ip_port')+"/MobileAPI.svc/ConnectedComboOptions"; 
     connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property,formId);
@@ -825,9 +858,11 @@ function connectedComboOptions(url,idChild,val,child,entity,screenTagName,shared
                 });
             });                                    
         },
-        error: function(jqXHR, textStatus, errorThrown) {
-            myApp.alert(errorThrown+'  in processing!'+textStatus);
-        }                   
+        error: function(e) {                      
+            verifconnexion = false;                           
+            myApp.hidePreloader();
+            errorMessage(e.message);
+        }                    
     });          
 }
 function HomeBack(){
