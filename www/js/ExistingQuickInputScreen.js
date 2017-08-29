@@ -46,6 +46,8 @@ function saveExistingQIPoponEvent(parameters){
                    gQITransactionId=data.transactionID;
                    gQICounterpartyId=data.counterpartyID;
                    gQICreditFIldId=data.creditFileID;
+                   gScreenName="existing"+gSubItem.toLowerCase()+"_quickinput";    
+                   gSubItem=data.subItem; 
                    mainView.router.load({url: "existingQuickInputScreen.html",reload:true});                                      
                 }
             else
@@ -70,7 +72,7 @@ function saveQIExistingButtonEvent(transactionId, counterpartyId, creditFileId,s
     if(isValidForm)
     {
         var formData = myApp.formToData('#my-existingItemQI-form');
-        parameters=JSON.stringify(formData);
+        var  parameters=JSON.stringify(formData);
         saveExistingQIEvent(parameters,screenName);
     }    
 }
@@ -148,9 +150,10 @@ function saveExistingQI(screenName){
             if(data.status ==="ok")
                 {
                     myApp.hidePreloader();
-                    $(".startWF-From-ExistingQI-Screen-form-to-data").removeClass("disabledButton")
+                    $(".startWF-From-Edit-Screen-form-to-data").removeClass("disabledButton");
+                    $(".startWF-From-Edit-Screen-form-to-data").removeAttr("disabled");
                     gTransactionConditionId = data.transactionConditionId;
-                    myApp.hidePreloader();
+                    myApp.hidePreloader(); 
                     myApp.alert(data.successMessage);
                 }
             else
@@ -247,7 +250,8 @@ function manageSaveQIDetailsResponse(data,parentItemId,screenName) {
             else {
 
                 myApp.hidePreloader();
-                 $(".startWF-From-ExistingQI-Screen-form-to-data").removeClass("disabledButton")
+                 $(".startWF-From-Edit-Screen-form-to-data").removeClass("disabledButton");
+                 $(".startWF-From-Edit-Screen-form-to-data").removeAttr("disabled");
                     gTransactionConditionId = data.transactionConditionId;
                      myApp.hidePreloader();
                     myApp.alert(data.successMessage);
@@ -293,7 +297,8 @@ function SaveQIDetails_LogDeviation(screenName){
             if(data.status ==="ok")
                 {
                     myApp.hidePreloader();
-                    $(".startWF-From-ExistingQI-Screen-form-to-data").removeClass("disabledButton")
+                    $(".startWF-From-Edit-Screen-form-to-data").removeClass("disabledButton");
+                    $(".startWF-From-Edit-Screen-form-to-data").removeAttr("disabled");
                     gTransactionConditionId = data.transactionConditionId;
                     myApp.hidePreloader();
                     myApp.closeModal();
@@ -322,6 +327,32 @@ function saveQIDetailsComment_enabledButton(textarea) {
             else {
                 saveProcessEngineCommentButton.className = "button button-fill disabled";
             }
-
-
         };
+
+function startQIworkflowButtonAction(mainItemId,screenName)
+{
+      var isValidForm = requiredFormComponent("#my-existingItemQI-form"); 
+    if(isValidForm)
+     { 
+        var formData = myApp.formToData('#my-existingItemQI-form');
+        var  parameters=JSON.stringify(formData);
+        var stringify= getGridonPoponsData("#my-existingItemQI-form");
+         var data="{"+    
+        "\"screenName\":\""+screenName+"\","+
+        "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
+        "\"transactionId\":\""+TransactionId+"\"," +  
+        "\"counterpartyId\":\""+CounterpartyId+"\"," + 
+        "\"subItem\":\""+gSubItem+"\"," +     
+        "\"creditFileId\":\""+CreditFileId+"\"," +  
+        "\"transactionShotrname\":\"0\"," +  
+        "\"transactionConditionId\":\""+gTransactionConditionId+"\"," +  
+        "\"transactionAmountListObj\":"+qi_transactionAmountStringList+"," +  
+        "\"transactionAmountFeesObjects\":"+qi_transactionAmountFeesListObject+"," +  
+        "\"transactionAmountEventFeesObject\":"+qi_transactionAmountEventFeesListObject+"," +  
+        "\"transactionConditionTemplate\":"+null+"," +  
+        "\"stringify\":"+stringify+"," +     
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
+        "\"parameters\":"+parameters+"}";
+     }    
+    
+}
