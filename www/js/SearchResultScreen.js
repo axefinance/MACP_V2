@@ -1,5 +1,4 @@
 var loading = false;
-var selectedItem; 
 var SearchResultScreen_JSFlag;
 
 function editItem(mainItemId,reference,subItem,targettab){ 
