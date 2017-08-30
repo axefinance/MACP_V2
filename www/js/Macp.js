@@ -353,8 +353,8 @@ myApp.onPageInit('existingQuickInputScreen', function (page) {
     var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GenerateExistingItemQIScreen";    
      var data="{"+    
         "\"screenWidth\":\""+window.innerWidth+"\","+
-        "\"subItem\":\""+gSubItem.toLowerCase()+"\","+
-        "\"screenName\":\""+gSubItem.toLowerCase()+"\","+ 
+        "\"screenName\":\""+gScreenName+"\","+
+        "\"subItem\":\""+gSubItem+"\","+ 
         "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
         "\"transactionID\":\""+gQITransactionId+"\","+   
         "\"counterpartyID\":\""+gQICounterpartyId+"\","+  

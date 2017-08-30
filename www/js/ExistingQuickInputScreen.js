@@ -46,12 +46,15 @@ function saveExistingQIPoponEvent(parameters){
                    gQITransactionId=data.transactionID;
                    gQICounterpartyId=data.counterpartyID;
                    gQICreditFIldId=data.creditFileID;
+                   gScreenName="existing"+gSubItem.toLowerCase()+"_quickinput";    
+                   gSubItem=data.subItem; 
+                   gMainItemId=gQITransactionId;    
                    mainView.router.load({url: "existingQuickInputScreen.html",reload:true});                                      
                 }
             else
                 {  
                      errorMessage(data.errorMessage);
-                }
+                } 
         },
         error: function(e) {  
             
@@ -70,11 +73,11 @@ function saveQIExistingButtonEvent(transactionId, counterpartyId, creditFileId,s
     if(isValidForm)
     {
         var formData = myApp.formToData('#my-existingItemQI-form');
-        parameters=JSON.stringify(formData);
+        var  parameters=JSON.stringify(formData);
         saveExistingQIEvent(parameters,screenName);
     }    
 }
-function saveExistingQIEvent(parmeters,screenName){
+function saveExistingQIEvent(parameters,screenName){
       var stringify= getGridonPoponsData("#my-existingItemQI-form");
          var data="{"+    
         "\"screenName\":\""+screenName+"\","+
@@ -121,6 +124,8 @@ function saveExistingQIEvent(parmeters,screenName){
 
 function saveExistingQI(screenName){
       var stringify= getGridonPoponsData("#my-existingItemQI-form");
+       var formData = myApp.formToData('#my-existingItemQI-form');
+      var  parameters=JSON.stringify(formData);
          var data="{"+    
         "\"screenName\":\""+screenName+"\","+
         "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
@@ -148,9 +153,10 @@ function saveExistingQI(screenName){
             if(data.status ==="ok")
                 {
                     myApp.hidePreloader();
-                    $(".startWF-From-ExistingQI-Screen-form-to-data").removeClass("disabledButton")
+                    $(".startWF-From-Edit-Screen-form-to-data").removeClass("disabledButton");
+                    $(".startWF-From-Edit-Screen-form-to-data").removeAttr("disabled");
                     gTransactionConditionId = data.transactionConditionId;
-                    myApp.hidePreloader();
+                    myApp.hidePreloader(); 
                     myApp.alert(data.successMessage);
                 }
             else
@@ -236,7 +242,7 @@ function manageSaveQIDetailsResponse(data,parentItemId,screenName) {
                         {
                             ErrorMsg = data.message;
                             ErrorMsg=escapeNewLineChars(ErrorMsg);
-                            myApp.popup("<div class='popup' style='width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;' ><div class='content-block-title' style='word-wrap: break-word !important;white-space : inherit !important;'>" + data.message + "</br></br></div><div class='list-block' ><ul><li class='align-top'><div class='item-content'><div class='item-media'></div><div class='item-inner'><div class='item-input'><textarea id='QIdeviationComment' onkeyup='saveQIDetailsComment_enabledButton(this)'></textarea></div></div></div></li></ul></<div><br><br><div class='row'><div class='col-50'><a href='#' class='button button-fill disabled' onclick='SaveQIDetails_LogDeviation(\""+screenName+"\")' id='saveQIDetailsCommentButton'>Yes</a></div><div class='col-50'><a href='#' class='button button-fill active' onclick='myApp.closeModal()'>No</a></div></div></div>", true);
+                            myApp.popup("<div class='popup' style='width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;' ><div class='content-block-title' style='word-wrap: break-word !important;white-space : inherit !important;'>" + data.message + "</br></br></div><div class='list-block' ><ul><li class='align-top'><div class='item-content'><div class='item-media'></div><div class='item-inner'><div class='item-input'><textarea id='QIdeviationComment' onkeyup='saveQIDetailsComment_enabledButton(this)'></textarea></div></div></div></li></ul></<div><br><br><div class='row'><div class='col-50'><a href='#' class='button button-fill disabled' onclick='SaveQIDetails_LogDeviation(\""+screenName+"\",\"false\")' id='saveQIDetailsCommentButton'>Yes</a></div><div class='col-50'><a href='#' class='button button-fill active' onclick='myApp.closeModal()'>No</a></div></div></div>", true);
                             break;
                                                                   
              
@@ -247,7 +253,8 @@ function manageSaveQIDetailsResponse(data,parentItemId,screenName) {
             else {
 
                 myApp.hidePreloader();
-                 $(".startWF-From-ExistingQI-Screen-form-to-data").removeClass("disabledButton")
+                 $(".startWF-From-Edit-Screen-form-to-data").removeClass("disabledButton");
+                 $(".startWF-From-Edit-Screen-form-to-data").removeAttr("disabled");
                     gTransactionConditionId = data.transactionConditionId;
                      myApp.hidePreloader();
                     myApp.alert(data.successMessage);
@@ -260,21 +267,32 @@ function escapeNewLineChars(valueToEscape) {
         return valueToEscape;
     }
 }
-function SaveQIDetails_LogDeviation(screenName){
+function SaveQIDetails_LogDeviation(screenName,isRunningWF){
+    myApp.closeModal();
     DeviationComment = document.getElementById("QIdeviationComment").value;
- var stringify= getGridonPoponsData("#my-existingItemQI-form");
+    var stringify= getGridonPoponsData("#my-existingItemQI-form");
+    var popupWidth=window.innerWidth*0.90;
+        var popupHeight=window.innerHeight*0.90;
+        popupWidth=Math.floor(popupWidth); 
+        popupHeight=Math.floor(popupHeight); 
+    var formData = myApp.formToData('#my-existingItemQI-form');
+    var parameters=JSON.stringify(formData);
          var data="{"+    
         "\"screenName\":\""+screenName+"\","+
         "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
         "\"transactionId\":\""+TransactionId+"\"," +  
         "\"counterpartyId\":\""+CounterpartyId+"\"," +  
-        "\"creditFileId\":\""+CreditFileId+"\"," +  
+        "\"creditFileId\":\""+CreditFileId+"\"," + 
+        "\"poponWidth\":\""+popupWidth+"\"," + 
+        "\"subItem\":\""+gSubItem+"\"," +        
+        "\"poponHeight\":\""+popupHeight+"\"," +
         "\"transactionShotrname\":\"0\"," +  
         "\"transactionConditionId\":\""+gTransactionConditionId+"\"," +  
         "\"transactionAmountListObj\":"+qi_transactionAmountStringList+"," +  
         "\"transactionAmountFeesObjects\":"+qi_transactionAmountFeesListObject+"," +  
         "\"transactionAmountEventFeesObject\":"+qi_transactionAmountEventFeesListObject+"," +  
-        "\"transactionConditionTemplate\":"+null+"," +  
+        "\"transactionConditionTemplate\":"+null+"," + 
+        "\"runningWF\":"+isRunningWF+"," +      
         "\"stringify\":"+stringify+"," +
         "\"deviationComment\":\""+DeviationComment+"\"," +
         "\"errorMsg\":\""+ErrorMsg+"\"," +     
@@ -291,13 +309,20 @@ function SaveQIDetails_LogDeviation(screenName){
         success: function(data) { 
             
             if(data.status ==="ok")
-                {
+                {  
                     myApp.hidePreloader();
-                    $(".startWF-From-ExistingQI-Screen-form-to-data").removeClass("disabledButton")
+                    if(isRunningWF==='false')
+                        {
+                    $(".startWF-From-Edit-Screen-form-to-data").removeClass("disabledButton");
+                    $(".startWF-From-Edit-Screen-form-to-data").removeAttr("disabled");
                     gTransactionConditionId = data.transactionConditionId;
                     myApp.hidePreloader();
                     myApp.closeModal();
                     myApp.alert(data.successMessage);
+                        }
+                    
+                    else
+                        manageStartWorkFlowResponse(data,TransactionId);
                 }
             else
                 {
@@ -322,6 +347,158 @@ function saveQIDetailsComment_enabledButton(textarea) {
             else {
                 saveProcessEngineCommentButton.className = "button button-fill disabled";
             }
-
-
         };
+
+function startQIworkflowButtonAction(mainItemId,screenName)
+{
+      var isValidForm = requiredFormComponent("#my-existingItemQI-form"); 
+    if(isValidForm)
+     { 
+        var formData = myApp.formToData('#my-existingItemQI-form');
+        var  parameters=JSON.stringify(formData);
+        var stringify= getGridonPoponsData("#my-existingItemQI-form");
+        var popupWidth=window.innerWidth * 0.80;
+        var popupHeight= 95;
+        popupWidth=Math.floor(popupWidth); 
+        popupHeight=Math.floor(popupHeight); 
+        myApp.showPreloader(); 
+         var data="{"+    
+        "\"screenName\":\""+screenName+"\","+
+        "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
+        "\"transactionId\":\""+TransactionId+"\"," +  
+        "\"counterpartyId\":\""+CounterpartyId+"\"," + 
+        "\"subItem\":\""+gSubItem+"\"," +     
+        "\"creditFileId\":\""+CreditFileId+"\"," + 
+        "\"poponWidth\":\""+popupWidth+"\"," + 
+        "\"poponHeight\":\""+popupHeight+"\"," +     
+        "\"transactionShotrname\":\"0\"," +  
+        "\"transactionConditionId\":\""+gTransactionConditionId+"\"," +  
+        "\"transactionAmountListObj\":"+qi_transactionAmountStringList+"," +  
+        "\"transactionAmountFeesObjects\":"+qi_transactionAmountFeesListObject+"," +  
+        "\"transactionAmountEventFeesObject\":"+qi_transactionAmountEventFeesListObject+"," +  
+        "\"transactionConditionTemplate\":"+null+"," +  
+        "\"stringify\":"+stringify+"," +     
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
+        "\"parameters\":"+parameters+"}";
+        var url="http://"+sessionStorage.getItem('Ip_config')+":"+sessionStorage.getItem('Ip_port')+"/MobileAPI.svc/StartQIWorkFlowButtonAction";
+        $.ajax({             
+        type: 'POST',           
+        url: url,                  
+        contentType: "text/plain",                           
+        dataType: "json",                            
+        data: data,              
+        success: function(data) { 
+            
+            if(data.status ==="ok")
+                {
+                   manageStartQIWorkflowResponse(data,screenName);
+                }
+            else
+                {
+                    myApp.hidePreloader();
+                   errorMessage(data.errorMessage);
+                }
+        },
+        error: function(e) {  
+            verifconnexion = false;        
+             myApp.hidePreloader();
+            errorMessage(e.message);
+     }                           
+    });  
+
+     }    
+    
+}
+
+function manageStartQIWorkflowResponse(data,screenName)
+{
+    if (data.behavior != null) {
+
+                switch (data.behavior) {
+                    case "blockingAlert":
+                        {
+                            myApp.alert(data.message, "Exception");
+                            break;
+                        }
+                    case "optionalAlert":
+                        {
+                            myApp.confirm(data.message, "Exception", function () {
+                                SaveQIDetailsAndStartWorkflow(screenName);
+                            });
+                            break;
+                        }
+                    case "deviationAlert":
+                        {
+                            ErrorMsg = data.message;
+                            ErrorMsg=escapeNewLineChars(ErrorMsg);
+                            myApp.popup("<div class='popup' style='width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;' ><div class='content-block-title' style='word-wrap: break-word !important;white-space : inherit !important;'>" + data.message + "</br></br></div><div class='list-block' ><ul><li class='align-top'><div class='item-content'><div class='item-media'></div><div class='item-inner'><div class='item-input'><textarea id='QIdeviationComment' onkeyup='saveQIDetailsComment_enabledButton(this)'></textarea></div></div></div></li></ul></<div><br><br><div class='row'><div class='col-50'><a href='#' class='button button-fill disabled' onclick='SaveQIDetails_LogDeviation(\""+screenName+"\",\"true\")' id='saveQIDetailsCommentButton'>Yes</a></div><div class='col-50'><a href='#' class='button button-fill active' onclick='myApp.closeModal()'>No</a></div></div></div>", true);
+                            break;
+                                                                  
+             
+                                        
+                        }
+                }
+            }
+            else  {
+
+                manageStartWorkFlowResponse(data,TransactionId);
+            }
+}
+
+function SaveQIDetailsAndStartWorkflow(screenName)
+{
+        var formData = myApp.formToData('#my-existingItemQI-form');
+        var  parameters=JSON.stringify(formData);
+        var stringify= getGridonPoponsData("#my-existingItemQI-form");
+        var popupWidth=window.innerWidth*0.90;
+        var popupHeight=window.innerHeight*0.90;
+        popupWidth=Math.floor(popupWidth); 
+        popupHeight=Math.floor(popupHeight); 
+        myApp.showPreloader();
+       var data="{"+    
+        "\"screenName\":\""+screenName+"\","+
+        "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
+        "\"transactionId\":\""+TransactionId+"\"," +  
+        "\"counterpartyId\":\""+CounterpartyId+"\"," + 
+        "\"subItem\":\""+gSubItem+"\"," +     
+        "\"creditFileId\":\""+CreditFileId+"\"," + 
+        "\"poponWidth\":\""+popupWidth+"\"," + 
+        "\"poponHeight\":\""+popupHeight+"\"," +     
+        "\"transactionShotrname\":\"0\"," +  
+        "\"transactionConditionId\":\""+gTransactionConditionId+"\"," +  
+        "\"transactionAmountListObj\":"+qi_transactionAmountStringList+"," +  
+        "\"transactionAmountFeesObjects\":"+qi_transactionAmountFeesListObject+"," +  
+        "\"transactionAmountEventFeesObject\":"+qi_transactionAmountEventFeesListObject+"," +  
+        "\"transactionConditionTemplate\":"+null+"," +  
+        "\"stringify\":"+stringify+"," +     
+        "\"userData\":"+sessionStorage.getItem("userData")+","+
+        "\"parameters\":"+parameters+"}";
+    var url="http://"+sessionStorage.getItem('Ip_config')+":"+sessionStorage.getItem('Ip_port')+"/MobileAPI.svc/SaveQIDetailsAndStartWorkflow";
+    
+     $.ajax({             
+        type: 'POST',           
+        url: url,                  
+        contentType: "text/plain",                          
+        dataType: "json",                            
+        data: data,              
+        success: function(data) { 
+            
+            if(data.status ==="ok")
+                {   
+                    myApp.hidePreloader();
+                    manageStartWorkFlowResponse(data,TransactionId);
+                }
+            else
+                {
+                    myApp.hidePreloader();
+                   errorMessage(data.errorMessage);
+                }
+        },
+        error: function(e) {  
+            verifconnexion = false;        
+             myApp.hidePreloader();
+            errorMessage(e.message);
+     }                           
+    }); 
+    
+}
