@@ -147,6 +147,14 @@ function GenertateRowObject(formId){
     return rowObject;
 }
 
+function updateGridOnPoponContent(content)
+{
+    for(var grid in content["Grids"])
+        {
+           var gridContent=$("#"+grid).html(content["Grids"][grid]); 
+        } 
+}
+
 function saveInGridOnPopon(){
     var isValidForm = requiredFormComponent("#my-editableGridPopon-form"); 
     if (isValidForm)
@@ -353,3 +361,5 @@ function deleteEditableGridRow(rowNumber,selectedGridId,gridSourceTag)
         }
     }
 }
+
+

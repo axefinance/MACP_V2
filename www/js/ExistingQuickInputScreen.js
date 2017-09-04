@@ -46,12 +46,13 @@ function saveExistingQIPoponEvent(parameters){
                    gQITransactionId=data.transactionID;
                    gQICounterpartyId=data.counterpartyID;
                    gQICreditFIldId=data.creditFileID;
+                   gTransactionTypeId=data.transactionTypeId;    
                    gScreenName="existing"+gSubItem.toLowerCase()+"_quickinput";    
                    gSubItem=data.subItem; 
                    gMainItemId=gQITransactionId;    
                    mainView.router.load({url: "existingQuickInputScreen.html",reload:true});                                      
                 }
-            else
+            else 
                 {  
                      errorMessage(data.errorMessage);
                 } 
