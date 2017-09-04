@@ -16,6 +16,7 @@ var gScreenName;
 var gQITransactionId;
 var gQICounterpartyId;
 var gQICreditFIldId;
+var gTransactionTypeId;
 var searchParams;
 var HomeBackButton;
 var docMenu;
@@ -358,6 +359,7 @@ myApp.onPageInit('existingQuickInputScreen', function (page) {
         "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
         "\"transactionID\":\""+gQITransactionId+"\","+   
         "\"counterpartyID\":\""+gQICounterpartyId+"\","+  
+        "\"transactionTypeId\":\""+gTransactionTypeId+"\","+   
         "\"creditFileID\":\""+gQICreditFIldId+"\","+  
         "\"userData\":"+sessionStorage.getItem("userData")+"}";
     $.ajax({             
@@ -796,6 +798,8 @@ function fillTransactionForm(selectedValue, counterpartyId, transactionId, formI
     myApp.showPreloader();
             var formData = myApp.formToData('#'+formId);
         parameters=JSON.stringify(formData);
+        var popupWidth=window.innerWidth*0.90;
+        popupWidth=Math.floor(popupWidth); 
     var url =  "http://"+sessionStorage.getItem('Ip_config')+":"+sessionStorage.getItem('Ip_port')+"/MobileAPI.svc/GetPricingTemplate"; 
     var data="{"+    
       "\"userData\":"+sessionStorage.getItem("userData")+","+ 
@@ -803,6 +807,8 @@ function fillTransactionForm(selectedValue, counterpartyId, transactionId, formI
       "\"transactionID\":\""+transactionId+"\","+
       "\"counterpartyID\":\""+counterpartyId+"\","+
       "\"subItem\":\""+gSubItem+"\","+ 
+      "\"poponWidth\":\""+popupWidth+"\"," +   
+      "\"screenName\":\""+gScreenName+"\","+   
       "\"SpecificAgreementID\":\"0\","+        
       "\"parameters\":"+parameters+"}"; 
     
@@ -815,14 +821,15 @@ function fillTransactionForm(selectedValue, counterpartyId, transactionId, formI
         success: function(data) {
             myApp.hidePreloader();
             myApp.formFromData('#'+formId, data);
+            updateGridOnPoponContent(data);
         },
-        error: function(e) {                      
+        error: function(e) {                        
             verifconnexion = false;                           
             myApp.hidePreloader();
             errorMessage(e.message);
         }                   
     }); 
-    
+     
 }
 function generateConnectedComboItems(idChild,screenTagName,val,child,entity,sharedConfig,property,formId){ 
     var url =  "http://"+sessionStorage.getItem('Ip_config')+":"+sessionStorage.getItem('Ip_port')+"/MobileAPI.svc/ConnectedComboOptions"; 
@@ -915,7 +922,7 @@ function updateWsConfiguration(ip,port){
         t.executeSql('Update WS SET ip="'+ip+'" , port="'+port+'" where id=1');
     });
     sessionStorage.setItem('Ip_config', ip);
-    sessionStorage.setItem('Ip_port', port);   
+    sessionStorage.setItem('Ip_port', port);    
 }
 function ExecuteTask(taskId,workflowName,targettab){
     TaskId=taskId;
