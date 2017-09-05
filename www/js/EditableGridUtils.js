@@ -1,6 +1,6 @@
 var clickedEditableGridId;
 var clickEditableGridSourceTag;
-var clickedEditableGridColumnsCount=columnsCount;
+var clickedEditableGridColumnsCount;
 var rowToEditIndex=-1;
 var rowIdToEdit="";
 var SaveAction="";
@@ -121,15 +121,15 @@ function GenertateRowObject(formId){
  
   
     }
-       var checkBox=$("#"+formId).find("div.checkbox label.label-checkbox");
+    var checkBox=$("#"+formId).find("div.checkbox label.label-checkbox");
     for (i = 0; i < checkBox.length; i++)
     {
         var checkboxElement = $(checkBox[i]).find("input");
-    var checkboxProperty=checkboxElement.attr("id").split('__')[2];
+        var checkboxProperty=checkboxElement.attr("id").split('__')[2];
 
         var checkboxCaseObject={}
 
-            checkboxCaseObject["type"]="checkbox";
+        checkboxCaseObject["type"]="checkbox";
  
             
         if(checkboxElement.is(":checked")===false)
@@ -137,10 +137,10 @@ function GenertateRowObject(formId){
             checkboxCaseObject["value"]="";  
             checkboxCaseObject["display"]="";   
         }else
-            {
-                checkboxCaseObject["value"]=true   
-                checkboxCaseObject["display"]=true;   
-            }
+        {
+            checkboxCaseObject["value"]=true   
+            checkboxCaseObject["display"]=true;   
+        }
         rowObject[checkboxProperty]=checkboxCaseObject; 
     }
  
@@ -150,9 +150,9 @@ function GenertateRowObject(formId){
 function updateGridOnPoponContent(content)
 {
     for(var grid in content["Grids"])
-        {
-           var gridContent=$("#"+grid).html(content["Grids"][grid]); 
-        } 
+    {
+        var gridContent=$("#"+grid).html(content["Grids"][grid]); 
+    } 
 }
 
 function saveInGridOnPopon(){
@@ -183,33 +183,33 @@ function saveInGridOnPopon(){
                     display=dataToSave[entity]["display"];                     
                 }
 
-                if(dataToSave[entity]!=null || dataToSave[entity]!=undefined)
+                if(dataToSave[entity]!=null || dataToSave[entity]!=undefined || dataToSave[entity]!="")
                 {
                     if (dataToSave[entity]["type"]==="text")
                     {
                         var entity=  table[i].getAttribute("name");
-                        line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-2-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+display+"</td>";
-                        padding=padding+2;
+                        line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-1-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important;' >"+display+"</td>";
+                      
                     }
                     else if (dataToSave[entity]["type"]==="combobox")
                     {    
                         var value=dataToSave[entity]["value"];       
                         var entity=  table[i].getAttribute("name");
-                        line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-2-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+display+"<div id='"+value+"'</div></td>";
-                        padding=padding+2;  
+                        line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-1-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important;' >"+display+"<div id='"+value+"'</div></td>";
+                         
                     }
-                     else if (dataToSave[entity]["type"]==="checkbox")
-                         {
+                    else if (dataToSave[entity]["type"]==="checkbox")
+                    {
                         var entity=  table[i].getAttribute("name");
-                        line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-2-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+display+"</td>";
-                        padding=padding+2;
-                         }
+                        line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-1-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important;' >"+display+"</td>";
+                       
+                    }
                              
                 } 
                 else 
                 {
-                    line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-2-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important; padding-left:5px !important;' ></td>";
-                    padding=padding+2;    
+                    line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-1-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-1-padding)+"px !important; overflow-wrap: break-word !important;' ></td>";
+                      
                 }
             }
             line=line+ "</tr></table></div></div></div><div class='swipeout-actions-right'><a href='#'     data-popup='.demo-popup' class='action1 bg-orange editButton' onclick='EditEditableGridRow("+(count)+",\""+clickedEditableGridId+"\",\""+clickEditableGridSourceTag+"\");'></a><a href='#' data-popup='.demo-popup' class='action1 bg-red deleteButton' onclick='deleteEditableGridRow(\""+count+"\",\""+clickedEditableGridId+"\");'></a></div></li>";
@@ -226,7 +226,7 @@ function saveInGridOnPopon(){
             var content="";
             var line="";
             var table=$('#'+clickedEditableGridId+"_header").find(".tasksTableTD.tasksTableElement:not(.displayNone)");
-            var padding=3;
+            var padding=1;
             for(var i=0 ; i<table.length ;i++)
             {
                 var entity=$(table[i]).attr("name");
@@ -235,26 +235,32 @@ function saveInGridOnPopon(){
                 {
                     display=dataToSave[entity]["display"]; 
                 }
-                if(dataToSave[entity]!=null || dataToSave[entity]!=undefined)
+                if(dataToSave[entity]!=null || dataToSave[entity]!=undefined || dataToSave[entity]!="")
                 {
                     if (dataToSave[entity]["type"]==="text")
                     {
                         var entity=  table[i].getAttribute("name");
-                        line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+display+"</td>";
-                        padding=padding+2;
+                        line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-1-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important;' >"+display+"</td>";
+                        
                     }
                     else if (dataToSave[entity]["type"]==="combobox")
                     {
                         var value=dataToSave[entity]["value"];       
                         var entity=  table[i].getAttribute("name");
-                        line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important; padding-left:5px !important;' >"+display+"<div id='"+value+"'</div></td>";
-                        padding=padding+2;  
+                        line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-1-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important;' >"+display+"<div id='"+value+"'</div></td>";
+                      
+                    }
+                    else if (dataToSave[entity]["type"]==="checkbox")
+                    {
+                        var entity=  table[i].getAttribute("name");
+                        line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-1-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important;' >"+display+"</td>";
+                      
                     }
                 }
                 else 
                 {
-                    line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important; padding-left:5px !important;' ></td>";
-                    padding=padding+2;    
+                    line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-1-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-1-padding)+"px !important; overflow-wrap: break-word !important;' ></td>";
+                      
                 }
             }
             var existingGridDataRows=$("#"+clickedEditableGridId+" ul li");
@@ -269,7 +275,7 @@ function saveInGridOnPopon(){
     }  
 }
 
-function EditEditableGridRow(rowNumber,selectedGridId,gridSourceTag){
+function EditEditableGridRow(rowNumber,selectedGridId,gridSourceTag,columnCount){
     clickedEditableGridId=selectedGridId;
     rowIdToEdit=rowNumber+"_"+selectedGridId;
     rowObject=GetEditableGridRowObject(selectedGridId,rowIdToEdit,gridSourceTag);
@@ -279,6 +285,7 @@ function EditEditableGridRow(rowNumber,selectedGridId,gridSourceTag){
     object[selectedGridId]=arr;
     var strigifyRecord=JSON.stringify(object);
     GetEditableGridPoponContent(gridSourceTag,selectedGridId,strigifyRecord,rowNumber);
+    clickedEditableGridColumnsCount=columnCount;
 }
  
 
@@ -305,7 +312,11 @@ function GetEditableGridRowObject(selectedGridId,rowIdToEdit,selectedGrid)
                 }
                 else
                     value=existingGridDataRows[i].innerText;
-                    value=value.replace("\n","");
+                value=value.replace("\n","");
+                if(value==="True")
+                    value=true;
+                else if(value==="False")
+                    value=false;
             }
         }
                  
@@ -330,18 +341,18 @@ function GetGridData(gridId){
             for(var k=0 ; k<existingGridDataRow.length;k++)
             {
                 if(existingGridDataRow[k].getAttribute("name")===entity)
-                 {
+                {
                     if(existingGridDataRow[k].childNodes.length>1)
                     {
-                    var div= existingGridDataRow[k].getElementsByTagName("div");
-                    if(div[0]!=undefined)
-                        value=div[0].getAttribute("id");
+                        var div= existingGridDataRow[k].getElementsByTagName("div");
+                        if(div[0]!=undefined)
+                            value=div[0].getAttribute("id");
                        
                     }
-                   else
-                    value=existingGridDataRow[k].innerText;
-                     value=value.replace("\n",""); 
-                 }
+                    else
+                        value=existingGridDataRow[k].innerText;
+                    value=value.replace("\n",""); 
+                }
             }
             myObject[entity]=value;
         }

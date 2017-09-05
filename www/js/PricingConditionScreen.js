@@ -15,22 +15,23 @@ function simulateEvent(item){
     if(isValidForm)
   GetAmortizationPopon(stringify,item);
 }
-function GetAmortizationPopon(stringify,item){
+function GetAmortizationPopon(stringify,screenName){
      myApp.showPreloader();
      var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetAmortizationGrid';
      var popupWidth=window.innerWidth*0.90;
      var popupHeight=window.innerHeight*0.90;
      popupWidth=Math.floor(popupWidth); 
      popupHeight=Math.floor(popupHeight); 
+     gScreenName=screenName;
      var formData = myApp.formToData('#my-relatedItemPopup-form');
      var parameters=JSON.stringify(formData);
      var data="{"+ 
        "\"limit\":\"30\","+
        "\"start\":\"0\","+ 
        "\"mainItemId\":\""+gMainItemId+"\"," + 
-       "\"screenTag\":\""+item+"\"," +   
+       "\"screenTag\":\""+screenName+"\"," +   
        "\"parentId\":\""+gMainItemId+"\"," +  
-       "\"screenName\":\""+item+"\","+
+       "\"screenName\":\""+screenName+"\","+
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
        "\"poponWidth\":\""+popupWidth+"\"," + 
        "\"poponHeight\":\""+popupHeight+"\"," +  
@@ -51,6 +52,8 @@ function GetAmortizationPopon(stringify,item){
              myApp.popup('<div class="popup" style="overflow:hidden !important; width: 90% !important; top: 5% !important;left: 5% !important; margin-left: 0px !important;height:90% !important; margin-top: 0px !important; position:absoloute !important; padding-left:5px !important; padding-right:5px !important ;padding-top:7px !important; padding-bottom:7px !important"  >'+data.content+'</div>', true);
              myApp.attachInfiniteScroll($$('.amortization-infinite-scroll'));
             loadJSFile("js/amortizationInfiniteScroll.js");
+            gAmortizationParameters=parameters;
+            gAmortizationStringiFyData=stringify;
         },
         error: function(e) {
             myApp.hidePreloader();    
