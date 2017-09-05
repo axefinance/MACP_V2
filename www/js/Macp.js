@@ -17,6 +17,8 @@ var gQITransactionId;
 var gQICounterpartyId;
 var gQICreditFIldId;
 var gTransactionTypeId;
+var gAmortizationParameters;
+var gAmortizationStringiFyData;
 var searchParams;
 var HomeBackButton;
 var docMenu;

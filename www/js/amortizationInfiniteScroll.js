@@ -23,21 +23,18 @@ $$('.amortization-infinite-scroll').on('infinite', function () {
      var popupHeight=window.innerHeight*0.90;
      popupWidth=Math.floor(popupWidth); 
      popupHeight=Math.floor(popupHeight); 
-     var formData = myApp.formToData('#my-relatedItemPopup-form');
-     var parameters=JSON.stringify(formData);
-     var stringify= getGridonPoponsData("#my-relatedItemPopup-form");
      var data="{"+ 
        "\"limit\":\"10\","+
        "\"start\":\""+lastIndex+"\","+
        "\"mainItemId\":\""+gMainItemId+"\"," + 
        "\"screenTag\":\""+gScreenName+"\"," +   
        "\"parentId\":\""+gMainItemId+"\"," +  
-       "\"screenName\":\""+gSubItem+"\","+
+       "\"screenName\":\""+gScreenName+"\","+
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
        "\"poponWidth\":\""+popupWidth+"\"," + 
        "\"poponHeight\":\""+popupHeight+"\"," +  
-       "\"stringify\":"+stringify+"," +  
-       "\"parameters\":"+parameters+"}" ;   
+       "\"stringify\":"+gAmortizationStringiFyData+"," +  
+       "\"parameters\":"+gAmortizationParameters+"}";   
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetNextAmortizationGridRows';
    
     $.ajax({ 
