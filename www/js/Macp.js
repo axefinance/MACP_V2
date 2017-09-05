@@ -13,6 +13,7 @@ var gSubItem;
 var gMainItemId;
 var gRelatedItemId=0;
 var gScreenName;
+var gSourceTag;
 var gQITransactionId;
 var gQICounterpartyId;
 var gQICreditFIldId;
@@ -130,6 +131,7 @@ function isScreenInCache(screenName){
     return false;
 }
 function westMenuItem(subItem,title,screenName, xmlTag){     
+     console.log(xmlTag);
     if(isScreenInCache(screenName))
     {
         mainView.history=["#homePage"];
@@ -142,6 +144,7 @@ function westMenuItem(subItem,title,screenName, xmlTag){
     engine = screenNameArray[0];
     xmlTagNewInput = xmlTag;
     gSubItem=subItem;
+    gSourceTag=xmlTag;
     pageTitleContent=title; 
     gTransactionConditionId = 0;
     fromNewInput=false;
@@ -288,7 +291,7 @@ myApp.onPageInit('newInputScreen', function (page) {
     pageTitleElement.textContent=pageTitleContent;
     myApp.showPreloader();
     setTemplate_HeaderData('newInputScreen');
-    loadNewInputPage();
+    loadNewInputPage();  
 });                
 myApp.onPageInit('searchResultScreen', function (page) {
     HomeBackButton.style.visibility="visible";
@@ -352,7 +355,7 @@ myApp.onPageInit('relatedScreen', function (page) {
 });
 
 
-myApp.onPageInit('existingQuickInputScreen', function (page) {
+myApp.onPageInit('quickInputDetailsScreen', function (page) {
     var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GenerateExistingItemQIScreen";    
      var data="{"+    
         "\"screenWidth\":\""+window.innerWidth+"\","+
@@ -371,13 +374,13 @@ myApp.onPageInit('existingQuickInputScreen', function (page) {
         dataType: "json",                            
         data: data,         
         success: function(data) {
-            document.getElementById("existingQuickInputScreenForm").innerHTML=data.content;
-            pageTitleElement=document.getElementById("title_existingQuickInputScreen");
+            document.getElementById("quickInputDetailsScreenForm").innerHTML=data.content;
+            pageTitleElement=document.getElementById("title_quickInputDetailsScreen");
             pageTitleElement.textContent=data.navBarTitle;
             document.getElementById('existingItemQI-screen-toolbarContent').innerHTML=data.buttonsDiv;
-            createLanguagesList('existingQuickInputScreen'); 
-            createLogoutPopover('existingQuickInputScreen'); 
-            setTemplate_HeaderData('existingQuickInputScreen');
+            createLanguagesList('quickInputDetailsScreen'); 
+            createLogoutPopover('quickInputDetailsScreen'); 
+            setTemplate_HeaderData('quickInputDetailsScreen');
             loadJSFile("js/informativeGridInfiniteScroll.js");
             ManagePricingCnditionComponents("my-existingItemQI-form");  
             myApp.hidePreloader();
@@ -389,6 +392,42 @@ myApp.onPageInit('existingQuickInputScreen', function (page) {
     });  
 });
 
+myApp.onPageInit('newQuickInputScreen', function (page) {
+    var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GenerateExistingItemQIScreen";    
+     var data="{"+    
+        "\"screenWidth\":\""+window.innerWidth+"\","+
+        "\"screenName\":\""+gScreenName+"\","+
+        "\"subItem\":\""+gSubItem+"\","+ 
+        "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
+        "\"transactionID\":\""+gQITransactionId+"\","+   
+        "\"counterpartyID\":\""+gQICounterpartyId+"\","+  
+        "\"transactionTypeId\":\""+gTransactionTypeId+"\","+   
+        "\"creditFileID\":\""+gQICreditFIldId+"\","+  
+        "\"userData\":"+sessionStorage.getItem("userData")+"}";
+    $.ajax({             
+        type: 'POST',             
+        url: url,                                      
+        contentType: "text/plain",                             
+        dataType: "json",                            
+        data: data,         
+        success: function(data) {
+            document.getElementById("quickInputDetailsScreenForm").innerHTML=data.content;
+            pageTitleElement=document.getElementById("title_quickInputDetailsScreen");
+            pageTitleElement.textContent=data.navBarTitle;
+            document.getElementById('existingItemQI-screen-toolbarContent').innerHTML=data.buttonsDiv;
+            createLanguagesList('quickInputDetailsScreen'); 
+            createLogoutPopover('quickInputDetailsScreen'); 
+            setTemplate_HeaderData('quickInputDetailsScreen');
+            loadJSFile("js/informativeGridInfiniteScroll.js");
+            ManagePricingCnditionComponents("my-existingItemQI-form");  
+            myApp.hidePreloader();
+        },
+        error: function(e) { 
+            myApp.hidePreloader();
+            errorMessage(e.message); 
+        }            
+    });  
+});
 
 
 function InitRelatedItemScreen(){
@@ -1037,27 +1076,29 @@ function GetPricingConditionScreen(){
 
 
 
-myApp.onPageInit('existingQuickInputPopon', function (page) {
+myApp.onPageInit('quickInputPopon', function (page) {
     HomeBackButton.style.visibility="visible";    
-    createLanguagesList('existingQuickInputPopon');
-    createLogoutPopover('existingQuickInputPopon');  
+    createLanguagesList('quickInputPopon');
+    createLogoutPopover('quickInputPopon');  
     myApp.params.swipePanel=false;
-    pageTitleElement=document.getElementById("title_existingQuickInputPopon");
+    pageTitleElement=document.getElementById("title_quickInputPopon");
     pageTitleElement.textContent=pageTitleContent;  
     myApp.showPreloader();
-    setTemplate_HeaderData('existingQuickInputPopon');  
-    loadExistingQuickInputPopon();
+    setTemplate_HeaderData('quickInputPopon');  
+    loadQuickInputPopon();
   
 }); 
 
-function loadExistingQuickInputPopon(){
-        GetExistingQuickInputPopon('http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GenerateExistingQInputItemPopon');
+function loadQuickInputPopon(){
+        GetQuickInputPopon('http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GenerateQInputItemPopon');
 }
 
 
-function GetExistingQuickInputPopon(url){
+function GetQuickInputPopon(url){
+     gScreenName="QI_new"+gSubItem.toLowerCase();
      var data="{"+  
        "\"subItem\":\""+gSubItem+"\","+
+       "\"sourceTag\":\""+gSourceTag+"\","+
        "\"taskId\":\"0\","+
        "\"mainItemId\":\"0\","+
        "\"userData\":"+sessionStorage.getItem("userData")+"}";
@@ -1068,14 +1109,14 @@ function GetExistingQuickInputPopon(url){
         dataType: "json",                               
         data: data,
         success: function(data) { 
-            document.getElementById("existingQuickInputPoponForm").innerHTML=data.content;
+            document.getElementById("quickInputPoponForm").innerHTML=data.content;
             $('#existingItemQI-popon-toolbarContent').append(data.buttonsDiv);
             manageAutoCompleteComponent("my-existingItemQIPopon-form","QI_existing"+gSubItem.toLowerCase());
-            loadJSFile("js/ExistingQuickInputScreen.js");
+            loadJSFile("js/QuickInputDetailsScreen.js");
             loadJSFile("js/accounting.js");
             myApp.hidePreloader();
         },
-        error: function(e) {
+        error: function(e) { 
             myApp.hidePreloader();
             errorMessage(e.message);
         }  
