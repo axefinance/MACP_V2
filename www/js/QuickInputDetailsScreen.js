@@ -7,19 +7,20 @@ var CreditFileId;
 var DeviationComment;
 var ErrorMsg;
 function saveQIExistingPoponButtonEvent(){
-    var isValidForm = requiredFormComponent("#my-existingItemQIPopon-form"); 
+    var isValidForm = requiredFormComponent("#my-QIPopon-form"); 
     if(isValidForm)
     {
-        var formData = myApp.formToData('#my-existingItemQIPopon-form');
+        var formData = myApp.formToData('#my-QIPopon-form');
         parameters=JSON.stringify(formData);
-        saveExistingQIPoponEvent(parameters);
+        saveQIPoponEvent(parameters);
     }
 }
 
-function saveExistingQIPoponEvent(parameters){      
+function saveQIPoponEvent(parameters){      
      var data="{"+    
         "\"screenWidth\":\""+window.innerWidth+"\","+
         "\"subItem\":\""+gSubItem.toLowerCase()+"\","+
+        "\"sourceTag\":\""+gSourceTag+"\","+ 
         "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
         "\"transactionID\":\"\"," +  
         "\"counterpartyID\":\"\"," +  
@@ -50,7 +51,7 @@ function saveExistingQIPoponEvent(parameters){
                    gScreenName="existing"+gSubItem.toLowerCase()+"_quickinput";    
                    gSubItem=data.subItem; 
                    gMainItemId=gQITransactionId;    
-                   mainView.router.load({url: "existingQuickInputScreen.html",reload:true});                                      
+                   mainView.router.load({url: "quickInputDetailsScreen.html",reload:true});                                      
                 }
             else 
                 {  
