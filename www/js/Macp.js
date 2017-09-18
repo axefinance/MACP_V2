@@ -14,10 +14,10 @@ var gMainItemId;
 var gRelatedItemId=0;
 var gScreenName;
 var gSourceTag;
-var gQITransactionId;
-var gQICounterpartyId;
-var gQICreditFIldId;
-var gTransactionTypeId;
+var gQITransactionId=0;
+var gQICounterpartyId=0;
+var gQICreditFIldId=0;
+var gTransactionTypeId=0;
 var gAmortizationParameters;
 var gAmortizationStringiFyData;
 var searchParams;
@@ -30,7 +30,7 @@ var ExecutedWorkflowName;
 var itemRef;
 var fromNewInput;
 var divId; 
-var engine;
+var gEngine;
 var TargetTab;
 var InstructionGuide; 
 var WithCollectQuestion; 
@@ -141,7 +141,7 @@ function westMenuItem(subItem,title,screenName, xmlTag){
         $$('.view-main .page-on-left').remove(screenName);
     }
     screenNameArray = screenName.split(".");
-    engine = screenNameArray[0];
+    gEngine = screenNameArray[0];
     xmlTagNewInput = xmlTag;
     gSubItem=subItem;
     gSourceTag=xmlTag;
@@ -497,7 +497,7 @@ function InitEditScreen(){
               "\"screenHeight\":\""+window.innerHeight+"\"}";
            var withBackButton=true;
     $.ajax({ 
-        type: "POST",  
+        type: "POST",   
         dataType:"json",  
         url: url,    
         contentType: "text/plain",                          
@@ -561,7 +561,7 @@ function GetSearchPage(url){
             manageAutoCompleteComponent("my-search-form",gSubItem);
             loadJSFile("js/SearchScreen.js");
             //  loadJSFile("js/FormatUtils.js");
-            loadJSFile("js/accounting.js");
+            //loadJSFile("js/accounting.js");
             myApp.hidePreloader();
         },
         error: function(e) {
@@ -1005,7 +1005,7 @@ function GetExecuteTaskScreen(url){
                 pageTitleElement.textContent=data.itemShortName;
                 $('#executeTask-toolbarContent').append(data.buttonsDiv);
                 divId = data.divId;
-                engine = data.screenEngine;                    
+                gEngine = data.screenEngine;                    
                 extendedProperties=data.ExtendedProperties;    
                 myApp.hidePreloader();
                 manageInstructionGuideResponse(data);
