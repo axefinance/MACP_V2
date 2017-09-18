@@ -47,7 +47,22 @@
     color:#2196f3;
 }
 
+.note {
+    position: relative;
+}
+.note:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0; 
+    height: 0; 
+    display: block;
+    border-left: 5px solid transparent;
+    border-bottom: 5px solid transparent;
 
+    border-top: 5px solid #f00;
+} 
 .requiredIcon:before {
     font-family: FontAwesome !important;
     content: "\f071";

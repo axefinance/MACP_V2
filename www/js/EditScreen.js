@@ -105,7 +105,7 @@ var newEditableGridRows = [];
     }
 function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subItem,screenName) {
        
-    if (engine === "attachment") {
+    if (gEngine === "attachment") {
         isUpdateAttachment = false;
         var formData = {
             'o__none__file_name': '',
@@ -286,7 +286,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
     function menuTabClick(screenName, butDiv, screenEngine,mainItemId,subItem) {
         isRelatedFromLink="false";
        // divId = divID;
-        engine = screenEngine;
+        gEngine = screenEngine;
         isUpdateAttachment = false;      
         var selectedDivId ;
         selectedDivId = $('#' + screenName+"__"+mainItemId).siblings(".Active").attr("id");
@@ -386,18 +386,19 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
         window.open(folderpath + "//" + filename, "_system", 'location=yes');
     }
     function saveButtonEvent(mainItemId,screenName,subItem) {
+    var formId;    
     var indexToSelect = 1;
-        if (engine === "classicms") {
+        if (gEngine === "classicms") {
             formId = "#my-mainData-form__"+mainItemId; 
 
-        } else if (engine === "attachment" || engine === "attachmentFromLink") {
+        } else if (gEngine === "attachment" || gEngine === "attachmentFromLink") {
             formId = "#my-attachment-form__"+mainItemId;
         }
          var isValidForm = requiredFormComponent(formId); 
         if(isValidForm){
-            if (engine === "classicms") {
+            if (gEngine === "classicms") {
                 mainData_SaveEvent(mainItemId,subItem);
-            } else if (engine === "attachment" || engine === "attachmentFromLink") {
+            } else if (gEngine === "attachment" || gEngine === "attachmentFromLink") {
                 attachement_SaveEvent(mainItemId,subItem);
             }
         }
@@ -434,7 +435,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
             success: function (data) {
                 if (data.status === "ok") {
                     myApp.hidePreloader();
-                    if(engine ==="attachment")
+                    if(gEngine ==="attachment")
                         {
                             var screenToLoad=subItem+'_attachment';
                             loadScreen(screenToLoad,mainItemId,subItem,"attachment");

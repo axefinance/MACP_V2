@@ -11,7 +11,7 @@ function OpenRelatedItemFromLink(property,relatedtype,sourcetag,parentItemId,par
    isRelatedFromLink="true";
     divId=sourcetag;
     itemRef=parentItemId+".AUTO GENERATED";
-    engine="classicre";
+    gEngine="classicre";
     RelatedItemType=relatedtype;
      mainItemIdForRelatedScreen=parentItemId;
      mainItemForRelatedScreen=parentItem;
@@ -28,7 +28,7 @@ function OpenAttachmentFromLink(mainItemId, sourceTag, relatedtype){
     gScreenName = sourceTag;
     itemRef=mainItemId+".AUTO GENERATED";
     RelatedItemType=relatedtype;
-    engine = "attachmentFromLink";
+    gEngine = "attachmentFromLink";
     mainView.router.load({url: 'attachmentScreen.html',reload:false,ignoreCache:true});
 
    /* isRelatedFromLink="true";

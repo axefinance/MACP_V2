@@ -4,10 +4,6 @@ var errorMsg;
 $$('.newInput-form-to-data').on('click', function(){
     var formId = "form"; 
     var isValidForm = requiredFormComponent(formId); 
-   /* if(!isValid)
-    {
-       $(x[indexToSelect]).next().children().first().focus();
-    }else*/
     if(isValidForm)
     {
         var formData = myApp.formToData('#my-newInput-form');
@@ -68,24 +64,26 @@ function saveNewInput(parameters){
         dataType: "json",                            
         data: data,             
         success: function(data) {  
-            if(data.status==="ok")
-                {
+        if(data.status==="ok")
+        {
             myApp.hidePreloader();
-            itemId=data.itemId; 
-            divId=data.itemId;
+            gMainItemId=data.itemId;     
             itemRef=data.itemRef; 
             TargetTab=data.targetTab;  
             if(!checkInternetConnection())                                                   
                 myApp.alert("please check your internet connection");
-            else         
-                mainView.router.load({url: "editScreen.html",reload:true});
-            fromNewInput=true;
-                }
             else
                 {
-                     myApp.hidePreloader();
-                    myApp.alert(data.message,data.messageTitle);
+                gScreenName=gSubItem;     
+                loadEditScreen(false);
+                fromNewInput=true;
                 }
+        }
+        else
+        {
+            myApp.hidePreloader();
+            errorMessage(data.messageTitle,data.message);
+        }
         },
         error: function(e) { 
             
@@ -101,7 +99,7 @@ function saveNewInput(parameters){
 
 function manageSaveInputResponse(data)
 {
-    myApp.alert(data.behavior);
+   
     if(data.behavior!=null)
     {
        
@@ -130,15 +128,18 @@ function manageSaveInputResponse(data)
                 }
     }
     else
-        {
-            itemId=data.itemId; 
+        { 
+            gMainItemId=data.itemId;
             itemRef=data.itemRef;
             TargetTab=data.targetTab;
             if(!checkInternetConnection())                                                   
                 myApp.alert("please check your internet connection");
-            else 
-                mainView.router.load({url: "editScreen.html",reload:true});
-            fromNewInput=true;
+            else
+                {
+                gScreenName=gSubItem; 
+                loadEditScreen(false);
+                fromNewInput=true;
+                }
         }
 }
 

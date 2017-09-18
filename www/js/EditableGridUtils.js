@@ -1,19 +1,25 @@
 var clickedEditableGridId;
 var clickEditableGridSourceTag;
 var clickedEditableGridColumnsCount;
+var WithInstantSave;
+var ItemIdToEdit;
 var rowToEditIndex=-1;
 var rowIdToEdit="";
 var SaveAction="";
 var RowNumberToEdit;
-function loadEditableGridOnPopon_popon(gridId,columnsCount,sourcetag,stringifyData,mainItemId){
+var GridEntity;
+var DataToEdit;
+function loadEditableGridOnPopon_popon(gridId,columnsCount,sourcetag,gridEntity,stringifyData,mainItemId,withInstantSave){
     clickedEditableGridId=gridId;
     clickEditableGridSourceTag=sourcetag;
     clickedEditableGridColumnsCount=columnsCount;
     GetEditableGridPoponContent(sourcetag,"",stringifyData,mainItemId);
     SaveAction="new";
+    WithInstantSave=withInstantSave;
+    GridEntity=gridEntity;
+    ItemIdToEdit="";
 }
-function GetGridDataFromHtml(gridId)
-{
+function GetGridDataFromHtml(gridId){
     var arrays=[];
     var table=$("#"+gridId).find(".tasksTableTD.tasksTableElement:not(.displayNone)");
     var existingGridDataRows=$("#"+gridId+" ul tr");
@@ -27,11 +33,8 @@ function GetGridDataFromHtml(gridId)
         }
         arrays.push(arr);
     }
-    return arrays   
+    return arrays;   
 }
-
-
- 
 function GetEditableGridPoponContent(sourcetag,spname,stringifyData,mainItemId){
     SaveAction="edit";
     var screenName=divId;
@@ -64,9 +67,7 @@ function GetEditableGridPoponContent(sourcetag,spname,stringifyData,mainItemId){
         }
     }); 
 } 
-
-function GetObjectFromFormToData(formData)
-{
+function GetObjectFromFormToData(formData){
     var  obj={}; 
     for(var propertyName in formData) {
         var type=propertyName.split('__')[0];
@@ -85,7 +86,6 @@ function GetObjectFromFormToData(formData)
     return obj; 
      
 }
-
 function GenertateRowObject(formId){
     rowObject = {};
     // var listElement=$("#"+formId+" div ul li item-input");
@@ -102,9 +102,13 @@ function GenertateRowObject(formId){
         if(input.localName==="input")
         {
             var display=input.value;
-            diplay=display.replace("\n","");
+            display=display.replace("\n","");
+            var align = input.style.textAlign;
+            if(align==="right")
+            caseObject["type"]="numeric";
+            else
             caseObject["type"]="text";
-            caseObject["display"]=diplay; 
+            caseObject["display"]=display; 
             rowObject[property]=caseObject;
         }
         else if(input.localName==="select")
@@ -146,35 +150,60 @@ function GenertateRowObject(formId){
  
     return rowObject;
 }
-
-function updateGridOnPoponContent(content)
-{
+function updateGridOnPoponContent(content){
     for(var grid in content["Grids"])
     {
         var gridContent=$("#"+grid).html(content["Grids"][grid]); 
     } 
 }
-
 function saveInGridOnPopon(){
     var isValidForm = requiredFormComponent("#my-editableGridPopon-form"); 
+    var gridWidth=window.innerWidth-30;
     if (isValidForm)
     {
-        if(SaveAction==="new")
+        
+        if(WithInstantSave)
         {
+            var formData = myApp.formToData('#my-editableGridPopon-form');
+            var newFormData={};
+            
+            for(var propertyName in formData)
+            {
+               var property=propertyName.split('__')[2];
+               newFormData[property]=formData[propertyName]; 
+            }
+             newFormData[GridEntity+"_id"]=ItemIdToEdit;
+            
+            for(var propertyName in DataToEdit)
+            {
+                if(newFormData[propertyName] ===undefined)
+                 {
+                      newFormData[propertyName]=DataToEdit[propertyName];  
+                 }
+            }
+             var Data={};
+             var arr=[];
+             arr.push(newFormData);
+             Data[clickedEditableGridId]=arr;
+             var gridData=JSON.stringify(Data);
+             GridDataInstantSave(gridData,clickedEditableGridId);
+        }
+        else
+        {         
+          if(SaveAction==="new")
+          {
             var existingGridData=$("#"+clickedEditableGridId+" ul").html();
             if(existingGridData===undefined)
                 existingGridData="";
             var count = $("#"+clickedEditableGridId+" ul").children().length;
             var formData = myApp.formToData('#my-editableGridPopon-form');
-            // var dataToSave= GetObjectFromFormToData(formData); 
             var dataToSave= GenertateRowObject("my-editableGridPopon-form");             
             var arr = [];
             var content="";
             myApp.closeModal(); 
             var line="<li id='"+count+"_"+clickedEditableGridId+"' class='swipeout' style='background-color:#fff;border-radius: 15px !important;'><div class='swipeout-content item-content noPadding-left'><div class='item-inner gridRow'><div style='width : "+window.innerWidth+"px !important'><table style='width : "+window.innerWidth+"px !important'><tr>";
-
             var table=$('#'+clickedEditableGridId+"_header").find(".tasksTableTD.tasksTableElement:not(.displayNone)");
-            var padding=1;
+            var padding=0;
             for(var i=0 ; i<table.length ;i++)
             {
                 var entity=$(table[i]).attr("name");                
@@ -183,34 +212,41 @@ function saveInGridOnPopon(){
                     display=dataToSave[entity]["display"];                     
                 }
 
-                if(dataToSave[entity]!=null || dataToSave[entity]!=undefined || dataToSave[entity]!="")
+                if(dataToSave[entity]!==null && dataToSave[entity]!==undefined && dataToSave[entity]!=="")
                 {
                     if (dataToSave[entity]["type"]==="text")
                     {
                         var entity=  table[i].getAttribute("name");
-                        line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-1-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important;' >"+display+"</td>";
+                        line=line+" <td class='note' name="+entity+" style= 'font-size:small !important;max-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-3)+"px !important; min-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-2)+"px !important; overflow-wrap: break-word !important; margin-left:"+padding+"px !important;' >"+display+"</td>";
+                      
+                    }
+                    if (dataToSave[entity]["type"]==="numeric")
+                    {
+                        var entity=  table[i].getAttribute("name");
+                        line=line+" <td class='note' name="+entity+" style= 'font-size:small !important;max-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-3)+"px !important; min-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-2)+"px !important; overflow-wrap: break-word !important; margin-left:"+padding+"px !important; text-align:right;' >"+display+"</td>";
                       
                     }
                     else if (dataToSave[entity]["type"]==="combobox")
                     {    
                         var value=dataToSave[entity]["value"];       
                         var entity=  table[i].getAttribute("name");
-                        line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-1-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important;' >"+display+"<div id='"+value+"'</div></td>";
+                        line=line+" <td class='note' name="+entity+" style= 'font-size:small !important;max-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-3)+"px !important; min-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-2)+"px !important; overflow-wrap: break-word !important; margin-left:"+padding+"px !important;' >"+display+"<div id='"+value+"'</div></td>";
                          
                     }
                     else if (dataToSave[entity]["type"]==="checkbox")
                     {
                         var entity=  table[i].getAttribute("name");
-                        line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-1-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important;' >"+display+"</td>";
+                        line=line+" <td class='note' name="+entity+" style= 'font-size:small !important;max-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-3)+"px !important; min-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-2)+"px !important; overflow-wrap: break-word !important; margin-left:"+padding+"px !important;' >"+display+"</td>";
                        
                     }
                              
                 } 
                 else 
                 {
-                    line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-1-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-1-padding)+"px !important; overflow-wrap: break-word !important;' ></td>";
+                    line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-2)+"px !important; min-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-2)+"px !important; overflow-wrap: break-word !important; margin-left:"+padding+"px !important;' ></td>";
                       
                 }
+                padding=padding+3.5;
             }
             line=line+ "</tr></table></div></div></div><div class='swipeout-actions-right'><a href='#'     data-popup='.demo-popup' class='action1 bg-orange editButton' onclick='EditEditableGridRow("+(count)+",\""+clickedEditableGridId+"\",\""+clickEditableGridSourceTag+"\");'></a><a href='#' data-popup='.demo-popup' class='action1 bg-red deleteButton' onclick='deleteEditableGridRow(\""+count+"\",\""+clickedEditableGridId+"\");'></a></div></li>";
             content=content+line;
@@ -221,12 +257,11 @@ function saveInGridOnPopon(){
         else
         {
             var formData = myApp.formToData('#my-editableGridPopon-form');
-            // var dataToSave= GetObjectFromFormToData(formData);
             var dataToSave= GenertateRowObject("my-editableGridPopon-form");     
             var content="";
             var line="";
             var table=$('#'+clickedEditableGridId+"_header").find(".tasksTableTD.tasksTableElement:not(.displayNone)");
-            var padding=1;
+            var padding=0;
             for(var i=0 ; i<table.length ;i++)
             {
                 var entity=$(table[i]).attr("name");
@@ -235,47 +270,55 @@ function saveInGridOnPopon(){
                 {
                     display=dataToSave[entity]["display"]; 
                 }
-                if(dataToSave[entity]!=null || dataToSave[entity]!=undefined || dataToSave[entity]!="")
+                if(dataToSave[entity]!==null && dataToSave[entity]!==undefined && dataToSave[entity]!=="")
                 {
                     if (dataToSave[entity]["type"]==="text")
                     {
-                        var entity=  table[i].getAttribute("name");
-                        line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-1-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important;' >"+display+"</td>";
+                        //var entity=  table[i].getAttribute("name");
+                        line=line+" <td class='note' name="+entity+" style= 'font-size:small !important;max-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-3)+"px !important; min-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-2)+"px !important; overflow-wrap: break-word !important; margin-left:"+padding+"px !important;' >"+display+"</td>";
                         
+                    }
+                    if (dataToSave[entity]["type"]==="numeric")
+                    {
+                       // var entity=  table[i].getAttribute("name");
+                        line=line+" <td class='note' name="+entity+" style= 'font-size:small !important;max-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-3)+"px !important; min-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-2)+"px !important; overflow-wrap: break-word !important; margin-left:"+padding+"px !important; text-align:right;' >"+display+"</td>";
+                      
                     }
                     else if (dataToSave[entity]["type"]==="combobox")
                     {
                         var value=dataToSave[entity]["value"];       
-                        var entity=  table[i].getAttribute("name");
-                        line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-1-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important;' >"+display+"<div id='"+value+"'</div></td>";
+                        //var entity=  table[i].getAttribute("name");
+                        line=line+" <td class='note' name="+entity+" style= 'font-size:small !important;max-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-3)+"px !important; min-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-2)+"px !important; overflow-wrap: break-word !important; margin-left:"+padding+"px !important;' >"+display+"<div id='"+value+"'</div></td>";
                       
                     }
                     else if (dataToSave[entity]["type"]==="checkbox")
                     {
-                        var entity=  table[i].getAttribute("name");
-                        line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-1-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-2-padding)+"px !important; overflow-wrap: break-word !important;' >"+display+"</td>";
-                      
+                        //var entity=  table[i].getAttribute("name");
+                        line=line+" <td class='note' name="+entity+" style= 'font-size:small !important;max-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-3)+"px !important; min-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-2)+"px !important; overflow-wrap: break-word !important; margin-left:"+padding+"px !important;' >"+display+"</td>";
                     }
                 }
                 else 
                 {
-                    line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ (((window.innerWidth-30)/clickedEditableGridColumnsCount)-1-padding)+"px !important; min-width:"+ ((window.innerWidth/clickedEditableGridColumnsCount)-1-padding)+"px !important; overflow-wrap: break-word !important;' ></td>";
+                    line=line+" <td name="+entity+" style= 'font-size:small !important;max-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-2)+"px !important; min-width:"+ ((gridWidth/clickedEditableGridColumnsCount)-2)+"px !important; overflow-wrap: break-word !important; margin-left:"+padding+"px !important;' >"+DataToEdit[entity]+"</td>";
                       
                 }
+                padding=padding+3.5;
             }
             var existingGridDataRows=$("#"+clickedEditableGridId+" ul li");
             for(var i=0; i<existingGridDataRows.length;i++)
             {
                 if(existingGridDataRows[i].getAttribute("id")===rowIdToEdit)
-                    $("#"+rowIdToEdit+" tr").html(line);
+                    {
+                    $("#"+rowIdToEdit+" tr").html(line); 
+                    }
             }
-        
+            
             myApp.closeModal(); 
-        }
+         }
+    }
     }  
 }
-
-function EditEditableGridRow(rowNumber,selectedGridId,gridSourceTag,columnCount){
+function EditEditableGridRow(rowNumber,selectedGridId,gridSourceTag,screenName,itemId,gridEntity,columnCount,withInstantsave){
     clickedEditableGridId=selectedGridId;
     rowIdToEdit=rowNumber+"_"+selectedGridId;
     rowObject=GetEditableGridRowObject(selectedGridId,rowIdToEdit,gridSourceTag);
@@ -283,16 +326,17 @@ function EditEditableGridRow(rowNumber,selectedGridId,gridSourceTag,columnCount)
     var arr=[];
     arr.push(rowObject);
     object[selectedGridId]=arr;
-    var strigifyRecord=JSON.stringify(object);
-    GetEditableGridPoponContent(gridSourceTag,selectedGridId,strigifyRecord,rowNumber);
+    DataToEdit=rowObject;
+    var stringify=JSON.stringify(object);
+    GetEditableGridPoponContent(gridSourceTag,selectedGridId,stringify,rowNumber);
     clickedEditableGridColumnsCount=columnCount;
+    ItemIdToEdit=itemId;
+    GridEntity=gridEntity;
+    WithInstantSave=withInstantsave;
 }
- 
-
-function GetEditableGridRowObject(selectedGridId,rowIdToEdit,selectedGrid)
-{
+function GetEditableGridRowObject(selectedGridId,rowIdToEdit,selectedGrid){
     var obj={};
-    var table=$("#"+selectedGridId+"_header").find(".tasksTableTD.tasksTableElement:not(.displayNone)");
+    var table=$("#"+selectedGridId+"_header").find(".tasksTableTD.tasksTableElement");
     var existingGridDataRows=$("#"+rowIdToEdit+" tr td");
     
     var arr=[];
@@ -324,7 +368,6 @@ function GetEditableGridRowObject(selectedGridId,rowIdToEdit,selectedGrid)
     }  
     return obj; 
 }
-
 function GetGridData(gridId){
     var table=$('#'+gridId+"_header").find(".tasksTableTD.tasksTableElement:not(.displayNone)");
     var arr=[];
@@ -360,10 +403,7 @@ function GetGridData(gridId){
     }
     return arr;
 }
-
-
-function deleteEditableGridRow(rowNumber,selectedGridId,gridSourceTag)
-{ 
+function deleteEditableGridRow(rowNumber,selectedGridId,gridSourceTag){ 
     var existingGridDataRows=$("#"+selectedGridId+" ul li");
     for(var i=0; i<existingGridDataRows.length;i++)
     {
@@ -371,6 +411,78 @@ function deleteEditableGridRow(rowNumber,selectedGridId,gridSourceTag)
             $("#"+rowNumber+"_"+selectedGridId).remove();
         }
     }
+}
+function deleteDefinitelyEditableGridRow(rowNumber,selectedGridId,gridSourceTag,screenName,itemId,gridEntity){ 
+    var data = "{" +
+       "\"screenName\":\"" + screenName + "\"," +
+       "\"gridEntity\":\"" + gridEntity + "\"," +
+       "\"itemId\":\"" + itemId + "\"," +
+       "\"mainItemId\":\"" + gMainItemId + "\"," +
+       "\"beforeCheck\":\"false\"," +
+       "\"remoteAddress\":\"\"," +
+       "\"screenWidth\":\"" + (window.innerWidth-30) + "\"," +
+       "\"userData\":"+sessionStorage.getItem("userData")+","+
+       "\"spName\":\"\"," +
+       "\"groupingSetShortname\":\"\"," +
+       "\"mcData\":\"\"}";
+        myApp.showPreloader();
+        $.ajax({
+            type: "POST",
+            url: "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/DeleteItem",
+            contentType: "text/plain",
+            dataType: "json",
+            data: data,
+            success: function (data) {
+                myApp.hidePreloader();
+                myApp.alert(data.status,"MACP", function () {
+                      $("#"+selectedGridId).html(data.grid); 
+                }); 
+            },
+            error: function (e) { 
+                myApp.hidePreloader();            
+                errorMessage(e.message);   
+            }
+        });
+}
+function GridDataInstantSave(rowData,gridId){
+    var data = "{" +
+          "\"data\":" + rowData + "," + 
+          "\"gridEntity\":\"" + GridEntity + "\"," +
+          "\"mainItemId\":\"" + gMainItemId + "\"," +  
+          "\"screenName\":\"" + gScreenName.toLowerCase() + "\"," +   
+          "\"counterpartyId\":\"" + gQICounterpartyId + "\"," + 
+          "\"transactionConditionId\":\"" + gTransactionConditionId + "\"," +
+          "\"creditFileId\":\"" + gQICreditFIldId + "\"," +
+          "\"ipAddress\":\"" + sessionStorage.getItem('Ip_config') + "\"," +
+          "\"screenWidth\":\"" + (window.innerWidth-30) + "\"," +
+          "\"userData\":"+sessionStorage.getItem("userData")+"}";
+          myApp.showPreloader();
+    var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/GridDataInstantSave'; 
+    $.ajax({  
+        type: 'POST', 
+        url: url,
+        contentType: "text/plain",
+        dataType: "json",
+        data: data, 
+        success: function (data) {
+            if(data.status==="ok")
+                {
+                    myApp.hidePreloader();
+                     myApp.closeModal();
+                     $("#"+clickedEditableGridId).html(data.grid); 
+                     
+                }
+            else
+                {
+                    errorMessage(e.message);  
+                }
+        },
+        error: function (e) {
+            verifconnexion = false;
+            myApp.hidePreloader();
+            errorMessage(e.message);
+        }
+    }); 
 }
 
 
