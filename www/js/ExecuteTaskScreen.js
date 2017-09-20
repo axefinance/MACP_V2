@@ -9,11 +9,11 @@ function stopWorkflow(){
    myApp.showPreloader();
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/StopWorkflow';
     var data="{"+       
-        "\"taskId\":\""+TaskId+"\"," +
+        "\"taskId\":\""+gTaskId+"\"," +
         "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\""+itemId+"\"," +    
         "\"comment\":\""+comment+"\"," +
-       "\"workflowName\":\""+ExecutedWorkflowName+"\"}";
+       "\"workflowName\":\""+gExecutedWorkflowName+"\"}";
   $.ajax({             
         type: 'POST',           
         url: url,                  
@@ -24,8 +24,8 @@ function stopWorkflow(){
             if(data.status==="ok")
                 {
                     myApp.hidePreloader(); 
-                    extendedProperties=null;
-                    HomeBackButton.style.visibility="hidden";   
+                    gExtendedProperties=null;
+                    gHomeBackButton.style.visibility="hidden";   
                     mainView.router.back({force:true,pageName:"homePage"});
                     mainView.history=["#homePage"];
                     if(!checkInternetConnection())                                                   
@@ -89,7 +89,7 @@ function endTaskButtonEvent(mainItemId)
     
 }
 function showcommentPopup(){
-     myApp.popup('<div class="popup" style="width: 40% !important; height: 40% !important; top: 30% !important;left: 30% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;" ><div class="content-block-title">'+stopWFMessage+'</div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="stopWorkflowComment" onkeyup="enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="stopWorkflow()" id="stopWfYesButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
+     myApp.popup('<div class="popup" style="width: 40% !important; height: 40% !important; top: 30% !important;left: 30% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;" ><div class="content-block-title">'+gStopWFMessage+'</div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="stopWorkflowComment" onkeyup="enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="stopWorkflow()" id="stopWfYesButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
 }  
 function endTaskEvent(formId,mainItemId){
    myApp.showPreloader();
@@ -101,10 +101,10 @@ function endTaskEvent(formId,mainItemId){
     var data="{"+       
         "\"userData\":"+sessionStorage.getItem("userData")+","+ 
         "\"mainItemId\":\""+mainItemId+"\","+
-        "\"extendedProperties\":"+extendedProperties+","+
+        "\"extendedProperties\":"+gExtendedProperties+","+
         "\"screenName\":\""+gSubItem+"\","+
-        "\"taskId\":\""+TaskId+"\","+
-        "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
+        "\"taskId\":\""+gTaskId+"\","+
+        "\"WithCollectQuestion\":\""+gIsWithCollectQuestion+"\","+
         "\"parameters\":"+screenParameters+","+
         "\"poponWidth\":\""+popupWidth+"\"}";
   $.ajax({             
@@ -140,8 +140,8 @@ function endTaskEvent(formId,mainItemId){
                                     else 
                                         {
                                             myApp.hidePreloader(); 
-                                            HomeBackButton.style.visibility="hidden";
-                                            extendedProperties=null;
+                                            gHomeBackButton.style.visibility="hidden";
+                                            gExtendedProperties=null;
                                             mainView.router.back({force:true,pageName:"homePage"});
                                             mainView.history=["#homePage"];
                                             if(!checkInternetConnection())                                                   
@@ -203,8 +203,8 @@ function checkRequiredDocument(){
         "\"mainItemId\":\""+itemId+"\","+
         "\"extendedProperties\":"+extendedProperties+","+
         "\"screenName\":\""+gSubItems+"\","+
-        "\"taskId\":\""+TaskId+"\","+
-        "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
+        "\"taskId\":\""+gTaskId+"\","+
+        "\"WithCollectQuestion\":\""+gIsWithCollectQuestion+"\","+
         "\"parameters\":"+screenParameters+"}";
     $.ajax({             
         type: 'POST',             
@@ -226,7 +226,7 @@ function checkRequiredDocument(){
                         {
                           myApp.hidePreloader(); 
                             extendedProperties=null;
-                            HomeBackButton.style.visibility="hidden";       
+                            gHomeBackButton.style.visibility="hidden";       
                             mainView.router.back({force:true,pageName:"homePage"});
                             mainView.history=["#homePage"];
                             if(!checkInternetConnection())                                                   
@@ -254,10 +254,10 @@ function saveRequiredDocumentComent(){
         "\"requiredDocument\":\""+requiredDocument+"\","+
         "\"mainItemId\":\""+itemId+"\","+
         "\"screenName\":\""+gSubItem+"\","+
-        "\"taskId\":\""+TaskId+"\","+
+        "\"taskId\":\""+gTaskId+"\","+
         "\"extendedProperties\":"+extendedProperties+","+
         "\"comment\":\""+comment+"\","+
-        "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
+        "\"WithCollectQuestion\":\""+gIsWithCollectQuestion+"\","+
         "\"parameters\":"+screenParameters+"}";   
     
   $.ajax({             
@@ -278,8 +278,8 @@ function saveRequiredDocumentComent(){
                     else
                         {
                             myApp.hidePreloader(); 
-                            extendedProperties=null;
-                            HomeBackButton.style.visibility="hidden";       
+                            gExtendedProperties=null;
+                            gHomeBackButton.style.visibility="hidden";       
                             mainView.router.back({force:true,pageName:"homePage"});
                             mainView.history=["#homePage"];
                             if(!checkInternetConnection())                                                   
@@ -316,9 +316,9 @@ function saveDeviationComment(){
         "\"requiredDocument\":\"\","+
         "\"mainItemId\":\""+itemId+"\","+
         "\"screenName\":\""+gSubItem+"\","+
-        "\"taskId\":\""+TaskId+"\","+
-         "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
-         "\"extendedProperties\":"+extendedProperties+","+
+        "\"taskId\":\""+gTaskId+"\","+
+         "\"WithCollectQuestion\":\""+gIsWithCollectQuestion+"\","+
+         "\"extendedProperties\":"+gExtendedProperties+","+
         "\"comment\":\""+comment+"\","+
         "\"parameters\":"+screenParameters+"}"; 
   $.ajax({             
@@ -342,7 +342,7 @@ function saveDeviationComment(){
                         }
                     else if(data.endTask!=undefined)
                         {
-                             HomeBackButton.style.visibility="hidden";  
+                             gHomeBackButton.style.visibility="hidden";  
                              extendedProperties=null;
                              mainView.router.back({force:true,pageName:"homePage"});
                              mainView.history=["#homePage"];
@@ -393,10 +393,10 @@ function saveEligibilityComment(){
         "\"mainItemId\":\""+itemId+"\","+
         "\"screenName\":\""+gSubItem+"\","+
         "\"parameters\":"+screenParameters+","+
-        "\"taskId\":\""+TaskId+"\","+
-        "\"WithCollectQuestion\":\""+WithCollectQuestion+"\","+
+        "\"taskId\":\""+gTaskId+"\","+
+        "\"WithCollectQuestion\":\""+gIsWithCollectQuestion+"\","+
         "\"eligibilityObject\":"+JSON.stringify(eligibilityObject)+","+
-        "\"extendedProperties\":"+extendedProperties+","+
+        "\"extendedProperties\":"+gExtendedProperties+","+
         "\"withValidatorControl\":\""+withValidatorControl.toLowerCase()+"\","+
         "\"commentList\":"+JSON.stringify(getCommentsList())+"}";
   $.ajax({             
@@ -418,8 +418,8 @@ function saveEligibilityComment(){
                        manageRequiredDocument(data);
                     else
                         {
-                        HomeBackButton.style.visibility="hidden";     
-                            extendedProperties=null;
+                        gHomeBackButton.style.visibility="hidden";     
+                            gExtendedProperties=null;
                              mainView.router.back({force:true,pageName:"homePage"});
                              mainView.history=["#homePage"];
                              if(!checkInternetConnection())                                                   
@@ -485,7 +485,7 @@ function saveCollectQuestion(){
         "\"screenName\":\""+gSubItems+"\","+
         "\"parameters\":"+screenParameters+","+
         "\"collectQuestionParameters\":"+collectQuestionParameters+","+
-        "\"taskId\":\""+TaskId+"\"}";
+        "\"taskId\":\""+gTaskId+"\"}";
   $.ajax({             
         type: 'POST',               
         url: url,                    
@@ -496,8 +496,8 @@ function saveCollectQuestion(){
             if(data.status==="ok")  
                 {
                              myApp.hidePreloader(); 
-                             HomeBackButton.style.visibility="hidden";  
-                             extendedProperties=null;
+                             gHomeBackButton.style.visibility="hidden";  
+                             gExtendedProperties=null;
                              mainView.router.back({force:true,pageName:"homePage"});
                              mainView.history=["#homePage"];
                              if(!checkInternetConnection())                                                   

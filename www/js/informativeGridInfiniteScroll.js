@@ -13,7 +13,7 @@ $$('.informativeGrid-infinite-scroll').on('infinite', function () {
  
         loading = false;
         var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetNextInformativeGridRows';
-        if (lastIndex >= totalRowNumber) {
+        if (lastIndex >= gTotalRowNumber) {
             myApp.detachInfiniteScroll($$("#"+gridId));
             $$('.infinite-scroll-preloader '+gridId).remove();
             return;
@@ -42,7 +42,7 @@ $$('.informativeGrid-infinite-scroll').on('infinite', function () {
                     return;  
                 }
                 $$("#"+gridId+" ul").append(data.content);
-                totalRowNumber=data.totalRow;
+                gTotalRowNumber=data.totalRow;
                 lastIndex=lastIndex+itemsPerLoad; 
             
             }, 

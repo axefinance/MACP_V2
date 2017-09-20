@@ -8,7 +8,7 @@ function launchSearch(item)
     if(isValidForm)
     {
         var formData = myApp.formToData('#my-search-form');
-        searchParams=JSON.stringify(formData);
+        gSearchParams=JSON.stringify(formData);
         if(!checkInternetConnection())                                                   
             myApp.alert("please check your internet connection");
         else 

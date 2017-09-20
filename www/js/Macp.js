@@ -1,47 +1,37 @@
-var changeLangConfirmationMessage;
+var gChangeLangConfirmationMessage;
 var loggingOutWindowMessage;
 var loggingOutWindowTitle;
 var ip_config;
 var ip_port; 
-var tasks; 
-var totalRowNumber;
-var languagesList;
+var gTotalRowNumber;
+var gLanguagesList;
 var $$ = Dom7;
-var pageTitleContent;
-var pageTitleElement;
+var gPageTitleContent;
+var gPageTitleElement;
 var gSubItem;
 var gMainItemId;
 var gRelatedItemId=0;
 var gScreenName;
-var gSourceTag;
 var gQITransactionId=0;
 var gQICounterpartyId=0;
 var gQICreditFIldId=0;
 var gTransactionTypeId=0;
 var gAmortizationParameters;
 var gAmortizationStringiFyData;
-var searchParams;
-var HomeBackButton;
-var docMenu;
-var eligibility;
-var stopWFMessage;
-var TaskId;
-var ExecutedWorkflowName;
-var itemRef;
-var fromNewInput;
-var divId; 
+var gSearchParams;
+var gHomeBackButton;
+var gStopWFMessage;
+var gTaskId=0;
+var gExecutedWorkflowName;
 var gEngine;
-var TargetTab;
-var InstructionGuide; 
-var WithCollectQuestion; 
-var extendedProperties=null;
-var isSwitchLanguage = false;
-var navbarTitle;
-var isRelatedFromLink="false";
-var currentSearchItem;
-var currentSearchParams;
-var currentSearchType;
-var xmlTagNewInput;
+var gTargetTab;
+var gInstructionGuide; 
+var gIsWithCollectQuestion; 
+var gExtendedProperties=null;
+var gIsSwitchLanguage = false;
+var gIsRelatedFromLink="false";
+var gCurrentSearchItem;
+var gCurrentSearchType;
 
 
 var myApp=new Framework7({ swipeBackPage : false, statusbarOverlay:true, tapHold: true,swipePanel: 'left',fastClicksDelayBetweenClicks : 10 }) ;
@@ -65,25 +55,21 @@ $$('.firstWS-confirm-ok-cancel').on('click', function () {
     
 });   
 myApp.onPageInit('attachmentScreen', function (page) {
-    TaskId = 0;
+    gTaskId = 0;
     createLanguagesList('attachmentScreen');
     createLogoutPopover('attachmentScreen');
     myApp.params.swipePanel=false;
-    myApp.showPreloader();
-    if(fromNewInput===true)
-        document.getElementById("backButton").style.display = "none"; 
-  /*  pageTitleElement=document.getElementById("title_attachmentScreen");
-    pageTitleElement.textContent=navbarTitle;*/
+    myApp.showPreloader(); 
     setTemplate_HeaderData('attachmentScreen');
-    GetAttachmentScreen();
+    GetAttachmentScreen(gScreenName);
     
 });  
-function GetAttachmentScreen(){
+function GetAttachmentScreen(screenName){
      var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetAttachmentScreen";    
      var data="{"+    
-        "\"screenName\":\""+gScreenName+"\","+ 
+        "\"screenName\":\""+screenName+"\","+ 
         "\"mainItemId\":\""+gMainItemId+"\","+ 
-        "\"taskId\":\"0\","+ 
+        "\"taskId\":\""+gTaskId+"\","+ 
         "\"windowWidth\":\""+window.innerWidth+"\","+
         "\"windowHeight\":\""+(window.innerHeight-90)+"\","+
         "\"userData\":"+sessionStorage.getItem("userData")+"}";
@@ -94,8 +80,8 @@ function GetAttachmentScreen(){
         dataType: "json",                            
         data: data,         
         success: function(data) {
-            pageTitleElement=document.getElementById("title_attachmentScreen");
-            pageTitleElement.textContent=itemRef+" : "+ RelatedItemType;
+            gPageTitleElement=document.getElementById("title_attachmentScreen");
+            gPageTitleElement.textContent=gPageTitleContent+" : "+ RelatedItemType;
             createLanguagesList('attachmentScreen'); 
             createLogoutPopover('attachmentScreen'); 
             setTemplate_HeaderData('attachmentScreen');
@@ -130,31 +116,27 @@ function isScreenInCache(screenName){
     }
     return false;
 }
-function westMenuItem(subItem,title,screenName, xmlTag){     
-     console.log(xmlTag);
+function westMenuItem(subItem,title,htmlFile, screenName){     
+    
     if(isScreenInCache(screenName))
     {
         mainView.history=["#homePage"];
-        document.getElementById("title_"+screenName.replace(".html","")).remove(); 
-        document.getElementById("userName_label_"+screenName.replace(".html","")).remove(); 
-        document.getElementById("lng_label_"+screenName.replace(".html","")).remove(); 
+        document.getElementById("title_"+screenName).remove(); 
+        document.getElementById("userName_label_"+screenName).remove(); 
+        document.getElementById("lng_label_"+screenName).remove(); 
         $$('.view-main .page-on-left').remove(screenName);
     }
-    screenNameArray = screenName.split(".");
-    gEngine = screenNameArray[0];
-    xmlTagNewInput = xmlTag;
     gSubItem=subItem;
-    gSourceTag=xmlTag;
-    pageTitleContent=title; 
+    gScreenName=screenName; 
+    gPageTitleContent=title; 
     gTransactionConditionId = 0;
-    fromNewInput=false;
     if(!checkInternetConnection())                                                   
         myApp.alert("please check your internet connection");
     else                                              
-        mainView.router.load({url: screenName,reload:true});   
+        mainView.router.load({url: htmlFile,reload:true});   
 }  
 myApp.onPageReinit('homePage', function (page) {
-    if(!isSwitchLanguage)
+    if(!gIsSwitchLanguage)
     {
         gTransactionConditionId = 0;
         document.getElementById("tasks").innerHTML=null;
@@ -166,7 +148,7 @@ myApp.onPageReinit('homePage', function (page) {
         document.getElementById("tasks").innerHTML=null;
         document.getElementById("homePage-toolbarContent").innerHTML=null;
 
-        isSwitchLanguage = false;           
+        gIsSwitchLanguage = false;           
         loadTaskList(); 
         setTemplate_HeaderData("homePage");
     }
@@ -232,7 +214,7 @@ var leftView=myApp.addView('.view-left',{
 });
 document.addEventListener("deviceready", onDeviceReady, true);
 function onDeviceReady() {         
-    HomeBackButton=document.getElementById("homeBackButton");
+    gHomeBackButton=document.getElementById("homeBackButton");
     document.addEventListener("online", checkInternetConnection, false);
     myApp.params.swipePanel=false;
     verifDeviceConfig();   
@@ -249,71 +231,67 @@ myApp.onPageInit('homePage', function (page) {
     loadTaskList();
 });                  
 myApp.onPageInit('searchScreen', function (page) {
-    HomeBackButton.style.visibility="visible";    
+    gHomeBackButton.style.visibility="visible";    
     createLanguagesList('searchScreen');
     createLogoutPopover('searchScreen');  
     myApp.params.swipePanel=false;
-    pageTitleElement=document.getElementById("title_searchScreen");
-    pageTitleElement.textContent=pageTitleContent;  
+    gPageTitleElement=document.getElementById("title_searchScreen");
+    gPageTitleElement.textContent=gPageTitleContent;  
     myApp.showPreloader();
     setTemplate_HeaderData('searchScreen');  
     loadsearchScreen();
   
 }); 
 myApp.onPageInit('teamTasksScreen', function (page) {
-    TaskId = 0;
+    gTaskId = 0;
     createLanguagesList('teamTasks');
     createLogoutPopover('teamTasks');
     myApp.params.swipePanel=false;
     myApp.showPreloader();
-    if(fromNewInput===true)
-        document.getElementById("backButton").style.display = "none"; 
-    pageTitleElement=document.getElementById("title_teamTasks");
-    pageTitleElement.textContent=navbarTitle;
+    gPageTitleElement=document.getElementById("title_teamTasks");
+    gPageTitleElement.textContent=navbarTitle;
     setTemplate_HeaderData('teamTasks');
     GetTeamTasks();
     
 });    
 myApp.onPageInit('editScreen', function (page) {
-    TaskId = 0;
+    gTaskId = 0;
     createLanguagesList('editScreen');
     createLogoutPopover('editScreen');
     myApp.params.swipePanel=false;
-    InitEditScreen();
+    InitEditScreen(gScreenName,gSubItem);
     
 }); 
 myApp.onPageInit('newInputScreen', function (page) {
-    HomeBackButton.style.visibility="visible"; 
+    gHomeBackButton.style.visibility="visible"; 
     createLanguagesList('newInputScreen'); 
     createLogoutPopover('newInputScreen');
     myApp.params.swipePanel=false;   
-    pageTitleElement=document.getElementById("title_newInputScreen");
-    pageTitleElement.textContent=pageTitleContent;
+    gPageTitleElement=document.getElementById("title_newInputScreen");
+    gPageTitleElement.textContent=gPageTitleContent;
     myApp.showPreloader();
     setTemplate_HeaderData('newInputScreen');
-    loadNewInputPage();  
+    loadNewInputPage(gScreenName);  
 });                
 myApp.onPageInit('searchResultScreen', function (page) {
-    HomeBackButton.style.visibility="visible";
+    gHomeBackButton.style.visibility="visible";
     createLanguagesList('searchResultScreen'); 
     createLogoutPopover('searchResultScreen');  
     myApp.params.swipePanel=false;
-    pageTitleElement=document.getElementById("title_searchResultScreen");
-    pageTitleElement.textContent=pageTitleContent;
+    gPageTitleElement=document.getElementById("title_searchResultScreen");
+    gPageTitleElement.textContent=gPageTitleContent;
     setTemplate_HeaderData('searchResultScreen');   
     myApp.showPreloader();
-    currentSearchItem=gSubItem; 
-    currentSearchParams=searchParams;
-    currentSearchType="searchResult";
-    lunchSearchResult();
+    gCurrentSearchType="searchResult";
+    lunchSearchResult(gSubItem,gSearchParams);
 });  
 myApp.onPageInit('executeTaskScreen', function (page) {
-    HomeBackButton.style.visibility="visible";
+    gHomeBackButton.style.visibility="visible";
     createLanguagesList('executeTaskScreen'); 
     createLogoutPopover('executeTaskScreen');      
     myApp.params.swipePanel=false;
-    pageTitleElement=document.getElementById("title_executeTaskScreen");
-    pageTitleElement.textContent=pageTitleContent;
+    gPageTitleElement=document.getElementById("title_executeTaskScreen");
+    gPageTitleElement.textContent=gPageTitleContent;
     setTemplate_HeaderData('executeTaskScreen'); 
     myApp.showPreloader();
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetExecuteTaskScreen';
@@ -321,37 +299,37 @@ myApp.onPageInit('executeTaskScreen', function (page) {
 });
 myApp.onPageInit('relatedItemScreen', function (page) {
    
-    HomeBackButton.style.visibility="visible";
+    gHomeBackButton.style.visibility="visible";
     createLanguagesList('relatedItemScreen'); 
     createLogoutPopover('relatedItemScreen');
     setTemplate_HeaderData('relatedItemScreen');   
     myApp.params.swipePanel=false;
-    pageTitleElement=document.getElementById("title_relatedItemScreen");
-    pageTitleElement.textContent=itemRef+" : "+ RelatedItemType;
-    InitRelatedItemScreen();
+    gPageTitleElement=document.getElementById("title_relatedItemScreen");
+    gPageTitleElement.textContent=gPageTitleContent+" : "+ RelatedItemType;
+    InitRelatedItemScreen(gScreenName);
     myApp.showPreloader();
 });
 myApp.onPageInit('pricingConditionScreen', function (page) {
-    HomeBackButton.style.visibility="visible";
+    gHomeBackButton.style.visibility="visible";
     createLanguagesList('pricingConditionScreen'); 
     createLogoutPopover('pricingConditionScreen');    
     setTemplate_HeaderData('pricingConditionScreen'); 
     myApp.params.swipePanel=false;
-    pageTitleElement=document.getElementById("title_pricingConditionScreen");
-    pageTitleElement.textContent=itemRef+" : "+ RelatedItemType;
+    gPageTitleElement=document.getElementById("title_pricingConditionScreen");
+    gPageTitleElement.textContent=gPageTitleContent+" : "+ RelatedItemType;
     myApp.showPreloader();
-    GetPricingConditionScreen(); 
+    GetPricingConditionScreen(gScreenName); 
 }); 
 
 myApp.onPageInit('relatedScreen', function (page) {
-    HomeBackButton.style.visibility="visible";
+    gHomeBackButton.style.visibility="visible";
     createLanguagesList('relatedScreen'); 
     createLogoutPopover('relatedScreen');    
     setTemplate_HeaderData('relatedScreen'); 
     myApp.params.swipePanel=false;
-    pageTitleElement=document.getElementById("title_relatedScreen");
-    pageTitleElement.textContent=itemRef+" : "+ RelatedItemType;
-    loadScreen(divId,mainItemIdForLink,mainItemForLink,"classicre");  
+    gPageTitleElement=document.getElementById("title_relatedScreen");
+    gPageTitleElement.textContent=gPageTitleContent;
+    loadScreen(gScreenName,mainItemIdForLink,mainItemForLink,"classicre");  
 });
 
 
@@ -375,8 +353,8 @@ myApp.onPageInit('quickInputDetailsScreen', function (page) {
         data: data,         
         success: function(data) {
             document.getElementById("quickInputDetailsScreenForm").innerHTML=data.content;
-            pageTitleElement=document.getElementById("title_quickInputDetailsScreen");
-            pageTitleElement.textContent=data.navBarTitle;
+            gPageTitleElement=document.getElementById("title_quickInputDetailsScreen");
+            gPageTitleElement.textContent=data.navBarTitle;
             document.getElementById('existingItemQI-screen-toolbarContent').innerHTML=data.buttonsDiv;
             createLanguagesList('quickInputDetailsScreen'); 
             createLogoutPopover('quickInputDetailsScreen'); 
@@ -412,8 +390,8 @@ myApp.onPageInit('newQuickInputScreen', function (page) {
         data: data,         
         success: function(data) {
             document.getElementById("quickInputDetailsScreenForm").innerHTML=data.content;
-            pageTitleElement=document.getElementById("title_quickInputDetailsScreen");
-            pageTitleElement.textContent=data.navBarTitle;
+            gPageTitleElement=document.getElementById("title_quickInputDetailsScreen");
+            gPageTitleElement.textContent=data.navBarTitle;
             document.getElementById('existingItemQI-screen-toolbarContent').innerHTML=data.buttonsDiv;
             createLanguagesList('quickInputDetailsScreen'); 
             createLogoutPopover('quickInputDetailsScreen'); 
@@ -430,14 +408,14 @@ myApp.onPageInit('newQuickInputScreen', function (page) {
 });
 
 
-function InitRelatedItemScreen(){
+function InitRelatedItemScreen(screenName){
     var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    
             
     var data="{"+    
-      "\"screenName\":\""+gScreenName+"\","+
+      "\"screenName\":\""+screenName+"\","+
       "\"screenType\":\"relatedItemDetails\","+
       "\"userData\":"+sessionStorage.getItem("userData")+","+
-      "\"taskId\":\""+TaskId+"\"," + 
+      "\"taskId\":\""+gTaskId+"\"," + 
       "\"mainItemId\":\""+gMainItemId+"\","+
       "\"screenWidth\":\""+window.innerWidth+"\","+          
       "\"relatedItemId\":\""+gRelatedItemId+"\"}"; 
@@ -448,7 +426,7 @@ function InitRelatedItemScreen(){
         dataType: "json",                            
         data: data,         
         success: function(data) { 
-            manageAutoCompleteComponent("my-relatedItemPopup-form",gScreenName);   
+            manageAutoCompleteComponent("my-relatedItemPopup-form",screenName);   
             loadJSFile("js/RelatedItemScreen.js");
             document.getElementById("relatedItemForm").innerHTML=data.content;
             $('#relatedItem-toolbarContent').append(data.buttonsDiv);
@@ -475,23 +453,22 @@ function loadTaskList() {
     var deviceWidth = window.innerWidth - 50;
     GetHomePage('http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/getHomePage');  
 } 
-function loadNewInputPage(){  
-    gSubItem=gSubItem.toLowerCase();
+function loadNewInputPage(screenName){  
     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetNewInputScreen';
-    GetNewInputScreen(url);
+    GetNewInputScreen(url,screenName);
 }  
 
-function InitEditScreen(){ 
+function InitEditScreen(screenName,subItem){ 
     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetEditScreen';
      myApp.showPreloader(); 
      var request="{"+      
-              "\"subItem\":\""+gSubItem+"\","+
-              "\"screenName\":\"" + gSubItem + "\"," +
+              "\"subItem\":\""+subItem+"\","+
+              "\"screenName\":\"" + screenName + "\"," +
               "\"screenParent\":\"\","+ 
-              "\"taskId\":\"0\"," +
+              "\"taskId\":\"" + gTaskId + "\"," +
               "\"userData\":"+sessionStorage.getItem("userData")+","+  
               "\"mainItemId\":\""+gMainItemId+"\"," +
-              "\"targetTab\":\""+TargetTab+"\"," +  
+              "\"targetTab\":\""+gTargetTab+"\"," +  
               "\"screenEngine\":\"empty\","+
               "\"screenWidth\":\""+window.innerWidth+"\"," +
               "\"screenHeight\":\""+window.innerHeight+"\"}";
@@ -505,8 +482,8 @@ function InitEditScreen(){
         success: function(data) {     
            document.getElementById('editScreenForm__'+gMainItemId).innerHTML=data.content;
             $('#edit-toolbarContent__'+gMainItemId).append(data.buttonsDiv);
-             pageTitleElement=document.getElementById("title_editScreen__"+gMainItemId);
-             pageTitleElement.textContent=itemRef;
+             gPageTitleElement=document.getElementById("title_editScreen__"+gMainItemId);
+             gPageTitleElement.textContent=gPageTitleContent;
              setTemplate_HeaderData('editScreen__'+gMainItemId); 
              loadJSFile("js/WorkflowManager.js");
              loadJSFile("js/informativeGridInfiniteScroll.js");
@@ -520,11 +497,10 @@ function InitEditScreen(){
     });      
     
 }                
-function GetNewInputScreen(url){
+function GetNewInputScreen(url,screenName){
     var data="{"+     
-       "\"subItem\":\""+gSubItem+"\","+
        "\"screenWidth\":\""+window.innerWidth+"\","+
-       "\"screenName\":\""+xmlTagNewInput+"\","+
+       "\"screenName\":\""+screenName+"\","+
        "\"userData\":"+sessionStorage.getItem("userData")+"}";
     $.ajax({ 
         type: "POST",  
@@ -537,7 +513,6 @@ function GetNewInputScreen(url){
             document.getElementById("newInput-toolbarContent").innerHTML=data.button;
             manageAutoCompleteComponent("my-newInput-form",gSubItem);
             loadJSFile("js/NewInputScreen.js");
-            //  loadJSFile("js/FormatUtils.js");
             myApp.hidePreloader();
         },
         error: function(e) {
@@ -560,13 +535,11 @@ function GetSearchPage(url){
             document.getElementById("searchForm").innerHTML=data.content;
             manageAutoCompleteComponent("my-search-form",gSubItem);
             loadJSFile("js/SearchScreen.js");
-            //  loadJSFile("js/FormatUtils.js");
-            //loadJSFile("js/accounting.js");
             myApp.hidePreloader();
         },
         error: function(e) {
             myApp.hidePreloader();
-            errorMessage(e.message);
+            errorMessage(e.message); 
         }  
                  
     });    
@@ -617,9 +590,9 @@ function GetHomePage(url) {
             document.getElementById("homePage-toolbarContent").innerHTML=data.buttonsDiv;
             sessionStorage.setItem("Languages",data.Languages);
             var languages=sessionStorage.getItem('Languages');
-            languagesList = JSON.parse(languages); 
-            changeLangConfirmationMessage = JSON.stringify(data.ChangeLangConfirmationMessage);
-            changeLangConfirmationMessage = changeLangConfirmationMessage.substr(1,changeLangConfirmationMessage.length-2);
+            gLanguagesList = JSON.parse(languages); 
+            gChangeLangConfirmationMessage = JSON.stringify(data.ChangeLangConfirmationMessage);
+            gChangeLangConfirmationMessage = gChangeLangConfirmationMessage.substr(1,gChangeLangConfirmationMessage.length-2);
             loggingOutWindowMessage = JSON.stringify(data.LoggingOutWindowMessage);
             loggingOutWindowMessage = loggingOutWindowMessage.substr(1,loggingOutWindowMessage.length-2);
             loggingOutWindowTitle = JSON.stringify(data.LoggingOutWindowTitle);
@@ -667,10 +640,10 @@ function createLanguagesList(screen){
     $$('.create-language-links-'+screen).on('click', function () {
         var clickedLink = this;
         var output="";        
-        for(var i=0 ; i< languagesList.LangsList.length ; i++)
+        for(var i=0 ; i< gLanguagesList.LangsList.length ; i++)
         { 
-            var display=languagesList.LangsList[i].display;
-            output=output+'<li><a href="#" class="item-link list-button" onclick="switchLanguage(\''+languagesList.LangsList[i].property+'\')">'+display  +'</li>';
+            var display=gLanguagesList.LangsList[i].display;
+            output=output+'<li><a href="#" class="item-link list-button" onclick="switchLanguage(\''+gLanguagesList.LangsList[i].property+'\')">'+display  +'</li>';
         }
         var popoverHTML = '<div id="language_popover" class="popover">'+
                             '<div class="popover-inner">'+
@@ -688,7 +661,7 @@ function createLanguagesList(screen){
 function switchLanguage(property){
     myApp.closeModal();
     
-    myApp.confirm(changeLangConfirmationMessage,
+    myApp.confirm(gChangeLangConfirmationMessage,
    '',
     function (value) {
         var userData = JSON.parse(sessionStorage.getItem("userData"));
@@ -714,8 +687,8 @@ function switchLanguage(property){
                 }
                 else
                 {
-                    isSwitchLanguage = true;
-                    HomeBackButton.style.visibility="hidden";  
+                    gIsSwitchLanguage = true;
+                    gHomeBackButton.style.visibility="hidden";  
                     mainView.router.back({force:true,pageName:"homePage"});
                     mainView.history=["#homePage"];
                     if(!checkInternetConnection())                                                   
@@ -772,11 +745,11 @@ function logoutAction(){
    );
        
 }
-function lunchSearchResult(){  
+function lunchSearchResult(subItem,searchParams){  
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetSearchResultPage';    
     var screenHeight;
     var screenWidth;
-    if(currentSearchType=="searchResult")
+    if(gCurrentSearchType=="searchResult")
     {
         screenWidth=window.innerWidth; 
         screenHeight=window.innerHeight-90;
@@ -790,12 +763,12 @@ function lunchSearchResult(){
     }
     var data="{"+    
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
-       "\"subItem\":\""+currentSearchItem+"\","+
-       "\"searchParams\":"+currentSearchParams+","+
+       "\"subItem\":\""+subItem+"\","+
+       "\"searchParams\":"+searchParams+","+
        "\"start\":\"0\","+
        "\"limit\":\"30\","+      
        "\"windowWidth\":\""+screenWidth+"\","+
-       "\"searchScreenType\":\""+currentSearchType+"\","+
+       "\"searchScreenType\":\""+gCurrentSearchType+"\","+
        "\"windowHeight\":\""+screenHeight+"\"}"; 
     $.ajax({             
         type: 'POST',           
@@ -804,7 +777,7 @@ function lunchSearchResult(){
         dataType: "json",                            
         data: data,         
         success: function(data) {   
-            if(currentSearchType=="searchResult")
+            if(gCurrentSearchType=="searchResult")
             {
                 document.getElementById("searchResult").innerHTML=data.dataGrid; 
                 loadJSFile("js/SearchResultScreen.js");       
@@ -819,7 +792,7 @@ function lunchSearchResult(){
             }
             var tasksTableElement =document.getElementById("tasksTableElement");
             myApp.attachInfiniteScroll(tasksTableElement);
-            totalRowNumber=data.TotalRows;
+            gTotalRowNumber=data.TotalRows;
             loadJSFile("js/infiniteScroll.js");
             loadJSFile("js/WorkflowManager.js");
            
@@ -835,7 +808,7 @@ function lunchSearchResult(){
     });      
 }   
 
-function fillTransactionForm(selectedValue, counterpartyId, transactionId, formId){
+function fillTransactionForm(selectedValue, counterpartyId, transactionId, formId,screenName){
     myApp.showPreloader();
             var formData = myApp.formToData('#'+formId);
         parameters=JSON.stringify(formData);
@@ -849,7 +822,7 @@ function fillTransactionForm(selectedValue, counterpartyId, transactionId, formI
       "\"counterpartyID\":\""+counterpartyId+"\","+
       "\"subItem\":\""+gSubItem+"\","+ 
       "\"poponWidth\":\""+popupWidth+"\"," +   
-      "\"screenName\":\""+gScreenName+"\","+   
+      "\"screenName\":\""+screenName+"\","+   
       "\"SpecificAgreementID\":\"0\","+        
       "\"parameters\":"+parameters+"}"; 
     
@@ -914,7 +887,7 @@ function connectedComboOptions(url,idChild,val,child,entity,screenTagName,shared
     });          
 }
 function HomeBack(){
-    HomeBackButton.style.visibility="hidden";       
+    gHomeBackButton.style.visibility="hidden";       
     mainView.router.back({force:true,pageName:"homePage"});  
     mainView.history=["#homePage"];
     if(!checkInternetConnection())                                                   
@@ -966,9 +939,9 @@ function updateWsConfiguration(ip,port){
     sessionStorage.setItem('Ip_port', port);    
 }
 function ExecuteTask(taskId,workflowName,targettab){
-    TaskId=taskId;
-    ExecutedWorkflowName=workflowName;
-    TargetTab = targettab; 
+    gTaskId=taskId;
+    gExecutedWorkflowName=workflowName;
+    gTargetTab = targettab; 
     if(!checkInternetConnection())                                                   
         myApp.alert("please check your internet connection");
     else 
@@ -977,8 +950,8 @@ function ExecuteTask(taskId,workflowName,targettab){
 function GetExecuteTaskScreen(url){  
     var data="{"+
         "\"userData\":"+sessionStorage.getItem("userData")+","+
-        "\"taskId\":\""+TaskId+"\"," +
-        "\"targetTab\":\""+TargetTab+"\"," +         
+        "\"taskId\":\""+gTaskId+"\"," +
+        "\"targetTab\":\""+gTargetTab+"\"," +         
         "\"screenWidth\":\""+window.innerWidth+"\","+
         "\"screenHeight\":\""+(window.innerHeight-90)+"\"}";
     $.ajax({             
@@ -990,23 +963,23 @@ function GetExecuteTaskScreen(url){
         success: function(data) {       
             if(data.status==="ok")
             {
-                  
+                    
                 loadJSFile("js/EditScreen.js");
                 loadJSFile("js/ExecuteTaskScreen.js");
                 document.getElementById("executeTaskContent").innerHTML=data.content;
                 itemId=data.itemId;
-                stopWFMessage=data.stopWFMessage;
-                eligibility=data.eligibility;
-                WithCollectQuestion=data.WithCollectQuestion;
+                gStopWFMessage=data.stopWFMessage;
+                gIsWithCollectQuestion=data.WithCollectQuestion;
                 gSubItem=data.screenName;
                 manageAutoCompleteComponent("my-mainData-form__"+itemId,gSubItem);
                 document.getElementById("executeTaskContent").innerHTML=data.content;
-                pageTitleElement=document.getElementById("title_executeTaskScreen");
-                pageTitleElement.textContent=data.itemShortName;
+                gPageTitleElement=document.getElementById("title_executeTaskScreen");
+                gPageTitleElement.textContent=data.itemShortName;
                 $('#executeTask-toolbarContent').append(data.buttonsDiv);
-                divId = data.divId;
+                gScreenName=data.screenName;
+                gSubItem=data.subItem;
                 gEngine = data.screenEngine;                    
-                extendedProperties=data.ExtendedProperties;    
+                gExtendedProperties=data.ExtendedProperties;    
                 myApp.hidePreloader();
                 manageInstructionGuideResponse(data);
                 myApp.hidePreloader();
@@ -1033,23 +1006,23 @@ function manageInstructionGuideResponse(data){
     if(data.instructionGuide!==undefined)  
     {
 
-         InstructionGuide=data.instructionGuide;   
+         gInstructionGuide=data.instructionGuide;   
          showWorkflowInstructionGuide(); 
         $('#executeTask-toolbarContent div').append(data.instructionGuideButton); 
     } 
 } 
 function showWorkflowInstructionGuide(){  
-     myApp.popup('<div class="popup" style="width: 50% !important; height :50% !important; top: 25% !important; top:25% !important; left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;" >' + InstructionGuide + '</div>', true); 
+     myApp.popup('<div class="popup" style="width: 50% !important; height :50% !important; top: 25% !important; top:25% !important; left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;" >' + gInstructionGuide + '</div>', true); 
 }
-function GetPricingConditionScreen(){
+function GetPricingConditionScreen(screenName){
     var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    
 
     var data="{"+    
-      "\"screenName\":\""+gScreenName+"\","+
+      "\"screenName\":\""+screenName+"\","+
       "\"screenType\":\"pricingCondition\","+
       "\"userData\":"+sessionStorage.getItem("userData")+","+
       "\"mainItemId\":\""+gMainItemId+"\","+
-      "\"taskId\":\""+TaskId+"\"," +
+      "\"taskId\":\""+gTaskId+"\"," +
       "\"screenWidth\":\""+window.innerWidth+"\"," +
       "\"relatedItemId\":\""+gRelatedItemId+"\"}"; 
     $.ajax({              
@@ -1077,29 +1050,28 @@ function GetPricingConditionScreen(){
 
 
 myApp.onPageInit('quickInputPopon', function (page) {
-    HomeBackButton.style.visibility="visible";    
+    gHomeBackButton.style.visibility="visible";    
     createLanguagesList('quickInputPopon');
     createLogoutPopover('quickInputPopon');  
     myApp.params.swipePanel=false;
-    pageTitleElement=document.getElementById("title_quickInputPopon");
-    pageTitleElement.textContent=pageTitleContent;  
+    gPageTitleElement=document.getElementById("title_quickInputPopon");
+    gPageTitleElement.textContent=gPageTitleContent;  
     myApp.showPreloader();
-    setTemplate_HeaderData('quickInputPopon');  
-    loadQuickInputPopon();
+    setTemplate_HeaderData('quickInputPopon'); 
+    loadQuickInputPopon(gScreenName);
   
 }); 
 
-function loadQuickInputPopon(){
-        GetQuickInputPopon('http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GenerateQInputItemPopon');
+function loadQuickInputPopon(screenName){
+        GetQuickInputPopon('http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GenerateQInputItemPopon',screenName);
 }
 
 
-function GetQuickInputPopon(url){
-     gScreenName="QI_new"+gSubItem.toLowerCase();
+function GetQuickInputPopon(url,screenName){
      var data="{"+  
        "\"subItem\":\""+gSubItem+"\","+
-       "\"sourceTag\":\""+gSourceTag+"\","+
-       "\"taskId\":\"0\","+
+       "\"sourceTag\":\""+screenName+"\","+ 
+       "\"taskId\":\""+gTaskId+"\","+
        "\"mainItemId\":\"0\","+
        "\"userData\":"+sessionStorage.getItem("userData")+"}";
     $.ajax({ 

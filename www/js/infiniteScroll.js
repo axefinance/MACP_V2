@@ -1,13 +1,8 @@
 var loading = false;
 var infiniteScroll_JSFlag; 
-// Last loaded index
 var lastIndex = 30;
- 
- 
-// Append items per load
 var itemsPerLoad = 10;
 myApp.attachInfiniteScroll($$('.infinite-scroll'))
-// Attach 'infinite' event handler
 $$('.infinite-scroll').on('infinite', function () {
    
     if (loading) return;  
@@ -16,13 +11,13 @@ $$('.infinite-scroll').on('infinite', function () {
 
         loading = false;
         var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetNextSearchResult';
-        if (lastIndex >= totalRowNumber) {
+        if (lastIndex >= gTotalRowNumber) {
             myApp.detachInfiniteScroll($$('.infinite-scroll'));
             $$('.infinite-scroll-preloader').remove();
             return;
         }      
       
-           if(currentSearchType=="searchResult")
+           if(gCurrentSearchType=="searchResult")
           {
            screenWidth=window.innerWidth; 
             screenHeight=window.innerHeight-90;
@@ -36,12 +31,12 @@ $$('.infinite-scroll').on('infinite', function () {
           }
        var data="{"+    
         "\"userData\":"+sessionStorage.getItem("userData")+","+ 
-        "\"subItem\":\""+currentSearchItem+"\","+
-        "\"searchParams\":"+currentSearchParams+","+
+        "\"subItem\":\""+gCurrentSearchItem+"\","+
+        "\"searchParams\":"+gSearchParams+","+
         "\"start\":\""+lastIndex+"\","+
         "\"limit\":\"10\","+      
         "\"windowWidth\":\""+screenWidth+"\","+
-        "\"searchScreenType\":\""+currentSearchType+"\","+
+        "\"searchScreenType\":\""+gCurrentSearchType+"\","+
         "\"windowHeight\":\""+screenHeight+"\"}"; 
           
         $.ajax({             
@@ -57,7 +52,7 @@ $$('.infinite-scroll').on('infinite', function () {
                     $$('.infinite-scroll-preloader').remove();
                     return;  
                 }
-                if(currentSearchType=="searchResult")
+                if(gCurrentSearchType=="searchResult")
                     {
                 $$('.tasksTableElement ul').append(data.data);
               

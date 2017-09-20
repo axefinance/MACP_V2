@@ -6,21 +6,21 @@ var CounterpartyId;
 var CreditFileId;
 var DeviationComment;
 var ErrorMsg;
-function saveQIExistingPoponButtonEvent(){
+function saveQIExistingPoponButtonEvent(screenName){
     var isValidForm = requiredFormComponent("#my-QIPopon-form"); 
     if(isValidForm)
     {
         var formData = myApp.formToData('#my-QIPopon-form');
         parameters=JSON.stringify(formData);
-        saveQIPoponEvent(parameters);
+        saveQIPoponEvent(parameters,screenName);
     }
 }
 
-function saveQIPoponEvent(parameters){      
+function saveQIPoponEvent(parameters,screenName){      
      var data="{"+    
         "\"screenWidth\":\""+window.innerWidth+"\","+
         "\"subItem\":\""+gSubItem.toLowerCase()+"\","+
-        "\"sourceTag\":\""+gSourceTag+"\","+ 
+        "\"sourceTag\":\""+screenName+"\","+ 
         "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
         "\"transactionID\":\"\"," +  
         "\"counterpartyID\":\"\"," +  

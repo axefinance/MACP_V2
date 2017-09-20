@@ -9,11 +9,11 @@ var SaveAction="";
 var RowNumberToEdit;
 var GridEntity;
 var DataToEdit;
-function loadEditableGridOnPopon_popon(gridId,columnsCount,sourcetag,gridEntity,stringifyData,mainItemId,withInstantSave){
+function loadEditableGridOnPopon_popon(gridId,columnsCount,gridSourcetag,gridEntity,stringifyData,mainItemId,withInstantSave,screenName){
     clickedEditableGridId=gridId;
-    clickEditableGridSourceTag=sourcetag;
+    clickEditableGridSourceTag=gridSourcetag;
     clickedEditableGridColumnsCount=columnsCount;
-    GetEditableGridPoponContent(sourcetag,"",stringifyData,mainItemId);
+    GetEditableGridPoponContent(gridSourcetag,"",stringifyData,mainItemId,screenName);
     SaveAction="new";
     WithInstantSave=withInstantSave;
     GridEntity=gridEntity;
@@ -35,15 +35,14 @@ function GetGridDataFromHtml(gridId){
     }
     return arrays;   
 }
-function GetEditableGridPoponContent(sourcetag,spname,stringifyData,mainItemId){
+function GetEditableGridPoponContent(gridSourcetag,spname,stringifyData,mainItemId,screenName){
     SaveAction="edit";
-    var screenName=divId;
     var data = "{" +
-          "\"sourcetag\":\"" + sourcetag + "\"," +
+          "\"sourcetag\":\"" + gridSourcetag + "\"," +
           "\"spname\":\"" + spname + "\"," + 
           "\"mainItemId\":\"" + mainItemId + "\"," +  
-          "\"screenName\":\"" + sourcetag + "\"," + 
-          "\"taskId\":\"" + TaskId + "\"," +
+          "\"screenName\":\"" + screenName + "\"," + 
+          "\"taskId\":\"" + gTaskId + "\"," +
           "\"screenWidth\":\""+window.innerWidth+ "\"," +
           "\"stringifyData\":" + stringifyData +"," +   
           "\"userData\":"+sessionStorage.getItem("userData")+"}";
@@ -156,7 +155,7 @@ function updateGridOnPoponContent(content){
         var gridContent=$("#"+grid).html(content["Grids"][grid]); 
     } 
 }
-function saveInGridOnPopon(){
+function saveInGridOnPopon(screenName){
     var isValidForm = requiredFormComponent("#my-editableGridPopon-form"); 
     var gridWidth=window.innerWidth-30;
     if (isValidForm)
@@ -186,7 +185,7 @@ function saveInGridOnPopon(){
              arr.push(newFormData);
              Data[clickedEditableGridId]=arr;
              var gridData=JSON.stringify(Data);
-             GridDataInstantSave(gridData,clickedEditableGridId);
+             GridDataInstantSave(gridData,clickedEditableGridId,screenName);
         }
         else
         {         
@@ -328,7 +327,7 @@ function EditEditableGridRow(rowNumber,selectedGridId,gridSourceTag,screenName,i
     object[selectedGridId]=arr;
     DataToEdit=rowObject;
     var stringify=JSON.stringify(object);
-    GetEditableGridPoponContent(gridSourceTag,selectedGridId,stringify,rowNumber);
+    GetEditableGridPoponContent(gridSourceTag,selectedGridId,stringify,rowNumber,screenName);
     clickedEditableGridColumnsCount=columnCount;
     ItemIdToEdit=itemId;
     GridEntity=gridEntity;
@@ -444,12 +443,12 @@ function deleteDefinitelyEditableGridRow(rowNumber,selectedGridId,gridSourceTag,
             }
         });
 }
-function GridDataInstantSave(rowData,gridId){
+function GridDataInstantSave(rowData,gridId,screenName){
     var data = "{" +
           "\"data\":" + rowData + "," + 
           "\"gridEntity\":\"" + GridEntity + "\"," +
           "\"mainItemId\":\"" + gMainItemId + "\"," +  
-          "\"screenName\":\"" + gScreenName.toLowerCase() + "\"," +   
+          "\"screenName\":\"" + screenName + "\"," +    
           "\"counterpartyId\":\"" + gQICounterpartyId + "\"," + 
           "\"transactionConditionId\":\"" + gTransactionConditionId + "\"," +
           "\"creditFileId\":\"" + gQICreditFIldId + "\"," +

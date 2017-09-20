@@ -3,7 +3,7 @@ var selectedItemId = new Array();
 var selected = false;
 
 function loadTeamTasksList(title) {
-	navbarTitle = title;
+	gPageTitleContent = title;
 	mainView.router.load({
 		url: 'teamTasksScreen.html',
 		reload: true,

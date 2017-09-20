@@ -79,7 +79,7 @@ function UpdateRelatedItem(screenName) {
 
                         myApp.hidePreloader();
                         myApp.alert(SuccessMsg,"MACP", function () {
-                            loadScreen(gScreenName,gMainItemId,gSubItem,"classicre");
+                            loadScreen(screenName,gMainItemId,gSubItem,"classicre");
                              mainView.router.back({reloadPrevious:true});
                         });
 

@@ -22,14 +22,12 @@ function GetAmortizationPopon(stringify,screenName){
      var popupHeight=window.innerHeight*0.90;
      popupWidth=Math.floor(popupWidth); 
      popupHeight=Math.floor(popupHeight); 
-     gScreenName=screenName;
      var formData = myApp.formToData('#my-relatedItemPopup-form');
      var parameters=JSON.stringify(formData);
      var data="{"+ 
        "\"limit\":\"30\","+
        "\"start\":\"0\","+ 
-       "\"mainItemId\":\""+gMainItemId+"\"," + 
-       "\"screenTag\":\""+screenName+"\"," +   
+       "\"mainItemId\":\""+gMainItemId+"\"," +   
        "\"parentId\":\""+gMainItemId+"\"," +  
        "\"screenName\":\""+screenName+"\","+
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
@@ -64,7 +62,7 @@ function GetAmortizationPopon(stringify,screenName){
 
 
 
-function savePricingCondition(item){
+function savePricingCondition(screenName){
     var isValidForm = requiredFormComponent("#my-relatedItemPopup-form"); 
     if(isValidForm)
     {
@@ -79,14 +77,14 @@ function savePricingCondition(item){
      var parameters=JSON.stringify(formData);
      var data="{"+ 
        "\"mainItemId\":\""+mainItemIdForPricingConditionScreen+"\"," + 
-       "\"screenTag\":\""+gScreenName+"\"," +   
+       "\"screenTag\":\""+screenName+"\"," +   
        "\"parentId\":\""+mainItemIdForPricingConditionScreen+"\"," +    
        "\"relatedItemId\":\""+relatedItemId+"\"," +  
        "\"remoteIp\":\""+sessionStorage.getItem('Ip_config')+"\"," + 
        "\"transactionAmountStringList\":\""+transactionAmountStringList+"\"," +      
        "\"transactionAmountFeesListObject\":"+transactionAmountFeesListObject+"," +   
        "\"transactionAmountEventFeesListObject\":"+transactionAmountEventFeesListObject+"," + 
-       "\"screenName\":\""+gScreenName+"\","+ 
+       "\"screenName\":\""+screenName+"\","+ 
        "\"stringify\":"+stringify+"," +     
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
        "\"parameters\":"+parameters+"}" ;  
@@ -99,7 +97,7 @@ function savePricingCondition(item){
         data: data,        
         success: function(data) { 
             myApp.hidePreloader();
-             loadScreen(gScreenName,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen,"classicre");
+             loadScreen(screenName,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen,"classicre");
              mainView.router.back({reloadPrevious:true});
         
         },
@@ -111,7 +109,7 @@ function savePricingCondition(item){
     }
 }
 
-function savePricingConditionEvent(parentItemId,item){
+function savePricingConditionEvent(parentItemId,screenName){
     
     var isValidForm = requiredFormComponent("my-relatedItemPopup-form"); 
     if(isValidForm)
@@ -123,14 +121,13 @@ function savePricingConditionEvent(parentItemId,item){
      var parameters=JSON.stringify(formData);
      var data="{"+ 
        "\"mainItemId\":\""+gMainItemId+"\"," + 
-       "\"screenTag\":\""+gScreenName+"\"," +    
-    //   "\"parentId\":\""+parentItemId+"\"," +    
+       "\"screenTag\":\""+screenName+"\"," +        
        "\"relatedItemId\":\""+gRelatedItemId+"\"," +  
        "\"remoteIp\":\""+sessionStorage.getItem('Ip_config')+"\"," + 
        "\"transactionAmountStringList\":\""+transactionAmountStringList+"\"," +      
        "\"transactionAmountFeesListObject\":"+transactionAmountFeesListObject+"," +   
        "\"transactionAmountEventFeesListObject\":"+transactionAmountEventFeesListObject+"," + 
-       "\"screenName\":\""+gScreenName+"\","+
+       "\"screenName\":\""+screenName+"\","+
        "\"stringify\":"+stringify+"," +       
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
        "\"parameters\":"+parameters+"}" ;  
@@ -143,7 +140,7 @@ function savePricingConditionEvent(parentItemId,item){
         data: data,        
         success: function(data) { 
             myApp.hidePreloader();
-            manageSaveConditionResponse(data,item);
+            manageSaveConditionResponse(data,item,screenName);
         
         },
         error: function(e) {
@@ -168,7 +165,7 @@ function saveProcessEngineComment_enabledButton(textarea) {
 
         };
 
-function manageSaveConditionResponse(data,item) {
+function manageSaveConditionResponse(data,item,screenName) {
             if (data.behavior != null) {
 
                 switch (data.behavior) {
@@ -180,7 +177,7 @@ function manageSaveConditionResponse(data,item) {
                     case "optionalAlert":
                         {
                             myApp.confirm(data.message, "Exception", function () {
-                                savePricingCondition();
+                                savePricingCondition(screenName);
                             });
                             break;
                         }
@@ -188,7 +185,7 @@ function manageSaveConditionResponse(data,item) {
                         {
                             errorMsg = data.message;
 
-                            myApp.popup('<div class="popup" style="width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;" ><div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">' + data.message + '</br></br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="saveProcessEngineComment_enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="saveBeforeSaveConditon_DeviationComment()" id="saveProcessEngineCommentButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
+                            myApp.popup('<div class="popup" style="width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;" ><div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">' + data.message + '</br></br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="saveProcessEngineComment_enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="saveBeforeSaveConditon_DeviationComment('+screenName+')" id="saveProcessEngineCommentButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
                             break;
                         }
                 }
@@ -196,20 +193,20 @@ function manageSaveConditionResponse(data,item) {
             else
             {
                 
-           myApp.alert(data.successMsg,"MACP", function () { loadScreen(gScreenName,gMainItemId,gSubItem,"classicre");
+           myApp.alert(data.successMsg,"MACP", function () { loadScreen(screenName,gMainItemId,item,"classicre");
             mainView.router.back({reloadPrevious:true});
                                                            });
             }
 }
 
-function saveBeforeSaveConditon_DeviationComment(item){
+function saveBeforeSaveConditon_DeviationComment(screenName){
     var comment = document.getElementById("deviationComment").value;
     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveCustomErrorHandlingDeviationCommentAndSaveCondition';
      var formData = myApp.formToData('#my-relatedItemPopup-form');
      var parameters=JSON.stringify(formData);
      var data="{"+ 
        "\"mainItemId\":\""+mainItemIdForPricingConditionScreen+"\"," + 
-       "\"screenTag\":\""+divId+"\"," +   
+       "\"screenTag\":\""+screenName+"\"," +   
        "\"parentId\":\""+itemId+"\"," +    
        "\"comment\":\""+comment+"\"," +
        "\"errMsg\":\""+errorMsg+"\"," +  
@@ -218,7 +215,7 @@ function saveBeforeSaveConditon_DeviationComment(item){
        "\"transactionAmountStringList\":\""+transactionAmountStringList+"\"," +      
        "\"transactionAmountFeesListObject\":"+transactionAmountFeesListObject+"," +   
        "\"transactionAmountEventFeesListObject\":"+transactionAmountEventFeesListObject+"," + 
-       "\"screenName\":\""+item+"\","+ 
+       "\"screenName\":\""+screenName+"\","+ 
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
        "\"parameters\":"+parameters+"}" ;  
     $.ajax({ 
@@ -231,7 +228,7 @@ function saveBeforeSaveConditon_DeviationComment(item){
         success: function(data) { 
             myApp.hidePreloader();
             myApp.closeModal();
-            loadScreen(gScreenName,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen,"classicre");
+            loadScreen(screenName,mainItemIdForPricingConditionScreen,mainItemForPricingConditionScreen,"classicre");
             mainView.router.back({reloadPrevious:true});
         
         },

@@ -2,8 +2,8 @@ var loading = false;
 var SearchResultScreen_JSFlag;
 
 function editItem(mainItemId,reference,subItem,targettab){ 
-    itemRef=reference;
-    TargetTab=targettab;
+    gPageTitleContent=reference;
+    gTargetTab=targettab;
     gSubItem=subItem;
     gScreenName=subItem;
     gMainItemId=mainItemId;

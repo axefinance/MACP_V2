@@ -31,10 +31,9 @@ function searchOnPoponButtonEvent() {
     var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/GetSearchResultPage';
     myApp.showPreloader();
     var formData = myApp.formToData('#my-poponComponent-form');
-    currentSearchParams = JSON.stringify(formData);
-    currentSearchItem = PoponComponentItem;
-    currentSearchType = "searchOnPoponResult";
-    lunchSearchResult();
+    gCurrentSearchItem = PoponComponentItem;
+    gCurrentSearchType = "searchOnPoponResult";
+    lunchSearchResult(gCurrentSearchItem,JSON.stringify(formData));
 }
 function poponComponentClick(item, idComponent,formId, displayproperty) {
     var items = item.split(",");
@@ -127,7 +126,7 @@ function handle() {
 function poponInfoClick(subItem,idComponent) 
 {
     
-    itemRef=document.getElementById(idComponent+"__Value").value;
+    gPageTitleContent=document.getElementById(idComponent+"__Value").value;
     gMainItemId=document.getElementById(idComponent).value;
     if (gMainItemId != "" || gMainItemId != undefined)
     {  

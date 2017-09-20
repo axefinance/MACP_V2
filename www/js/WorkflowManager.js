@@ -143,7 +143,7 @@ function manageStartWorkFlowItemResponse(data,mainItemId) {
         managerRequiredMitigantResponse(data,mainItemId);
     }
     else {
-        HomeBackButton.style.visibility = "hidden";
+        gHomeBackButton.style.visibility = "hidden";
         myApp.hidePreloader();
         myApp.closeModal('.popup');
         mainView.router.back({ force: true, pageName: "homePage" });
