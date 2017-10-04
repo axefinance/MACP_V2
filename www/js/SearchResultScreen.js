@@ -11,8 +11,7 @@ function editItem(mainItemId,reference,subItem,targettab){
         myApp.alert("please check your internet connection");
     else 
        {
-           var withBackButton=true;
-           loadEditScreen(withBackButton);
+           loadEditScreen(true,mainItemId);
        }
        
 }       

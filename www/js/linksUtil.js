@@ -2,9 +2,9 @@ var LinkSourceTag;
 var mainItemIdForLink;
 var mainItemForLink;
 
-function OpenReportWindowFromLink(reportpath,fileType,screenName)
+function OpenReportWindowFromLink(reportpath,fileType,screenName,mainItemId)
 {
-    generateDocument(reportpath, screenName, fileType);
+    generateDocument(reportpath, screenName, fileType,mainItemId);
 }
 function OpenRelatedItemFromLink(property,relatedtype,linkSourcetag,parentItemId,parentItem)
 {
@@ -15,14 +15,14 @@ function OpenRelatedItemFromLink(property,relatedtype,linkSourcetag,parentItemId
     RelatedItemType=relatedtype;
      mainItemIdForRelatedScreen=parentItemId;
      mainItemForRelatedScreen=parentItem;
-     mainItemIdForLink=parentItemId;
+     mainItemIdForLink=parentItemId; 
      mainItemForLink=parentItem;
     mainView.router.load({url: 'relatedScreen.html',reload:false,ignoreCache:true});
     
 }
 function OpenInformativeGridFromLink(sourcetag)
 { 
-   // myApp.alert("informative");      
+   // myApp.alert("informative");       
 }   
 function OpenAttachmentFromLink(mainItemId, attachmentSourceTag, relatedtype){
     gMainItemId = mainItemId;

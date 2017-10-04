@@ -11,6 +11,7 @@ function saveQIExistingPoponButtonEvent(screenName){
     if(isValidForm)
     {
         var formData = myApp.formToData('#my-QIPopon-form');
+         formData["screen"]=screenName;
         parameters=JSON.stringify(formData);
         saveQIPoponEvent(parameters,screenName);
     }
@@ -50,7 +51,8 @@ function saveQIPoponEvent(parameters,screenName){
                    gTransactionTypeId=data.transactionTypeId;    
                    gScreenName="existing"+gSubItem.toLowerCase()+"_quickinput";    
                    gSubItem=data.subItem; 
-                   gMainItemId=gQITransactionId;    
+                   gPageTitleContent=data.navBarTitle;
+                   gMainItemId=gQITransactionId; 
                    mainView.router.load({url: "quickInputDetailsScreen.html",reload:true});                                      
                 }
             else 
@@ -215,7 +217,7 @@ function GetQIAmortizationPopon(stringify,screenName){
              transactionAmountStringList=data.transactionAmountStringList;
              transactionAmountFeesListObject=data.transactionAmountFeesListObject;
              transactionAmountEventFeesListObject=data.transactionAmountEventFeesListObject;
-             myApp.popup('<div class="popup" style="overflow:hidden !important; width: 90% !important; top: 5% !important;left: 5% !important; margin-left: 0px !important;height:90% !important; margin-top: 0px !important; position:absoloute !important; padding-left:5px !important; padding-right:5px !important ;padding-top:7px !important; padding-bottom:7px !important"  >'+data.content+'</div>', true);
+             createPopup(data.content,"","5%","5%","90%","90%");
              myApp.attachInfiniteScroll($$('.amortization-infinite-scroll'));
             loadJSFile("js/amortizationInfiniteScroll.js");
             gAmortizationParameters=parameters;
@@ -247,7 +249,12 @@ function manageSaveQIDetailsResponse(data,parentItemId,screenName) {
                         {
                             ErrorMsg = data.message;
                             ErrorMsg=escapeNewLineChars(ErrorMsg);
-                            myApp.popup("<div class='popup' style='width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;' ><div class='content-block-title' style='word-wrap: break-word !important;white-space : inherit !important;'>" + data.message + "</br></br></div><div class='list-block' ><ul><li class='align-top'><div class='item-content'><div class='item-media'></div><div class='item-inner'><div class='item-input'><textarea id='QIdeviationComment' onkeyup='saveQIDetailsComment_enabledButton(this)'></textarea></div></div></div></li></ul></<div><br><br><div class='row'><div class='col-50'><a href='#' class='button button-fill disabled' onclick='SaveQIDetails_LogDeviation(\""+screenName+"\",\"false\")' id='saveQIDetailsCommentButton'>Yes</a></div><div class='col-50'><a href='#' class='button button-fill active' onclick='myApp.closeModal()'>No</a></div></div></div>", true);
+                            /*
+                            var popupContent=data.message + "</br></br></div><div class='list-block' ><ul><li class='align-top'><div class='item-content'><div class='item-media'></div><div class='item-inner'><div class='item-input'><textarea id='QIdeviationComment' onkeyup='saveQIDetailsComment_enabledButton(this)'></textarea></div></div></div></li></ul></<div><br><br><br><br><div class='row'><div class='col-50'><a href='#' class='button button-fill disabled' onclick='SaveQIDetails_LogDeviation(\""+screenName+"\",\"false\")' id='saveQIDetailsCommentButton' style='width:50%; margin-left:50%'>Yes</a></div><div class='col-50'><a href='#' class='button button-fill active' onclick='myApp.closeModal()' style='width:50%'>No</a></div>";
+                            createPopup(popupContent,"","25%","25%","50%","50%");
+                            */
+                             var saveEventHandler='SaveQIDetails_LogDeviation(\''+screenName+'\',\'false\');';
+                             generateSaveCommentDeviationPopup(data.message,saveEventHandler);
                             break;
                                                                   
              
@@ -436,7 +443,12 @@ function manageStartQIWorkflowResponse(data,screenName)
                         {
                             ErrorMsg = data.message;
                             ErrorMsg=escapeNewLineChars(ErrorMsg);
-                            myApp.popup("<div class='popup' style='width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;' ><div class='content-block-title' style='word-wrap: break-word !important;white-space : inherit !important;'>" + data.message + "</br></br></div><div class='list-block' ><ul><li class='align-top'><div class='item-content'><div class='item-media'></div><div class='item-inner'><div class='item-input'><textarea id='QIdeviationComment' onkeyup='saveQIDetailsComment_enabledButton(this)'></textarea></div></div></div></li></ul></<div><br><br><div class='row'><div class='col-50'><a href='#' class='button button-fill disabled' onclick='SaveQIDetails_LogDeviation(\""+screenName+"\",\"true\")' id='saveQIDetailsCommentButton'>Yes</a></div><div class='col-50'><a href='#' class='button button-fill active' onclick='myApp.closeModal()'>No</a></div></div></div>", true);
+                            /*
+                            var popupContent=data.message + "</br></br></div><div class='list-block' ><ul><li class='align-top'><div class='item-content'><div class='item-media'></div><div class='item-inner'><div class='item-input'><textarea id='QIdeviationComment' onkeyup='saveQIDetailsComment_enabledButton(this)'></textarea></div></div></div></li></ul></<div><br><br><br><br><div class='row'><div class='col-50'><a href='#' class='button button-fill disabled' onclick='SaveQIDetails_LogDeviation(\""+screenName+"\",\"true\")' id='saveQIDetailsCommentButton' style='width:50%; margin-left:50%'>Yes</a></div><div class='col-50'><a href='#' class='button button-fill active' onclick='myApp.closeModal()' style='width:50%;'>No</a></div>";
+                            createPopup(popupContent,"","25%","25%","50%","50%");
+                            */
+                            var saveEventHandler='SaveQIDetails_LogDeviation(\''+screenName+'\',\'true\');';
+                             generateSaveCommentDeviationPopup(data.message,saveEventHandler);
                             break;
                                                                   
              

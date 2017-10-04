@@ -73,17 +73,18 @@
     right: 30px;
 }
 
-.popup-toolbar-button{
-    float:right !important;
-    margin : 6px 20px 6px 0px !important;
-    overflow-y:hidden;
-}
 .popup-toolbar-link{
     float:right !important;
-    margin :1px 20px 1px 0px !important;
+    margin-top: 1.1% !important;
+    margin-right: 3% !important;
     overflow-y:hidden;
 }
 
+.process-running-link{
+     float:right !important;
+     margin-right: 3% !important;
+    overflow-y:hidden; 
+}
 
 .tabs90{
     width : 98px;
@@ -388,27 +389,22 @@ user-select: none;
     border-top:  1px solid #d1d1d1;    
     z-index : 99999;
     position: sticky !important;
-    height:40px !important;
+    height:7% !important;
     bottom: 0px !important;
     background : #fff !important; 
-    width: 100% !important;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;    
+    width: 100% !important;   
 }
 .popup-toolbar-button{
     display: inline-block !important;
     margin : 3px 20px 6px 0px !important;
     overflow-y:hidden;
+   float:right !important;
 }
-.popup-toolbar-link{
-    display: inline-block !important;
-    margin :0px 20px 6px 0px !important;
-    overflow-y:hidden;
-}
+
+
 .popup-container{
     padding-bottom : 15px;
-    height : 91%;
-    overflow-y:auto;
+    height : 100%;
 }
 .macp-popup{
  

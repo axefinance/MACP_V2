@@ -1,5 +1,7 @@
 var gChangeLangConfirmationMessage;
 var loggingOutWindowMessage;
+var gTeamTasksTabLabel;
+var gHomePageTab;
 var loggingOutWindowTitle;
 var ip_config;
 var ip_port; 
@@ -32,8 +34,6 @@ var gIsSwitchLanguage = false;
 var gIsRelatedFromLink="false";
 var gCurrentSearchItem;
 var gCurrentSearchType;
-
-
 var myApp=new Framework7({ swipeBackPage : false, statusbarOverlay:true, tapHold: true,swipePanel: 'left',fastClicksDelayBetweenClicks : 10 }) ;
 var db = openDatabase('mydb', '1.0', 'Test DB', 2 * 1024 * 1024);
 var mainView = myApp.addView('.view-main', {
@@ -56,19 +56,18 @@ $$('.firstWS-confirm-ok-cancel').on('click', function () {
 });   
 myApp.onPageInit('attachmentScreen', function (page) {
     gTaskId = 0;
-    createLanguagesList('attachmentScreen');
-    createLogoutPopover('attachmentScreen');
+    setScreenHeaderContent(attachmentScreen,gPageTitleContent);
     myApp.params.swipePanel=false;
     myApp.showPreloader(); 
-    setTemplate_HeaderData('attachmentScreen');
-    GetAttachmentScreen(gScreenName);
+    GetAttachmentScreen(gScreenName,gMainItemId,gSubItem);
     
 });  
-function GetAttachmentScreen(screenName){
+function GetAttachmentScreen(screenName,mainItemId,subItem){
      var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetAttachmentScreen";    
      var data="{"+    
-        "\"screenName\":\""+screenName+"\","+ 
-        "\"mainItemId\":\""+gMainItemId+"\","+ 
+        "\"screenName\":\""+screenName+"\","+
+        "\"subItem\":\""+subItem+"\","+ 
+        "\"mainItemId\":\""+mainItemId+"\","+ 
         "\"taskId\":\""+gTaskId+"\","+ 
         "\"windowWidth\":\""+window.innerWidth+"\","+
         "\"windowHeight\":\""+(window.innerHeight-90)+"\","+
@@ -80,11 +79,6 @@ function GetAttachmentScreen(screenName){
         dataType: "json",                            
         data: data,         
         success: function(data) {
-            gPageTitleElement=document.getElementById("title_attachmentScreen");
-            gPageTitleElement.textContent=gPageTitleContent+" : "+ RelatedItemType;
-            createLanguagesList('attachmentScreen'); 
-            createLogoutPopover('attachmentScreen'); 
-            setTemplate_HeaderData('attachmentScreen');
             document.getElementById("attachmentScreenForm").innerHTML=data.content;            
             document.getElementById('attachment-toolbarContent').innerHTML=data.buttonsDiv;
             myApp.accordionOpen(".accordion-item");
@@ -98,13 +92,11 @@ function GetAttachmentScreen(screenName){
     });  
 } 
 function checkInternetConnection() {
-    // Handle the online event 
     var networkState = navigator.connection.type; 
     if (networkState !== Connection.NONE) 
         return true;
     return false;
 }
-
 function isScreenInCache(screenName){
     var history=mainView.history;
     for(var i=0 ; i<history.length ; i++)
@@ -118,13 +110,13 @@ function isScreenInCache(screenName){
 }
 function westMenuItem(subItem,title,htmlFile, screenName){     
     
-    if(isScreenInCache(screenName))
+    if(isScreenInCache(htmlFile))
     {
         mainView.history=["#homePage"];
-        document.getElementById("title_"+screenName).remove(); 
-        document.getElementById("userName_label_"+screenName).remove(); 
-        document.getElementById("lng_label_"+screenName).remove(); 
-        $$('.view-main .page-on-left').remove(screenName);
+        document.getElementById("title_"+htmlFile.replace(".html","")).remove(); 
+        document.getElementById("userName_label_"+htmlFile.replace(".html","")).remove(); 
+        document.getElementById("lng_label_"+htmlFile.replace(".html","")).remove(); 
+        $$('.view-main .page-on-left').remove(htmlFile);
     }
     gSubItem=subItem;
     gScreenName=screenName; 
@@ -141,6 +133,7 @@ myApp.onPageReinit('homePage', function (page) {
         gTransactionConditionId = 0;
         document.getElementById("tasks").innerHTML=null;
         document.getElementById("homePage-toolbarContent").innerHTML=null;
+        setScreenHeaderContent('homePage',gHomePageTab);
         reInitHomePage();
     }
     else
@@ -150,7 +143,6 @@ myApp.onPageReinit('homePage', function (page) {
 
         gIsSwitchLanguage = false;           
         loadTaskList(); 
-        setTemplate_HeaderData("homePage");
     }
 });  
 function reInitHomePage(){ 
@@ -227,114 +219,78 @@ myApp.onPageInit('WSConfigurationScreen', function (page) {
 });   
 myApp.onPageInit('homePage', function (page) {   
     myApp.params.swipePanel=false;    
-    setTemplate_HeaderData('homePage');
+    setScreenHeaderContent("homePage",gPageTitleContent);
     loadTaskList();
 });                  
 myApp.onPageInit('searchScreen', function (page) {
     gHomeBackButton.style.visibility="visible";    
-    createLanguagesList('searchScreen');
-    createLogoutPopover('searchScreen');  
     myApp.params.swipePanel=false;
-    gPageTitleElement=document.getElementById("title_searchScreen");
-    gPageTitleElement.textContent=gPageTitleContent;  
     myApp.showPreloader();
-    setTemplate_HeaderData('searchScreen');  
+    setScreenHeaderContent('searchScreen',gPageTitleContent);
     loadsearchScreen();
   
 }); 
-myApp.onPageInit('teamTasksScreen', function (page) {
+myApp.onPageInit('teamTasksScreen', function (page) { 
     gTaskId = 0;
-    createLanguagesList('teamTasks');
-    createLogoutPopover('teamTasks');
     myApp.params.swipePanel=false;
     myApp.showPreloader();
-    gPageTitleElement=document.getElementById("title_teamTasks");
-    gPageTitleElement.textContent=navbarTitle;
-    setTemplate_HeaderData('teamTasks');
+    setScreenHeaderContent('teamTasks',gTeamTasksTabLabel);
     GetTeamTasks();
     
 });    
 myApp.onPageInit('editScreen', function (page) {
     gTaskId = 0;
-    createLanguagesList('editScreen');
-    createLogoutPopover('editScreen');
     myApp.params.swipePanel=false;
-    InitEditScreen(gScreenName,gSubItem);
+    InitEditScreen(gScreenName,gSubItem,gMainItemId);
+    setScreenHeaderContent('editScreen__'+gMainItemId,gPageTitleContent);
     
 }); 
 myApp.onPageInit('newInputScreen', function (page) {
     gHomeBackButton.style.visibility="visible"; 
-    createLanguagesList('newInputScreen'); 
-    createLogoutPopover('newInputScreen');
+    setScreenHeaderContent('newInputScreen',gPageTitleContent);
     myApp.params.swipePanel=false;   
-    gPageTitleElement=document.getElementById("title_newInputScreen");
-    gPageTitleElement.textContent=gPageTitleContent;
     myApp.showPreloader();
-    setTemplate_HeaderData('newInputScreen');
     loadNewInputPage(gScreenName);  
 });                
 myApp.onPageInit('searchResultScreen', function (page) {
     gHomeBackButton.style.visibility="visible";
-    createLanguagesList('searchResultScreen'); 
-    createLogoutPopover('searchResultScreen');  
     myApp.params.swipePanel=false;
-    gPageTitleElement=document.getElementById("title_searchResultScreen");
-    gPageTitleElement.textContent=gPageTitleContent;
-    setTemplate_HeaderData('searchResultScreen');   
+    setScreenHeaderContent('searchResultScreen',gPageTitleContent);
     myApp.showPreloader();
     gCurrentSearchType="searchResult";
     lunchSearchResult(gSubItem,gSearchParams);
 });  
 myApp.onPageInit('executeTaskScreen', function (page) {
     gHomeBackButton.style.visibility="visible";
-    createLanguagesList('executeTaskScreen'); 
-    createLogoutPopover('executeTaskScreen');      
+    setScreenHeaderContent('executeTaskScreen',gPageTitleContent);
     myApp.params.swipePanel=false;
-    gPageTitleElement=document.getElementById("title_executeTaskScreen");
-    gPageTitleElement.textContent=gPageTitleContent;
-    setTemplate_HeaderData('executeTaskScreen'); 
     myApp.showPreloader();
-    var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetExecuteTaskScreen';
-    GetExecuteTaskScreen(url);
+    GetExecuteTaskScreen();
 });
 myApp.onPageInit('relatedItemScreen', function (page) {
    
     gHomeBackButton.style.visibility="visible";
-    createLanguagesList('relatedItemScreen'); 
-    createLogoutPopover('relatedItemScreen');
-    setTemplate_HeaderData('relatedItemScreen');   
+    setScreenHeaderContent('relatedItemScreen',gPageTitleContent+" : "+ RelatedItemType);
     myApp.params.swipePanel=false;
-    gPageTitleElement=document.getElementById("title_relatedItemScreen");
-    gPageTitleElement.textContent=gPageTitleContent+" : "+ RelatedItemType;
-    InitRelatedItemScreen(gScreenName);
+    InitRelatedItemScreen(gScreenName,gMainItemId,gRelatedItemId);
     myApp.showPreloader();
 });
 myApp.onPageInit('pricingConditionScreen', function (page) {
     gHomeBackButton.style.visibility="visible";
-    createLanguagesList('pricingConditionScreen'); 
-    createLogoutPopover('pricingConditionScreen');    
-    setTemplate_HeaderData('pricingConditionScreen'); 
+    setScreenHeaderContent("pricingConditionScreen",gPageTitleContent+" : "+ RelatedItemType);
     myApp.params.swipePanel=false;
-    gPageTitleElement=document.getElementById("title_pricingConditionScreen");
-    gPageTitleElement.textContent=gPageTitleContent+" : "+ RelatedItemType;
     myApp.showPreloader();
-    GetPricingConditionScreen(gScreenName); 
+    GetPricingConditionScreen(gScreenName,gMainItemId,gRelatedItemId); 
 }); 
-
 myApp.onPageInit('relatedScreen', function (page) {
     gHomeBackButton.style.visibility="visible";
-    createLanguagesList('relatedScreen'); 
-    createLogoutPopover('relatedScreen');    
-    setTemplate_HeaderData('relatedScreen'); 
+    setScreenHeaderContent('relatedScreen',gPageTitleContent);
     myApp.params.swipePanel=false;
-    gPageTitleElement=document.getElementById("title_relatedScreen");
-    gPageTitleElement.textContent=gPageTitleContent;
     loadScreen(gScreenName,mainItemIdForLink,mainItemForLink,"classicre");  
 });
-
-
 myApp.onPageInit('quickInputDetailsScreen', function (page) {
-    var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GenerateExistingItemQIScreen";    
+    var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GenerateExistingItemQIScreen"; 
+    setScreenHeaderContent('quickInputDetailsScreen',gPageTitleContent);
      var data="{"+    
         "\"screenWidth\":\""+window.innerWidth+"\","+
         "\"screenName\":\""+gScreenName+"\","+
@@ -353,14 +309,9 @@ myApp.onPageInit('quickInputDetailsScreen', function (page) {
         data: data,         
         success: function(data) {
             document.getElementById("quickInputDetailsScreenForm").innerHTML=data.content;
-            gPageTitleElement=document.getElementById("title_quickInputDetailsScreen");
-            gPageTitleElement.textContent=data.navBarTitle;
             document.getElementById('existingItemQI-screen-toolbarContent').innerHTML=data.buttonsDiv;
-            createLanguagesList('quickInputDetailsScreen'); 
-            createLogoutPopover('quickInputDetailsScreen'); 
-            setTemplate_HeaderData('quickInputDetailsScreen');
             loadJSFile("js/informativeGridInfiniteScroll.js");
-            ManagePricingCnditionComponents("my-existingItemQI-form");  
+            ManagePricingCnditionComponents("my-existingItemQI-form");   
             myApp.hidePreloader();
         },
         error: function(e) { 
@@ -369,56 +320,23 @@ myApp.onPageInit('quickInputDetailsScreen', function (page) {
         }            
     });  
 });
-
-myApp.onPageInit('newQuickInputScreen', function (page) {
-    var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GenerateExistingItemQIScreen";    
-     var data="{"+    
-        "\"screenWidth\":\""+window.innerWidth+"\","+
-        "\"screenName\":\""+gScreenName+"\","+
-        "\"subItem\":\""+gSubItem+"\","+ 
-        "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
-        "\"transactionID\":\""+gQITransactionId+"\","+   
-        "\"counterpartyID\":\""+gQICounterpartyId+"\","+  
-        "\"transactionTypeId\":\""+gTransactionTypeId+"\","+   
-        "\"creditFileID\":\""+gQICreditFIldId+"\","+  
-        "\"userData\":"+sessionStorage.getItem("userData")+"}";
-    $.ajax({             
-        type: 'POST',             
-        url: url,                                      
-        contentType: "text/plain",                             
-        dataType: "json",                            
-        data: data,         
-        success: function(data) {
-            document.getElementById("quickInputDetailsScreenForm").innerHTML=data.content;
-            gPageTitleElement=document.getElementById("title_quickInputDetailsScreen");
-            gPageTitleElement.textContent=data.navBarTitle;
-            document.getElementById('existingItemQI-screen-toolbarContent').innerHTML=data.buttonsDiv;
-            createLanguagesList('quickInputDetailsScreen'); 
-            createLogoutPopover('quickInputDetailsScreen'); 
-            setTemplate_HeaderData('quickInputDetailsScreen');
-            loadJSFile("js/informativeGridInfiniteScroll.js");
-            ManagePricingCnditionComponents("my-existingItemQI-form");  
-            myApp.hidePreloader();
-        },
-        error: function(e) { 
-            myApp.hidePreloader();
-            errorMessage(e.message); 
-        }            
-    });  
-});
-
-
-function InitRelatedItemScreen(screenName){
-    var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    
-            
+myApp.onPageInit('quickInputPopon', function (page) {
+    gHomeBackButton.style.visibility="visible";   
+    myApp.params.swipePanel=false;
+    setScreenHeaderContent("quickInputPopon",gPageTitleContent);
+    myApp.showPreloader();
+    loadQuickInputPopon(gScreenName);
+}); 
+function InitRelatedItemScreen(screenName,mainItemId,relatedItemId){
+    var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";          
     var data="{"+    
       "\"screenName\":\""+screenName+"\","+
       "\"screenType\":\"relatedItemDetails\","+
       "\"userData\":"+sessionStorage.getItem("userData")+","+
       "\"taskId\":\""+gTaskId+"\"," + 
-      "\"mainItemId\":\""+gMainItemId+"\","+
+      "\"mainItemId\":\""+mainItemId+"\","+
       "\"screenWidth\":\""+window.innerWidth+"\","+          
-      "\"relatedItemId\":\""+gRelatedItemId+"\"}"; 
+      "\"relatedItemId\":\""+relatedItemId+"\"}"; 
     $.ajax({             
         type: 'POST',             
         url: url,                                      
@@ -439,11 +357,6 @@ function InitRelatedItemScreen(screenName){
         }           
     });  
 }
-function setTemplate_HeaderData(pScreen){
-    var user = JSON.parse(sessionStorage.getItem('userData'));
-    document.getElementById("userName_label"+"_"+pScreen).textContent=user.user_name;
-    document.getElementById("lng_label"+"_"+pScreen).textContent=user.culture_language;
-}  
 function loadsearchScreen(){
     GetSearchPage('http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetSearchScreen');
    
@@ -457,17 +370,15 @@ function loadNewInputPage(screenName){
     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetNewInputScreen';
     GetNewInputScreen(url,screenName);
 }  
-
-function InitEditScreen(screenName,subItem){ 
+function InitEditScreen(screenName,subItem,mainItemId){ 
     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetEditScreen';
      myApp.showPreloader(); 
      var request="{"+      
-              "\"subItem\":\""+subItem+"\","+
               "\"screenName\":\"" + screenName + "\"," +
               "\"screenParent\":\"\","+ 
               "\"taskId\":\"" + gTaskId + "\"," +
               "\"userData\":"+sessionStorage.getItem("userData")+","+  
-              "\"mainItemId\":\""+gMainItemId+"\"," +
+              "\"mainItemId\":\""+mainItemId+"\"," +
               "\"targetTab\":\""+gTargetTab+"\"," +  
               "\"screenEngine\":\"empty\","+
               "\"screenWidth\":\""+window.innerWidth+"\"," +
@@ -480,11 +391,8 @@ function InitEditScreen(screenName,subItem){
         contentType: "text/plain",                          
         data: request,  
         success: function(data) {     
-           document.getElementById('editScreenForm__'+gMainItemId).innerHTML=data.content;
-            $('#edit-toolbarContent__'+gMainItemId).append(data.buttonsDiv);
-             gPageTitleElement=document.getElementById("title_editScreen__"+gMainItemId);
-             gPageTitleElement.textContent=gPageTitleContent;
-             setTemplate_HeaderData('editScreen__'+gMainItemId); 
+           document.getElementById('editScreenForm__'+mainItemId).innerHTML=data.content;
+            $('#edit-toolbarContent__'+mainItemId).append(data.buttonsDiv); 
              loadJSFile("js/WorkflowManager.js");
              loadJSFile("js/informativeGridInfiniteScroll.js");
              myApp.attachInfiniteScroll($$('.informativeGrid-infinite-scroll'));
@@ -597,8 +505,6 @@ function GetHomePage(url) {
             loggingOutWindowMessage = loggingOutWindowMessage.substr(1,loggingOutWindowMessage.length-2);
             loggingOutWindowTitle = JSON.stringify(data.LoggingOutWindowTitle);
             loggingOutWindowTitle = loggingOutWindowTitle.substr(1,loggingOutWindowTitle.length-2);
-            createLanguagesList('homePage');
-            createLogoutPopover('homePage'); 
             GetHomePageScripts(); 
             myApp.hidePreloader();
         }, 
@@ -624,8 +530,6 @@ function GetTeamTasks(url) {
         success: function(data) {            
             document.getElementById("teamTasks").innerHTML=data.TasksContent;
             document.getElementById("teamTasks-toolbarContent").innerHTML=data.buttonsDiv;
-            createLanguagesList('teamTasks');
-            createLogoutPopover('teamTasks'); 
             loadJSFile("js/TeamTasks.js");
             myApp.hidePreloader();
         }, 
@@ -633,31 +537,8 @@ function GetTeamTasks(url) {
             myApp.hidePreloader();                
             errorMessage(e.message);
         }
-    });           
-               
+    });                        
 }                
-function createLanguagesList(screen){
-    $$('.create-language-links-'+screen).on('click', function () {
-        var clickedLink = this;
-        var output="";        
-        for(var i=0 ; i< gLanguagesList.LangsList.length ; i++)
-        { 
-            var display=gLanguagesList.LangsList[i].display;
-            output=output+'<li><a href="#" class="item-link list-button" onclick="switchLanguage(\''+gLanguagesList.LangsList[i].property+'\')">'+display  +'</li>';
-        }
-        var popoverHTML = '<div id="language_popover" class="popover">'+
-                            '<div class="popover-inner">'+
-                              '<div class="list-block">'+
-                                '<ul>'+
-                                 output
-        '</ul>'+
-      '</div>'+
-    '</div>'+
-  '</div>';
-        myApp.popover(popoverHTML, clickedLink); 
-    });
-}  
-
 function switchLanguage(property){
     myApp.closeModal();
     
@@ -682,8 +563,7 @@ function switchLanguage(property){
                 {
                     document.getElementById("tasks").innerHTML=null;
                     document.getElementById("homePage-toolbarContent").innerHTML=null;
-                    loadTaskList();
-                    setTemplate_HeaderData("homePage");                   
+                    loadTaskList();    
                 }
                 else
                 {
@@ -696,7 +576,9 @@ function switchLanguage(property){
                     else 
                         leftView.router.load({force : true,pageName:'MenuParent',animatePages:false});
                 }
-
+                gHomePageTab=data.homePageTab;
+                gTeamTasksTabLabel=data.teamTasksTab;
+                setScreenHeaderContent('homePage',gHomePageTab);
             },
             error: function(e) {               
                 myApp.hidePreloader();    
@@ -707,29 +589,7 @@ function switchLanguage(property){
     function (value) {
     }
   );
-       
-    
 }
-function createLogoutPopover(screen){
-    $$('.create-profile-links-'+screen).on('click', function () {
-        var clickedLink = this;
-        var output="";
-
-        output=output+'<li><a href="#" onclick="logoutAction();" class="item-link list-button">Logout</li>';
-        
-        var popoverHTML = '<div class="popover">'+
-                            '<div class="popover-inner">'+
-                              '<div class="list-block">'+
-                                '<ul>'+
-                                 output
-        '</ul>'+
-      '</div>'+
-    '</div>'+
-  '</div>';
-        myApp.popover(popoverHTML, clickedLink);
-    });
-}          
-
 function logoutAction(){
     myApp.closeModal();
     myApp.confirm(loggingOutWindowMessage,
@@ -786,7 +646,7 @@ function lunchSearchResult(subItem,searchParams){
             }
             else
             {
-                myApp.popup("<div class='popup' style='width:80% !important; height:80% !important; left:10% !important; top:10% !important; margin-left:0px !important; margin-top:0px !important; margin-right:0px !important; overflow:hidden'>"+data.dataGrid+"</div>");
+                 createPopup(data.dataGrid,"","10%","10%","80%","80%");
                 var tasksTableElement =document.getElementById("tasksTableElementOnPopon");
                 myApp.attachInfiniteScroll(tasksTableElement);  
             }
@@ -807,7 +667,6 @@ function lunchSearchResult(subItem,searchParams){
         }                           
     });      
 }   
-
 function fillTransactionForm(selectedValue, counterpartyId, transactionId, formId,screenName){
     myApp.showPreloader();
             var formData = myApp.formToData('#'+formId);
@@ -850,7 +709,6 @@ function generateConnectedComboItems(idChild,screenTagName,val,child,entity,shar
     connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property,formId);
 
 } 
-
 function connectedComboOptions(url,idChild,val,child,entity,screenTagName,sharedConfig,property,formId) {
     var childs=idChild.split(",");
     var data="{"+    
@@ -903,7 +761,6 @@ function manageDB(){
     });
 }
 function getWsConfiguration(){
-    
     db.readTransaction(function (tx) {
         tx.executeSql('SELECT * FROM WS', [], function (tx, results) {
             var len = results.rows.length, i;
@@ -938,16 +795,18 @@ function updateWsConfiguration(ip,port){
     sessionStorage.setItem('Ip_config', ip);
     sessionStorage.setItem('Ip_port', port);    
 }
-function ExecuteTask(taskId,workflowName,targettab){
+function ExecuteTask(taskId,workflowName,targettab,screenTitle){
     gTaskId=taskId;
     gExecutedWorkflowName=workflowName;
     gTargetTab = targettab; 
+    gPageTitleContent=screenTitle;
     if(!checkInternetConnection())                                                   
         myApp.alert("please check your internet connection");
     else 
         mainView.router.load({url: "executeTaskScreen.html",reload:true});
 }
-function GetExecuteTaskScreen(url){  
+function GetExecuteTaskScreen(){  
+    var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetExecuteTaskScreen';
     var data="{"+
         "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"taskId\":\""+gTaskId+"\"," +
@@ -973,11 +832,9 @@ function GetExecuteTaskScreen(url){
                 gSubItem=data.screenName;
                 manageAutoCompleteComponent("my-mainData-form__"+itemId,gSubItem);
                 document.getElementById("executeTaskContent").innerHTML=data.content;
-                gPageTitleElement=document.getElementById("title_executeTaskScreen");
-                gPageTitleElement.textContent=data.itemShortName;
                 $('#executeTask-toolbarContent').append(data.buttonsDiv);
                 gScreenName=data.screenName;
-                gSubItem=data.subItem;
+                gSubItem=data.subItem; 
                 gEngine = data.screenEngine;                    
                 gExtendedProperties=data.ExtendedProperties;    
                 myApp.hidePreloader();
@@ -1001,7 +858,6 @@ function GetExecuteTaskScreen(url){
         }                             
     });       
 }     
-
 function manageInstructionGuideResponse(data){
     if(data.instructionGuide!==undefined)  
     {
@@ -1011,20 +867,19 @@ function manageInstructionGuideResponse(data){
         $('#executeTask-toolbarContent div').append(data.instructionGuideButton); 
     } 
 } 
-function showWorkflowInstructionGuide(){  
-     myApp.popup('<div class="popup" style="width: 50% !important; height :50% !important; top: 25% !important; top:25% !important; left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;" >' + gInstructionGuide + '</div>', true); 
+function showWorkflowInstructionGuide(){   
+     createPopup(gInstructionGuide,"","25%","25%","50%","50%");
 }
-function GetPricingConditionScreen(screenName){
+function GetPricingConditionScreen(screenName,mainItemId,relatedItemId){
     var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetRelatedItemScreen";    
-
     var data="{"+    
       "\"screenName\":\""+screenName+"\","+
       "\"screenType\":\"pricingCondition\","+
       "\"userData\":"+sessionStorage.getItem("userData")+","+
-      "\"mainItemId\":\""+gMainItemId+"\","+
+      "\"mainItemId\":\""+mainItemId+"\","+
       "\"taskId\":\""+gTaskId+"\"," +
       "\"screenWidth\":\""+window.innerWidth+"\"," +
-      "\"relatedItemId\":\""+gRelatedItemId+"\"}"; 
+      "\"relatedItemId\":\""+relatedItemId+"\"}"; 
     $.ajax({              
         type: 'POST',             
         url: url,                                     
@@ -1046,27 +901,9 @@ function GetPricingConditionScreen(screenName){
         }              
     });  
 }
-
-
-
-myApp.onPageInit('quickInputPopon', function (page) {
-    gHomeBackButton.style.visibility="visible";    
-    createLanguagesList('quickInputPopon');
-    createLogoutPopover('quickInputPopon');  
-    myApp.params.swipePanel=false;
-    gPageTitleElement=document.getElementById("title_quickInputPopon");
-    gPageTitleElement.textContent=gPageTitleContent;  
-    myApp.showPreloader();
-    setTemplate_HeaderData('quickInputPopon'); 
-    loadQuickInputPopon(gScreenName);
-  
-}); 
-
 function loadQuickInputPopon(screenName){
         GetQuickInputPopon('http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GenerateQInputItemPopon',screenName);
 }
-
-
 function GetQuickInputPopon(url,screenName){
      var data="{"+  
        "\"subItem\":\""+gSubItem+"\","+
@@ -1083,10 +920,10 @@ function GetQuickInputPopon(url,screenName){
         success: function(data) { 
             document.getElementById("quickInputPoponForm").innerHTML=data.content;
             $('#existingItemQI-popon-toolbarContent').append(data.buttonsDiv);
-            manageAutoCompleteComponent("my-existingItemQIPopon-form","QI_existing"+gSubItem.toLowerCase());
             loadJSFile("js/QuickInputDetailsScreen.js");
             loadJSFile("js/accounting.js");
             myApp.hidePreloader();
+            manageAutoCompleteComponent("my-QIPopon-form",screenName.toLowerCase());
         },
         error: function(e) { 
             myApp.hidePreloader();

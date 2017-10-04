@@ -9,13 +9,13 @@ var mainItemIdForPricingConditionScreen;
 var mainItemForPricingConditionScreen;
 
 
-function simulateEvent(item){
+function simulateEvent(item,mainItemId){
   var isValidForm = requiredFormComponent("#my-relatedItemPopup-form");  
   var stringify= getGridonPoponsData("#my-relatedItemPopup-form");
     if(isValidForm)
-  GetAmortizationPopon(stringify,item);
+  GetAmortizationPopon(stringify,item,mainItemId);
 }
-function GetAmortizationPopon(stringify,screenName){
+function GetAmortizationPopon(stringify,screenName,mainItemId){
      myApp.showPreloader();
      var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetAmortizationGrid';
      var popupWidth=window.innerWidth*0.90;
@@ -27,8 +27,8 @@ function GetAmortizationPopon(stringify,screenName){
      var data="{"+ 
        "\"limit\":\"30\","+
        "\"start\":\"0\","+ 
-       "\"mainItemId\":\""+gMainItemId+"\"," +   
-       "\"parentId\":\""+gMainItemId+"\"," +  
+       "\"mainItemId\":\""+mainItemId+"\"," +   
+       "\"parentId\":\""+mainItemId+"\"," +  
        "\"screenName\":\""+screenName+"\","+
        "\"userData\":"+sessionStorage.getItem("userData")+","+ 
        "\"poponWidth\":\""+popupWidth+"\"," + 
@@ -47,7 +47,7 @@ function GetAmortizationPopon(stringify,screenName){
              transactionAmountStringList=data.transactionAmountStringList;
              transactionAmountFeesListObject=data.transactionAmountFeesListObject;
              transactionAmountEventFeesListObject=data.transactionAmountEventFeesListObject;
-             myApp.popup('<div class="popup" style="overflow:hidden !important; width: 90% !important; top: 5% !important;left: 5% !important; margin-left: 0px !important;height:90% !important; margin-top: 0px !important; position:absoloute !important; padding-left:5px !important; padding-right:5px !important ;padding-top:7px !important; padding-bottom:7px !important"  >'+data.content+'</div>', true);
+             createPopup(data.content,"","5%","5%","90%","90%");
              myApp.attachInfiniteScroll($$('.amortization-infinite-scroll'));
             loadJSFile("js/amortizationInfiniteScroll.js");
             gAmortizationParameters=parameters;
@@ -109,7 +109,7 @@ function savePricingCondition(screenName){
     }
 }
 
-function savePricingConditionEvent(parentItemId,screenName){
+function savePricingConditionEvent(mainItemId,screenName,relatedItemId){
     
     var isValidForm = requiredFormComponent("my-relatedItemPopup-form"); 
     if(isValidForm)
@@ -120,9 +120,9 @@ function savePricingConditionEvent(parentItemId,screenName){
      var formData = myApp.formToData('#my-relatedItemPopup-form');
      var parameters=JSON.stringify(formData);
      var data="{"+ 
-       "\"mainItemId\":\""+gMainItemId+"\"," + 
+       "\"mainItemId\":\""+mainItemId+"\"," + 
        "\"screenTag\":\""+screenName+"\"," +        
-       "\"relatedItemId\":\""+gRelatedItemId+"\"," +  
+       "\"relatedItemId\":\""+relatedItemId+"\"," +  
        "\"remoteIp\":\""+sessionStorage.getItem('Ip_config')+"\"," + 
        "\"transactionAmountStringList\":\""+transactionAmountStringList+"\"," +      
        "\"transactionAmountFeesListObject\":"+transactionAmountFeesListObject+"," +   
@@ -184,8 +184,7 @@ function manageSaveConditionResponse(data,item,screenName) {
                     case "deviationAlert":
                         {
                             errorMsg = data.message;
-
-                            myApp.popup('<div class="popup" style="width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;" ><div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">' + data.message + '</br></br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="saveProcessEngineComment_enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="saveBeforeSaveConditon_DeviationComment('+screenName+')" id="saveProcessEngineCommentButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
+                            generateSaveCommentDeviationPopup(data.message,saveEventHandler);
                             break;
                         }
                 }

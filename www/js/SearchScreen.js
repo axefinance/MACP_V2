@@ -4,6 +4,7 @@ var SearchScreen_JSFlag;
 function launchSearch(item)
 {
     gSubItem=item;
+    gCurrentSearchItem=item;
     var isValidForm = requiredFormComponent('form');
     if(isValidForm)
     {
@@ -14,4 +15,4 @@ function launchSearch(item)
         else 
             mainView.router.load({url: 'searchResultScreen.html',reload:false,ignoreCache:true});
     }
-}
+} 

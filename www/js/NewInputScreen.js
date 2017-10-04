@@ -81,7 +81,7 @@ function saveNewInput(parameters,screenName){
             else
                 {
                 gScreenName=screenName;     
-                loadEditScreen(false);
+                loadEditScreen(false,gMainItemId);
                 }
         }
         else
@@ -127,7 +127,12 @@ function manageSaveInputResponse(data,screenName)
                     case "deviationAlert" :
                         {
                              errorMsg=data.message;
-                             myApp.popup('<div class="popup" style="width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;" ><div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">'+data.message+'</br></br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="saveProcessEngineComment_enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="saveBeforeInsert_DeviationComment("'+screenName+'")" id="saveProcessEngineCommentButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
+                             /*
+                             var popupContent=data.message+'</br></br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="saveProcessEngineComment_enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="saveBeforeInsert_DeviationComment("'+screenName+'")" id="saveProcessEngineCommentButton" style="width:50%; margin-left:50%">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()" style="width:50%;">No</a></div>';
+                             createPopup(popupContent,"","25%","25%","50%","50%");
+                             */
+                             var saveEventHandler='saveBeforeInsert_DeviationComment(\''+screenName+'\');';
+                             generateSaveCommentDeviationPopup(data.message,saveEventHandler);
                             break;
                         }
                 }
@@ -142,7 +147,7 @@ function manageSaveInputResponse(data,screenName)
             else
                 {
                 gScreenName=screenName; 
-                loadEditScreen(false);
+                loadEditScreen(false,gMainItemId);
                 }
         }
 }
@@ -194,7 +199,7 @@ function saveBeforeInsert_DeviationComment(screenName)
             if(!checkInternetConnection())                                                   
                 myApp.alert("please check your internet connection");
             else 
-                mainView.router.load({url: "editScreen.html",reload:true});
+                loadEditScreen(false,gMainItemId);
         }
       else
         {  
