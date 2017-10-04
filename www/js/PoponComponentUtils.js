@@ -31,10 +31,9 @@ function searchOnPoponButtonEvent() {
     var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/GetSearchResultPage';
     myApp.showPreloader();
     var formData = myApp.formToData('#my-poponComponent-form');
-    currentSearchParams = JSON.stringify(formData);
-    currentSearchItem = PoponComponentItem;
-    currentSearchType = "searchOnPoponResult";
-    lunchSearchResult();
+    gCurrentSearchItem = PoponComponentItem;
+    gCurrentSearchType = "searchOnPoponResult";
+    lunchSearchResult(gCurrentSearchItem,JSON.stringify(formData));
 }
 function poponComponentClick(item, idComponent,formId, displayproperty) {
     var items = item.split(",");
@@ -68,10 +67,11 @@ function poponComponentClick(item, idComponent,formId, displayproperty) {
     else {
         var Htmllist = "";
         for (var i = 0 ; i < items.length; i++) {
+            var item=items[i].replace(" ","");
             Htmllist = Htmllist + '<li  onclick="handle();"><label class="label-radio item-content">' +
-                  '<input type="radio" name="my-radio" value="' + items[i] + '" checked="checked">' +
+                  '<input type="radio" name="my-radio" value="' + item + '">' +
         '<div class="item-inner">' +
-              '<div class="item-title">' + items[i] + '</div>' +
+              '<div class="item-title">' + item + '</div>' +
             '</div>' +
           '</label>' +
         '</li>';
@@ -81,10 +81,12 @@ function poponComponentClick(item, idComponent,formId, displayproperty) {
             text: '',
             afterText: '<div style="width: auto; margin:5px -15px -15px">' +
                           '<form id="searchOnPopon-choicItem-form" class="list-block">' +
+                          '<div class="list-block">'+
                       '<ul>' +
                      Htmllist +
                      '</ul>' +
-                     '</form>' +
+                     '</div>'+
+                     '</form>'+
                      '</div>'
             
         });
@@ -119,20 +121,21 @@ function handle() {
             error: function (e) {
                 myApp.hidePreloader();
             }
+        
         });
     
 }
 
 
-function poponInfoClick(subItem,idComponent) 
+function poponInfoClick(screenName,idComponent) 
 {
     
-    itemRef=document.getElementById(idComponent+"__Value").value;
+    gPageTitleContent=document.getElementById(idComponent+"__Value").value;
     gMainItemId=document.getElementById(idComponent).value;
     if (gMainItemId != "" || gMainItemId != undefined)
     {  
-        gSubItem=subItem;    
-        loadEditScreen(true);
+        gScreenName=screenName; 
+        loadEditScreen(true,gMainItemId);
     }
     else
         myApp.alert("null");
@@ -142,7 +145,7 @@ function poponInfoClick(subItem,idComponent)
 function selectItem(itemId,itemShortName)
 { 
     
-  $('#'+FormId).find('#'+ComponentId+"__Value").val(itemShortName);  // document.getElementById(FormId).getElementById(ComponentId+"__Value");
+  $('#'+FormId).find('#'+ComponentId+"__Value").val(itemShortName);  
   $('#'+FormId).find('#'+ComponentId).val(itemId);
   $("#poponInfoButton_"+ComponentId).removeAttr("disabled");
    myApp.closeModal();

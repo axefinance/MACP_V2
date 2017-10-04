@@ -16,7 +16,6 @@ function onClickLoginButton(){
    
 function manageAuthentifaction(result)
 {
-       
     switch (result["status"]) {   
               case "error":
                  myApp.alert(result["message"],'MACP');
@@ -25,13 +24,13 @@ function manageAuthentifaction(result)
               case "ok":
                  {  
                    sessionStorage.setItem("userData",JSON.stringify(result.userData));  
-                    if(!checkInternetConnection())                                                   
-                        myApp.alert("please check your internet connection");
-                    else 
-                        mainView.router.load({url: 'homePage.html',ignoreCache: true,reload: true});
+                     gPageTitleContent=result.homePageTab;
+                     gHomePageTab=result.homePageTab;
+                     gTeamTasksTabLabel=result.teamTasksTab;
+                    mainView.router.load({url: 'homePage.html',ignoreCache: true,reload: true});
                    sessionStorage.setItem("dateFormat",result.dateFormat);
                      break;
-                 }
+                 } 
                    
           }
 }  
@@ -65,8 +64,9 @@ function parseDataGet(url,login,password) {
         error: function(e) {
            // if(e.status===0)
              myApp.hidePreloader();    
-             errorMessage(e.message);   
-        }
+             errorMessage(e);   
+        },
+        timeout: 10000
     });
 
 }

@@ -60,7 +60,7 @@ function manageStartWorkFlowResponse(data,mainItemId) {
                 }
                 else {
                     myApp.hidePreloader();
-                    myApp.popup('<div class="popup" style="overflow:hidden !important; width: 80% !important; top: 10% !important;left: 10% !important; margin-left: 0px !important;height:80% !important; margin-top: 0px !important; position:absoloute !important; padding-left:5px !important; padding-right:5px !important ;padding-top:7px !important; padding-bottom:7px !important"  >' + data.Content + '</div>', true);
+                    createPopup(data.Content,"","10%","10%","80%","80%");
                     if (data.runningWF != undefined)
                         myApp.alert(data.runningWF, 'MACP', function () {
                             myApp.closeModal(".popup", true);
@@ -131,7 +131,7 @@ function manageStartWorkFlowItemResponse(data,mainItemId) {
     if (data.withEligibility != undefined) {
         StartWfEligibilityObject = data.EligibilityObject;
         myApp.hidePreloader();
-        myApp.popup('<div class="popup" style="width: 80% !important; top: 10% !important;left: 10% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important;background : #f1f1f1 !important;" >' + data.poponContent + '</div>', true);
+        createPopup(data.poponContent,"","10%","10%","80%","80%");
     }
     else if (data.behavior != undefined) {
         manageControlValidatorBehavior(data,mainItemId);
@@ -143,7 +143,7 @@ function manageStartWorkFlowItemResponse(data,mainItemId) {
         managerRequiredMitigantResponse(data,mainItemId);
     }
     else {
-        HomeBackButton.style.visibility = "hidden";
+        gHomeBackButton.style.visibility = "hidden";
         myApp.hidePreloader();
         myApp.closeModal('.popup');
         mainView.router.back({ force: true, pageName: "homePage" });
@@ -159,7 +159,12 @@ function managerRequiredMitigantResponse(data,mainItemId) {
     RequiredMitigant = data.requiredMitigant;
     DeviatedMsg = data.message;
     if (data.withDeviation === "true") { 
-        myApp.popup("<div class='popup' style='width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;' ><div class='content-block-title' style='word-wrap: break-word !important;white-space : inherit !important;'>" + data.message + "</br></br>" + data.requiredMitigant + "</br></br>" + data.question + "</br></div><div class='list-block' ><ul><li class='align-top'><div class='item-content'><div class='item-media'></div><div class='item-inner'><div class='item-input'><textarea id='deviationComment' onkeyup='saveStartWorkflow_RequiredMitigantComent_enabledButton(this)'></textarea></div></div></div></li></ul></<div><br><br><div class='row'><div class='col-50'><a href='#' class='button button-fill disabled' onclick='saveStartWorkflow_RequiredMitigantComent(\""+mainItemId+"\")' id='saveStartWorkflow_RequiredMitigantComentButton'>Yes</a></div><div class='col-50'><a href='#' class='button button-fill active' onclick='myApp.closeModal()'>No</a></div></div></div>", true);
+        /*
+        var popupContent=data.message + "</br></br>" + data.requiredMitigant + "</br></br>" + data.question + "</br></div><div class='list-block' ><ul><li class='align-top'><div class='item-content'><div class='item-media'></div><div class='item-inner'><div class='item-input'><textarea id='deviationComment' onkeyup='saveStartWorkflow_RequiredMitigantComent_enabledButton(this)'></textarea></div></div></div></li></ul></<div><br><br><br><br><div class='row'><div class='col-50'><a href='#' class='button button-fill disabled' style='width:50%; margin-left:50%' onclick='saveStartWorkflow_RequiredMitigantComent(\""+mainItemId+"\")' id='saveStartWorkflow_RequiredMitigantComentButton'>Yes</a></div><div class='col-50'><a href='#' class='button button-fill active' onclick='myApp.closeModal()' style='width:50%;'>No</a></div>";
+        createPopup(popupContent,"","25%","25%","50%","50%");
+        */
+         var saveEventHandler='saveStartWorkflow_RequiredMitigantComent(\''+mainItemId+'\');';
+         generateSaveCommentDeviationPopup(data.message + "</br></br>" + data.requiredMitigant + "</br></br>" + data.question,saveEventHandler);
     }
     else {
         myApp.alert(data.message + "</br></br>" + data.requiredMitigant + "</br>", "MACP");
@@ -170,34 +175,17 @@ function manageRequiredDocumentResponse(data,mainItemId) {
     RequiredDocument = data.requiredDocument;
     DeviatedMsg = data.message;
     if (data.withDeviation === "true") {
-        myApp.popup("<div class='popup' style='width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;' ><div class='content-block-title' style='word-wrap: break-word !important;white-space : inherit !important;'>" + data.message + "</br></br>" + data.requiredDocument + "</br></br>" + data.question + "</br></div><div class='list-block' ><ul><li class='align-top'><div class='item-content'><div class='item-media'></div><div class='item-inner'><div class='item-input'><textarea id='deviationComment' onkeyup='saveStartWorkflow_RequiredDocumentComent_enabledButton(this)'></textarea></div></div></div></li></ul></<div><br><br><div class='row'><div class='col-50'><a href='#' class='button button-fill disabled' onclick='saveStartWorkflow_RequiredDocumentComent(\""+mainItemId+"\")' id='saveStartWorkflow_RequiredDocumentComentButton'>Yes</a></div><div class='col-50'><a href='#' class='button button-fill active' onclick='myApp.closeModal()'>No</a></div></div></div>", true);
+        /*
+        var popupContent=data.message + "</br></br>" + data.requiredDocument + "</br></br>" + data.question + "</br></div><div class='list-block' ><ul><li class='align-top'><div class='item-content'><div class='item-media'></div><div class='item-inner'><div class='item-input'><textarea id='deviationComment' onkeyup='saveStartWorkflow_RequiredDocumentComent_enabledButton(this)'></textarea></div></div></div></li></ul></<div><br><br><br><br><div class='row'><div class='col-50'><a href='#' class='button button-fill disabled' onclick='saveStartWorkflow_RequiredDocumentComent(\""+mainItemId+"\")' id='saveStartWorkflow_RequiredDocumentComentButton' style='width:50%; margin-left:50%' >Yes</a></div><div class='col-50'><a href='#' class='button button-fill active' onclick='myApp.closeModal()' style='width:50%;'>No</a></div>";
+         createPopup(popupContent,"","25%","25%","50%","50%");
+         */
+         var saveEventHandler='saveStartWorkflow_RequiredDocumentComent(\''+mainItemId+'\');';
+         generateSaveCommentDeviationPopup(data.message + "</br></br>" + data.requiredDocument + "</br></br>" + data.question,saveEventHandler);
     }
     else {
         myApp.alert(data.message + "</br></br>" + data.requiredDocument + "</br>", "MACP");
     }
 }
-
-function saveStartWorkflow_RequiredDocumentComent_enabledButton(textarea) {
-    var saveStartWorkflow_RequiredDocumentComentButton = document.getElementById("saveStartWorkflow_RequiredDocumentComentButton");
-    if (textarea.value.length != 0) {
-        saveStartWorkflow_RequiredDocumentComentButton.className = "button button-fill active";
-    }
-    else {
-        saveStartWorkflow_RequiredDocumentComentButton.className = "button button-fill disabled";
-    }
-}
-
-function saveStartWorkflow_RequiredMitigantComent_enabledButton(textarea) {
-    var saveStartWorkflow_RequiredMitigantComentButton = document.getElementById("saveStartWorkflow_RequiredMitigantComentButton");
-    if (textarea.value.length != 0) {
-        saveStartWorkflow_RequiredMitigantComentButton.className = "button button-fill active";
-    }
-    else {
-        saveStartWorkflow_RequiredMitigantComentButton.className = "button button-fill disabled";
-    }
-
-}
-
 function manageControlValidatorBehavior(data,mainItemId) {
     if (data.behavior === "blockingAlert") {
         myApp.alert(data.message, "Exception");
@@ -209,10 +197,10 @@ function manageControlValidatorBehavior(data,mainItemId) {
     }
     else if (data.behavior === "deviationAlert") {
         DeviatedMsg = data.message;
-        myApp.popup("<div class='popup' style='width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;' ><div class='content-block-title' style='word-wrap: break-word !important;white-space : inherit !important;'>" + DeviatedMsg + "</br></br>" + data.question + "</br></div><div class='list-block' ><ul><li class='align-top'><div class='item-content'><div class='item-media'></div><div class='item-inner'><div class='item-input'><textarea id='startWFdeviationComment' onkeyup='saveStartWFDeviationComment_enabledButton(this)'></textarea></div></div></div></li></ul></<div><br><br><div class='row'><div class='col-50'><a href='#' class='button button-fill disabled' onclick='saveStartWFDeviationComment(\""+mainItemId+"\")' id='saveWFDeviationCommentButton'>Yes</a></div><div class='col-50'><a href='#' class='button button-fill active' onclick='myApp.closeModal()'>No</a></div></div></div>", true);
+        var saveEventHandler='saveStartWFDeviationComment(\''+mainItemId+'\');';
+        generateSaveCommentDeviationPopup(data.message,saveEventHandler);
     }
 }
-
 function checkWorkflowEligibility(mainItemId) {
     myApp.showPreloader();
     var popupWidth = window.innerWidth * 0.80;
@@ -252,20 +240,6 @@ function checkWorkflowEligibility(mainItemId) {
     });
 
 }
-
-function saveStartWFDeviationComment_enabledButton(textarea) {
-
-    var stopWorkflowButton = document.getElementById("saveWFDeviationCommentButton");
-    if (textarea.value.length != 0) {
-        stopWorkflowButton.className = "button button-fill active";
-    }
-    else {
-        stopWorkflowButton.className = "button button-fill disabled";
-    }
-
-
-}
-
 function saveStartWFDeviationComment(mainItemId) {
     var comment = document.getElementById("startWFdeviationComment").value;
     myApp.showPreloader();

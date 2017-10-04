@@ -12,7 +12,7 @@ $$('.amortization-infinite-scroll').on('infinite', function () {
     
   // Emulate 1s loading     
   setTimeout(function () {
-        if (lastIndex >= totalRowNumber) {
+        if (lastIndex >= gTotalRowNumber) {
       myApp.detachInfiniteScroll($$('.amortization-infinite-scroll'));
       $$('.infinite-scroll-preloader').remove();
       return;

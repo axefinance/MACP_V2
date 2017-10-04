@@ -8,7 +8,7 @@ function westMenuItem(item,title,screenName){
         $$('.view-main .page-on-left').remove(screenName);
         }
       gSubItems=item;
-      pageTitleContent=title;
+      gPageTitleContent=title;
       if(!checkInternetConnection())                                                   
           myApp.alert("please check your internet connection");
       else 

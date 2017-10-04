@@ -2,38 +2,34 @@ var LinkSourceTag;
 var mainItemIdForLink;
 var mainItemForLink;
 
-function OpenReportWindowFromLink(reportpath,fileType)
+function OpenReportWindowFromLink(reportpath,fileType,screenName,mainItemId)
 {
-    generateDocument(reportpath, divId, fileType);
+    generateDocument(reportpath, screenName, fileType,mainItemId);
 }
-function OpenRelatedItemFromLink(property,relatedtype,sourcetag,parentItemId,parentItem)
+function OpenRelatedItemFromLink(property,relatedtype,linkSourcetag,parentItemId,parentItem)
 {
-   isRelatedFromLink="true";
-    divId=sourcetag;
-    itemRef=parentItemId+".AUTO GENERATED";
+    gIsRelatedFromLink="true";
+    gScreenName=linkSourcetag;
+    gPageTitleContent=gPageTitleElement.textContent+" : "+relatedtype;
     gEngine="classicre";
     RelatedItemType=relatedtype;
      mainItemIdForRelatedScreen=parentItemId;
      mainItemForRelatedScreen=parentItem;
-     mainItemIdForLink=parentItemId;
+     mainItemIdForLink=parentItemId; 
      mainItemForLink=parentItem;
     mainView.router.load({url: 'relatedScreen.html',reload:false,ignoreCache:true});
+    
 }
 function OpenInformativeGridFromLink(sourcetag)
 { 
-    myApp.alert("informative");      
+   // myApp.alert("informative");       
 }   
-function OpenAttachmentFromLink(mainItemId, sourceTag, relatedtype){
+function OpenAttachmentFromLink(mainItemId, attachmentSourceTag, relatedtype){
     gMainItemId = mainItemId;
-    gScreenName = sourceTag;
-    itemRef=mainItemId+".AUTO GENERATED";
+    gScreenName = attachmentSourceTag;
+    gPageTitleContent=mainItemId+".AUTO GENERATED";
     RelatedItemType=relatedtype;
     gEngine = "attachmentFromLink";
     mainView.router.load({url: 'attachmentScreen.html',reload:false,ignoreCache:true});
-
-   /* isRelatedFromLink="true";
-    gScreenName = sourceTag;
-    engine = "attachment";
-    mainView.router.load({url: 'relatedScreen.html',reload:false,ignoreCache:true});*/
 
 }

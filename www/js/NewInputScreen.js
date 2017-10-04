@@ -1,6 +1,6 @@
 var NewInputScreen_JSFlag;
 var errorMsg;
-
+/*
 $$('.newInput-form-to-data').on('click', function(){
     var formId = "form"; 
     var isValidForm = requiredFormComponent(formId); 
@@ -11,11 +11,16 @@ $$('.newInput-form-to-data').on('click', function(){
         saveNewInputEvent(parameters);
     }
 });
-
-
-function saveNewInputEvent(parameters){
+*/
+function saveNewInputEvent(screenName){
+     var formId = "form"; 
+    var isValidForm = requiredFormComponent(formId); 
+    if(isValidForm)
+    {
+      var formData = myApp.formToData('#my-newInput-form');
+      var  parameters=JSON.stringify(formData);  
       var data="{"+    
-        "\"screenName\":\""+gSubItem+"\","+
+        "\"screenName\":\""+screenName+"\","+
         "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
         "\"parameters\":"+parameters+"}";  
@@ -31,7 +36,7 @@ function saveNewInputEvent(parameters){
             myApp.hidePreloader();
             if(data.status==="ok")
             {
-                   manageSaveInputResponse(data);
+                   manageSaveInputResponse(data,screenName);
             }
             else  
             {
@@ -44,14 +49,15 @@ function saveNewInputEvent(parameters){
              myApp.hidePreloader();
             errorMessage(e.message);
      }                           
-    });    
+    });
+  }
 }
 
 
-function saveNewInput(parameters){
+function saveNewInput(parameters,screenName){
     
       var data="{"+    
-        "\"screenName\":\""+gSubItem+"\","+
+        "\"screenName\":\""+screenName+"\","+
         "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," + 
         "\"parameters\":"+parameters+"}";  
@@ -68,15 +74,14 @@ function saveNewInput(parameters){
         {
             myApp.hidePreloader();
             gMainItemId=data.itemId;     
-            itemRef=data.itemRef; 
-            TargetTab=data.targetTab;  
+            gPageTitleContent=data.itemRef; 
+            gTargetTab=data.targetTab;  
             if(!checkInternetConnection())                                                   
                 myApp.alert("please check your internet connection");
             else
                 {
-                gScreenName=gSubItem;     
-                loadEditScreen(false);
-                fromNewInput=true;
+                gScreenName=screenName;     
+                loadEditScreen(false,gMainItemId);
                 }
         }
         else
@@ -97,7 +102,7 @@ function saveNewInput(parameters){
 }
 
 
-function manageSaveInputResponse(data)
+function manageSaveInputResponse(data,screenName)
 {
    
     if(data.behavior!=null)
@@ -115,14 +120,19 @@ function manageSaveInputResponse(data)
                               myApp.confirm(data.message, "Exception", function () {
                                         var formData = myApp.formToData('#my-newInput-form');
                                         parameters=JSON.stringify(formData);
-                                        saveNewInput(parameters);
+                                        saveNewInput(parameters,screenName);
                                          });
                             break;
                         }
                     case "deviationAlert" :
                         {
                              errorMsg=data.message;
-                             myApp.popup('<div class="popup" style="width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;" ><div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">'+data.message+'</br></br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="saveProcessEngineComment_enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="saveBeforeInsert_DeviationComment()" id="saveProcessEngineCommentButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
+                             /*
+                             var popupContent=data.message+'</br></br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="saveProcessEngineComment_enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="saveBeforeInsert_DeviationComment("'+screenName+'")" id="saveProcessEngineCommentButton" style="width:50%; margin-left:50%">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()" style="width:50%;">No</a></div>';
+                             createPopup(popupContent,"","25%","25%","50%","50%");
+                             */
+                             var saveEventHandler='saveBeforeInsert_DeviationComment(\''+screenName+'\');';
+                             generateSaveCommentDeviationPopup(data.message,saveEventHandler);
                             break;
                         }
                 }
@@ -130,15 +140,14 @@ function manageSaveInputResponse(data)
     else
         { 
             gMainItemId=data.itemId;
-            itemRef=data.itemRef;
-            TargetTab=data.targetTab;
+            gPageTitleContent=data.itemRef;
+            gTargetTab=data.targetTab;
             if(!checkInternetConnection())                                                   
                 myApp.alert("please check your internet connection");
             else
                 {
-                gScreenName=gSubItem; 
-                loadEditScreen(false);
-                fromNewInput=true;
+                gScreenName=screenName; 
+                loadEditScreen(false,gMainItemId);
                 }
         }
 }
@@ -158,14 +167,14 @@ function saveProcessEngineComment_enabledButton(textarea){
       
 }; 
 
-function saveBeforeInsert_DeviationComment()
+function saveBeforeInsert_DeviationComment(screenName)
 {
      var comment=document.getElementById("deviationComment").value; 
      var formData = myApp.formToData('#my-newInput-form');
       var  parameters=JSON.stringify(formData);
        myApp.closeModal(); 
       var data="{"+    
-        "\"screenName\":\""+gSubItem+"\","+
+        "\"screenName\":\""+screenName+"\","+
         "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"mainItemId\":\"0\"," +
         "\"relatedItemId\":\"0\"," +
@@ -185,16 +194,15 @@ function saveBeforeInsert_DeviationComment()
          {
             myApp.hidePreloader();
             itemId=data.itemId; 
-            divId=data.itemId;
-            itemRef=data.itemRef;              
-            TargetTab=data.targetTab; 
+            gPageTitleContent=data.itemRef;              
+            gTargetTab=data.targetTab; 
             if(!checkInternetConnection())                                                   
                 myApp.alert("please check your internet connection");
             else 
-                mainView.router.load({url: "editScreen.html",reload:true});
-            fromNewInput=true;
+                loadEditScreen(false,gMainItemId);
         }
-    else{  
+      else
+        {  
             myApp.hidePreloader();
                     myApp.alert(data.message,data.messageTitle);    
         }

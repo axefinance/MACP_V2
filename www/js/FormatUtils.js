@@ -2,9 +2,18 @@ var ForematUtils_JSFlag;
 var InfoButton_ItemId;
 
 function createPopup(popupContainer,popupToolbar,top,left,width,height){
-    myApp.popup('<div class="popup macp-popup" style=" background : #f1f1f1 !important;top : '+top+' !important; left : '+left+' !important; width : '+width+' !important; height : '+height+' !important; " ><div class="popup-container">' +popupContainer+'</div><div  class="popup-toolbar">'+popupToolbar+'</div></div>', true);
+    var popupHtml='<div class="popup macp-popup" style="padding-top:10px !important; overflow-y: hidden; border-radius: 15px; background : #f1f1f1 !important;top : '+top+' !important; left : '+left+' !important; width : '+width+' !important; height : '+height+' !important;';
+    if(popupToolbar==="")
+    {
+    popupHtml=popupHtml+' padding-bottom:10px !important;';
+    }
+    popupHtml=popupHtml+'" ><div class="popup-container">' +popupContainer+'</div>';
+    if(popupToolbar!=="")
+        popupHtml=popupHtml+'<div  class="popup-toolbar">'+popupToolbar+'</div>';
+    popupHtml=popupHtml+'</div>';
+    myApp.popup(popupHtml, true);
+    
 }
-
 var dateFormat = function () {
     var    token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
         timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
@@ -83,7 +92,6 @@ var dateFormat = function () {
         });
     };
 }();
-   
 // Some common format strings
 dateFormat.masks = {
     "default":      "ddd mmm dd yyyy HH:MM:ss",
@@ -99,7 +107,6 @@ dateFormat.masks = {
     isoDateTime:    "yyyy-mm-dd'T'HH:MM:ss",
     isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'"
 };
-    
 // Internationalization strings
 dateFormat.i18n = {
     dayNames: [
@@ -111,25 +118,19 @@ dateFormat.i18n = {
         "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
     ]
 };
-    
 Date.prototype.format = function (mask, utc) {
     return dateFormat(this, mask, utc);
 };
-
 Date.prototype.addDays = function (value) {
     return this.addMilliseconds(value * 86400000); 
 };
-
 Date.prototype.addMilliseconds = function (value) {
     this.setMilliseconds(this.getMilliseconds() + value); return this; 
 };
-
-
 Date.prototype.monthDays= function(){
     var d= new Date(this.getFullYear(), this.getMonth()+1, 0);
     return d.getDate();
 };
-
 Date.prototype.addMonths = function (value) {
     var n = this.getDate();
     this.setDate(1);
@@ -137,13 +138,11 @@ Date.prototype.addMonths = function (value) {
     this.setDate(Math.min(n, this.monthDays()));
     return this;
 };
-    
 Date.prototype.addDays = function (value) {
     var dat = new Date(this.valueOf());
     dat.setDate(dat.getDate() + value);
     return dat;
 }; 
-
 function goToNextField(event) {
     {
         var elements = $(".item-input");
@@ -154,19 +153,21 @@ function goToNextField(event) {
             }
     } 
 }
-
 function errorMessage(message){
-    if(!checkInternetConnection())                                                   
+ var connectionState=checkInternetConnection();
+    if(!connectionState)                                                   
         myApp.alert("please check your internet connection");
+
+   else if(connectionState && message.readyState!==null && message.readyState===4)
+            myApp.alert("please check your internet connection");
     else
         {
-            if(message ==null ||message == "")                
+            if(message ===undefined ||message == "")                
                 myApp.alert("error occured","Error"); 
             else
                 myApp.alert(message,"Error");                                 
         }
 }
-
 function handleKeyboardButton(event){
     var newPage = $(".newPage").length;
     var keyCode = event.which || event.keyCode;
@@ -200,7 +201,6 @@ function handleKeyboardButton(event){
     }
     
 }
-
 function calendarDateFormat(cssClass,idComponent,year,month,day, formId){
     if(month ===-1)
     {
@@ -219,7 +219,6 @@ function calendarDateFormat(cssClass,idComponent,year,month,day, formId){
             value : [new Date(year,month,day)]
         }); }
 }
-   
 function AmountFormat(elementId,decimalprecision,groupseparator,decimalseparator){
     var element = document.getElementById(elementId); 
     var value=element.value;
@@ -230,7 +229,6 @@ function AmountFormat(elementId,decimalprecision,groupseparator,decimalseparator
     }
     
 } 
-
 function percentageFormat(elementId,decimalprecision,decimalseparator){
     var element = document.getElementById(elementId); 
     var value=element.value; 
@@ -244,7 +242,6 @@ function percentageFormat(elementId,decimalprecision,decimalseparator){
         element.value= output;   
     }               
 }
-
 function percentageFormat(elementId,decimalprecision,decimalseparator){
     var element = document.getElementById(elementId); 
     var value=element.value; 
@@ -254,7 +251,6 @@ function percentageFormat(elementId,decimalprecision,decimalseparator){
         element.value= output;   
     }               
 }    
-
 function handleRequiredIcon(component,componentType,elementId,decimalprecision,groupseparator,decimalseparator){
     switch(componentType)
     {
@@ -287,7 +283,6 @@ function handleRequiredIcon(component,componentType,elementId,decimalprecision,g
     //$(component).siblings("div.item-inner").removeClass("requiredIcon");
     
 }
-
 function NumericFormat(elementId,groupSeparator){
     var element = document.getElementById(elementId); 
     var value=element.value;
@@ -301,7 +296,6 @@ function NumericFormat(elementId,groupSeparator){
         element.value= output;
     }
 };     
-
 function requiredFormComponent(formToDataId){
     var i; 
     var indexToSelect=1;
@@ -375,8 +369,6 @@ function requiredFormComponent(formToDataId){
     return isValid;
    
 }
-
-
 function ManagePricingCnditionComponents(formId) {
     var myDateFormat = sessionStorage.getItem("dateFormat");
     var existFirstPaymentDate = false;
@@ -613,8 +605,6 @@ function ManagePricingCnditionComponents(formId) {
         }
     }
 }
-	
-
 function getGridonPoponsData(formdDataId){
     var grids=$(formdDataId).find("div.editableGridOnPopon");
     var myObject = {};
@@ -626,7 +616,20 @@ function getGridonPoponsData(formdDataId){
     }
     return JSON.stringify(myObject); 
 }
-
+function ReinitGridOnPoponDataAfterSave(formDataId){
+ var grids=$(formDataId).find("div.editableGridOnPopon");
+    for (i = 0; i < grids.length; i++) 
+    {
+        var id=$(grids[i]).attr("id");
+        var gridRows=$('#'+id+" li");  
+        for(var i=0 ;i<gridRows.length;i++)
+        {
+          rowId=gridRows[i].getAttribute("id");  
+          var existingGridDataRow=$("#"+rowId+" td");
+          existingGridDataRow.removeAttr("class");          
+        }
+    }
+}
 function manageAutoCompleteComponent(formId,item){
     var screenName;
     
@@ -635,10 +638,10 @@ function manageAutoCompleteComponent(formId,item){
     {
         screenName="search"+item;    
     }
-    else
-        if(formId==="my-existingItemQIPopon-form"){
+    else if(formId==="my-QIPopon-form")
+    {
             screenName=item;
-        }
+    }
     else
     {
         screenName=item.toLowerCase();
@@ -649,7 +652,6 @@ function manageAutoCompleteComponent(formId,item){
     {
         var GeneratedData=[];
         var lastQuery="";
-        var results = [];
         var seletedValue;
         var id = $(autoCompleteElement[i]).attr("id");  
         document.getElementById(id).addEventListener('change', function () {
@@ -661,7 +663,6 @@ function manageAutoCompleteComponent(formId,item){
                  }
                  else
                 {
-                 //$("#poponInfoButton").attr("disabled", false);
                  $("#poponInfoButton_"+id.replace("__Value",'')).removeAttr("disabled");   
                 }  
              });
@@ -669,7 +670,7 @@ function manageAutoCompleteComponent(formId,item){
             input: '#'+id,
             openIn: 'dropdown',
             source: function (autocomplete, query, render) {
-        
+            var results = [];   
                 if (query.length === 0) {
                     render(results);
                     return;
@@ -690,20 +691,12 @@ function manageAutoCompleteComponent(formId,item){
                         dataType: "json",                               
                         data: data,     
                         success: function(data) {  
-                            GeneratedData=data;
                             for(var value in data) {
                                 results.push(data[value]); 
                             }
+                            GeneratedData=[];
                             render(results);
-                            if(seletedValue!="" ||seletedValue!=undefined)
-                            {
-                                var element = $("#"+id.replace("__Value",""));
-                                for(var key in GeneratedData) 
-                                { 
-                                    if(GeneratedData[key]===seletedValue)
-                                        document.getElementById(id.replace("__Value","")).value=key;
-                                }
-                            } 
+                            GeneratedData=data;
                         }, 
                         error: function(e) {  
                             myApp.hidePreloader();                  
@@ -723,21 +716,75 @@ function manageAutoCompleteComponent(formId,item){
                          itemId=key;       
                     }
                 }
-                /*
-                if(value!="")
-                {
-                    $("#poponInfoButton").removeAttr("disabled");
-                    InfoButton_ItemId=itemId;
-                }
-                else
-                {
-                    InfoButton_ItemId="";
-                    document.getElementById(id).setAttribute("value","");
-                }
-                */
             }
         });         
     }
 }
+function generateSaveCommentDeviationPopup(dataMessage,saveEventHendler){
+    var popupContent='<div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">' + dataMessage + '</br></br><br><br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="enableSaveDeviationButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick='+saveEventHendler+' id="saveDeviationCommentButton" style="width:50%; margin-left:50%">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()" style="width:50%;">No</a></div></div>';
+    createPopup(popupContent,"","25%","25%","50%","50%");
+}
+function enableSaveDeviationButton(textarea){
+    var saveDeviationCommentButton=document.getElementById("saveDeviationCommentButton");
+    if(textarea.value.length!=0)
+        {
+            saveDeviationCommentButton.className ="button button-fill active";
+        }
+    else
+       {
+        saveDeviationCommentButton.className ="button button-fill disabled";
+       }
+}
+function setScreenHeaderContent(screenName,title){
+    createLanguagesList(screenName);
+    createLogoutPopover(screenName);  
+    setTemplate_HeaderData(screenName,title);
+}
+function createLanguagesList(screen){
+    $$('.create-language-links-'+screen).on('click', function () {
+        var clickedLink = this;
+        var output="";        
+        for(var i=0 ; i< gLanguagesList.LangsList.length ; i++)
+        { 
+            var display=gLanguagesList.LangsList[i].display;
+            output=output+'<li><a href="#" class="item-link list-button" onclick="switchLanguage(\''+gLanguagesList.LangsList[i].property+'\')">'+display  +'</li>';
+        }
+        var popoverHTML = '<div id="language_popover" class="popover">'+
+                            '<div class="popover-inner">'+
+                              '<div class="list-block">'+
+                                '<ul>'+
+                                 output
+        '</ul>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+        myApp.popover(popoverHTML, clickedLink); 
+    });
+}
+function createLogoutPopover(screen){
+    $$('.create-profile-links-'+screen).on('click', function () {
+        var clickedLink = this;
+        var output="";
 
+        output=output+'<li><a href="#" onclick="logoutAction();" class="item-link list-button">Logout</li>';
+        
+        var popoverHTML = '<div class="popover">'+
+                            '<div class="popover-inner">'+
+                              '<div class="list-block">'+
+                                '<ul>'+
+                                 output
+        '</ul>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+        myApp.popover(popoverHTML, clickedLink);
+    });
+} 
+function setTemplate_HeaderData(screenName,title){
+    var user = JSON.parse(sessionStorage.getItem('userData'));
+    document.getElementById("userName_label"+"_"+screenName).textContent=user.user_name;
+    document.getElementById("lng_label"+"_"+screenName).textContent=user.culture_language;
+   var titleElement=document.getElementById("title_"+screenName);
+    titleElement.textContent=title;
+}
 

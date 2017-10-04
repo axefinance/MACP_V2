@@ -2,8 +2,8 @@ var loading = false;
 var SearchResultScreen_JSFlag;
 
 function editItem(mainItemId,reference,subItem,targettab){ 
-    itemRef=reference;
-    TargetTab=targettab;
+    gPageTitleContent=reference;
+    gTargetTab=targettab;
     gSubItem=subItem;
     gScreenName=subItem;
     gMainItemId=mainItemId;
@@ -11,8 +11,7 @@ function editItem(mainItemId,reference,subItem,targettab){
         myApp.alert("please check your internet connection");
     else 
        {
-           var withBackButton=true;
-           loadEditScreen(withBackButton);
+           loadEditScreen(true,mainItemId);
        }
        
 }       
