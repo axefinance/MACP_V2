@@ -57,7 +57,7 @@ var newEditableGridRows = [];
                         case "jpeg":
                         case "gif":                                                        
                             fileHeader = "data:image/"+fileType+";base64,"                            
-                            myApp.popup('<div class="popup" style="width: 80% !important; top: 10% !important;left: 10% !important; margin-left: 0px !important; margin-top: 0px !important;  position:absoloute !important; background : #f1f1f1 !important;" ><img src="' +fileHeader+ data.content + '"/></div>', true);                            
+                            createPopup(fileHeader+ data.content,"","10%","10%","80%","80%");
                     }
             },
             error: function (e) {
@@ -304,7 +304,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
     function startworkflowButtonEvent(mainItemId) {
            startWorkflow_ButtonAction(mainItemId);
      } 
-    function generateDocument(documentName, item, fileType) {
+    function generateDocument(documentName, item, fileType,mainItemId) {
         myApp.showPreloader();
         var url = "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/ExportReport";
 
@@ -312,7 +312,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
             "\"entityType\":\"" + item + "\"," +
             "\"fileName\":\"" + documentName + "\"," +
             "\"format\":\""+fileType+"\"," +
-            "\"itemID\":\"" + itemId + "\"," +
+            "\"itemID\":\"" + mainItemId + "\"," +
             "\"userData\":"+sessionStorage.getItem("userData")+"}";
         $.ajax({
             type: 'POST',
@@ -381,20 +381,20 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
         myApp.hidePreloader();
         window.open(folderpath + "//" + filename, "_system", 'location=yes');
     }
-    function saveButtonEvent(mainItemId,screenName,subItem) {
+    function saveButtonEvent(mainItemId,screenName,subItem,screenEngine) {
     var formId;    
     var indexToSelect = 1;
-        if (gEngine === "classicms") {
+        if (screenEngine === "classicms") {
             formId = "#my-mainData-form__"+mainItemId; 
 
-        } else if (gEngine === "attachment" || gEngine === "attachmentFromLink") {
+        } else if (screenEngine === "attachment" || screenEngine === "attachmentFromLink") {
             formId = "#my-attachment-form__"+mainItemId;
         }
          var isValidForm = requiredFormComponent(formId); 
         if(isValidForm){
-            if (gEngine === "classicms") {
+            if (screenEngine === "classicms") {
                 mainData_SaveEvent(mainItemId,subItem,screenName);
-            } else if (gEngine === "attachment" || gEngine === "attachmentFromLink") {
+            } else if (screenEngine === "attachment" || screenEngine === "attachmentFromLink") {
                 attachement_SaveEvent(mainItemId,subItem,screenName);
             }
         }
@@ -436,7 +436,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
                         }
                     else
                         {
-                            GetAttachmentScreen(screenName);
+                            GetAttachmentScreen(screenName,mainItemId,subItem);
                         }
                     }
                     
@@ -561,6 +561,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
             data: data,
             success: function (data) {
                 myApp.hidePreloader();
+                ReinitGridOnPoponDataAfterSave("#my-mainData-form__"+parentItemId);
                 myApp.alert(data.message,"MACP");
             },
             error: function (e) {
@@ -633,9 +634,8 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
                     case "deviationAlert":
                         {
                           errorMsg = data.message;
-                        
-
-                            myApp.popup('<div class="popup" style="width: 50% !important; height: 50% !important; top: 25% !important;left: 25% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;" ><div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">' + data.message + '</br></br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="saveProcessEngineComment_enabledButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick="saveBeforeUpdateItem_DeviationComment('+parentItemId+','+screenName+')" id="saveProcessEngineCommentButton">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()">No</a></div></div></div>', true);
+                            var saveEventHendler='saveBeforeUpdateItem_DeviationComment(\''+parentItemId+'\',\''+screenName+'\');';
+                            generateSaveCommentDeviationPopup(data.message,saveEventHendler);
                             break;
                                                                   
              
@@ -646,17 +646,15 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
             else {
 
                 myApp.hidePreloader();
+                ReinitGridOnPoponDataAfterSave("#my-mainData-form__"+parentItemId);
                 myApp.alert(data.message,"MACP");
             }
      }
     function saveBeforeUpdateItem_DeviationComment(parentItemId,screenName) {
             var comment = document.getElementById("deviationComment").value;
-            var updateId = relatedItemId;
-            if (isDuplicate === "isDuplicate")
-                updateId = 0;
             var data = "{" +
                 "\"screenName\":\"" + screenName + "\"," +
-                "\"userId\":\"" + sessionStorage.getItem("userId") + "\"," +
+                "\"userData\":"+sessionStorage.getItem("userData")+","+
                 "\"mainItemId\":\"" + parentItemId + "\"," +
                 "\"relatedItemId\":\"0\"," +
                 "\"comment\":\"" + comment + "\"," +
@@ -675,8 +673,10 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
   
                     if (data.status === "ok") {
                         myApp.hidePreloader();
+                        ReinitGridOnPoponDataAfterSave("#my-mainData-form__"+parentItemId);
                         myApp.closeModal();
                         myApp.alert(data.message);
+                        
                     }
                     else {
                         myApp.hidePreloader();
@@ -693,10 +693,11 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
                 }
             });
         }
-    function generateDocumentMenu(screenName,mainItemId,taskId) {
+    function generateDocumentMenu(screenName,mainItemId,taskId,subItem) {
         myApp.showPreloader();            
         var url = "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetDocumentMenu";
         var data = "{" +
+            "\"subItem\":\"" + subItem + "\"," +
             "\"screenName\":\"" + screenName + "\"," +
             "\"mainItemId\":\"" + mainItemId + "\"," +
             "\"taskId\":\""+taskId+"\"}";
@@ -708,17 +709,16 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
             data: data, 
             success: function (data) {
                 myApp.hidePreloader();   
-                if(data.DocumentMenu!="")
-                    myApp.popup('<div id="documentMenuPopup" class="popup" style="width: 60% !important; top: 10% !important;left: 20% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important;" >' + data.DocumentMenu + '</div>', true);                             
-                    
+                if(data.DocumentMenu!="")                            
+                    createPopup(data.DocumentMenu,"","20%","20%","60%","60%");
             },
             error: function (e) {
-                myApp.hidePreloader();            
+                myApp.hidePreloader();             
                 errorMessage(e.message); 
             }
         });
     }
-    function loadEditScreen(withBackButton){
+    function loadEditScreen(withBackButton,mainItemId){
             if(withBackButton===true)
                 {
                  backButtonHtml=  '<a id="backButton" href="#" class="back link">'+
@@ -732,14 +732,14 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
                 }
      var editScreenContent = '<div class="navbar">'+
              '<div class="navbar-inner">'+
-             '<div class="left theme-gray">'+
+             '<div class="left">'+
               backButtonHtml+
-             '<a class="navbarUserIcon navbarButton link create-profile-links-editScreen" id="userName_label_editScreen__'+gMainItemId+'" aria-hidden="true">'+
+             '<a class="navbarUserIcon navbarButton link create-profile-links-editScreen__'+mainItemId+'" id="userName_label_editScreen__'+mainItemId+'" aria-hidden="true">'+
              'User</a>'+
              '</div>'+ 
-             '<div id="title_editScreen__'+gMainItemId+'" class="center sliding">Search</div>'+
+             '<div id="title_editScreen__'+mainItemId+'" class="center sliding">Search</div>'+
              '<div class="right">'+
-             '<a id="lng_label_editScreen__'+gMainItemId+'" class="navbarGlobeIcon link create-language-links-editScreen__'+gMainItemId+' navbarButton" aria-hidden="true">'+
+             '<a id="lng_label_editScreen__'+mainItemId+'" class="navbarGlobeIcon link create-language-links-editScreen__'+mainItemId+' navbarButton" aria-hidden="true">'+
              'EN</a>'+
              '<a href="#" class="link icon-only open-panel navbarWestMenuIcon"></a>'+
              '</div>'+
@@ -748,11 +748,11 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
              '<div data-page="editScreen" class="page" >'+ 
              '<div class="page-content" >'+
              '<div id="editScreenForm" class="newPage">'+
-             '<div id="editScreenForm__'+gMainItemId+'" ></div>'+    
+             '<div id="editScreenForm__'+mainItemId+'" ></div>'+    
              '</div>'+      
              '</div>'+      
              '<div class="toolbar">'+
-             '<div id="edit-toolbarContent__'+gMainItemId+'" class="toolbar-inner" style="align-parent:rigth !important" >'+  
+             '<div id="edit-toolbarContent__'+mainItemId+'" class="toolbar-inner" style="align-parent:rigth !important" >'+  
              '</div>'+  
              '</div>'+
              '</div>'+               

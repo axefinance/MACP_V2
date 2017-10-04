@@ -4,11 +4,8 @@ var selected = false;
 
 function loadTeamTasksList(title) {
 	gPageTitleContent = title;
-	mainView.router.load({
-		url: 'teamTasksScreen.html',
-		reload: true,
-		ignoreCache: true
-	});
+	mainView.router.load({url: 'teamTasksScreen.html',reload: false,ignoreCache: true});
+    //  mainView.router.load({url: 'searchResultScreen.html',reload:false,ignoreCache:true});
 }
 
 $$('.gridRow').on('taphold', function () {
@@ -122,7 +119,7 @@ function loadGroupMembersPopup(tableId) {
 		dataType: "json",
 		data: data,
 		success: function (data) {
-			myApp.popup('<div class="popup" style="overflow:hidden !important; width: 80% !important; top: 10% !important;left: 10% !important; margin-left: 0px !important; margin-top: 0px !important; position:absoloute !important; background : #f1f1f1 !important; padding-left:5px !important; padding-right:5px !important ;padding-top:7px !important; padding-bottom:7px !important" >' + data.content + '</div>', true);
+            createPopup(data.content,"","25%","25%","50%","50%");
 			myApp.hidePreloader();
 		},
 		error: function (e) {
