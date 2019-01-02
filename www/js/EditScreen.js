@@ -693,30 +693,9 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
                 }
             });
         }
-    function generateDocumentMenu(screenName,mainItemId,taskId,subItem) {
-        myApp.showPreloader();            
-        var url = "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetDocumentMenu";
-        var data = "{" +
-            "\"subItem\":\"" + subItem + "\"," +
-            "\"screenName\":\"" + screenName + "\"," +
-            "\"mainItemId\":\"" + mainItemId + "\"," +
-            "\"taskId\":\""+taskId+"\"}";
-        $.ajax({
-            type: 'POST',
-            url: url,  
-            contentType: "text/plain",
-            dataType: "json",
-            data: data, 
-            success: function (data) {
-                myApp.hidePreloader();   
-                if(data.DocumentMenu!="")                            
-                    createPopup(data.DocumentMenu,"","20%","20%","60%","60%");
-            },
-            error: function (e) {
-                myApp.hidePreloader();             
-                errorMessage(e.message); 
-            }
-        });
+    function generateDocumentMenu(screenName,mainItemId,taskId,subItem, documentMenu) {
+        var res = documentMenu.replace(/&quots/g, "\"");
+        createPopup(res ,"","20%","20%","60%","60%");
     }
     function loadEditScreen(withBackButton,mainItemId){
             if(withBackButton===true)
