@@ -622,3 +622,113 @@ function getGridonPoponsData(formdDataId){
     }
     return JSON.stringify(myObject); 
 }
+
+function manageAutoCompleteComponent(formId,item){
+    var screenName;
+    
+    var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GenerateAutoCompleteSearchOnPoponElement";   
+    if(formId==="my-search-form")
+    {
+        screenName="search"+item;    
+    }
+    else
+    {
+        screenName=item.toLowerCase();
+    }
+    
+    var autoCompleteElement=$("#"+formId).find(".autoComplete");
+    for(var i=0 ;i<autoCompleteElement.length ; i++)
+    {
+        var GeneratedData=[];
+        var lastQuery="";
+        var results = [];
+        var seletedValue;
+        var id = $(autoCompleteElement[i]).attr("id");  
+        document.getElementById(id).addEventListener('change', function () {
+                var elementValue = $('#'+id).val();
+                 if(elementValue==="")
+                 {
+                 $("#poponInfoButton_"+id.replace("__Value",'')).attr("disabled", true);
+                 document.getElementById(id.replace("__Value",'')).value="";
+                 }
+                 else
+                {
+                 //$("#poponInfoButton").attr("disabled", false);
+                 $("#poponInfoButton_"+id.replace("__Value",'')).removeAttr("disabled");   
+                }  
+             });
+        myApp.autocomplete({
+            input: '#'+id,
+            openIn: 'dropdown',
+            source: function (autocomplete, query, render) {
+        
+                if (query.length === 0) {
+                    render(results);
+                    return;
+                }
+                var property=id.split('__')[2];
+                if (query!=lastQuery && query.length>= 3)
+                {
+                    lastQuery=query;    
+                    var data="{"+  
+                        "\"screenName\":\""+screenName+"\","+
+                        "\"property\":\""+property+"\","+
+                        "\"searchCriteria\":\""+query+"\","+
+                        "\"userData\":"+sessionStorage.getItem("userData")+"}";  
+                    $.ajax({             
+                        type: 'POST',                             
+                        url: url,                                  
+                        contentType: "text/plain",                                      
+                        dataType: "json",                               
+                        data: data,     
+                        success: function(data) {  
+                            GeneratedData=data;
+                            results.length = 0;
+                            for(var value in data) {
+                                results.push(data[value]); 
+                            }
+                            render(results);
+                            if(seletedValue!="" ||seletedValue!=undefined)
+                            {
+                                var element = $("#"+id.replace("__Value",""));
+                                for(var key in GeneratedData) 
+                                { 
+                                    if(GeneratedData[key]===seletedValue)
+                                        document.getElementById(id.replace("__Value","")).value=key;
+                                }
+                            } 
+                        }, 
+                        error: function(e) {  
+                            myApp.hidePreloader();                  
+                            errorMessage();
+                        }
+                    });  
+                }
+            },onChange: function (autocomplete, value) { 
+                seletedValue=value;
+                var itemId;
+                for(var key in GeneratedData) 
+                {
+                    if(GeneratedData[key]===value)
+                    {
+                         document.getElementById(id).value=value;
+                         document.getElementById(id.replace("__Value","")).value=key;
+                         itemId=key;       
+                    }
+                }
+                /*
+                if(value!="")
+                {
+                    $("#poponInfoButton").removeAttr("disabled");
+                    InfoButton_ItemId=itemId;
+                }
+                else
+                {
+                    InfoButton_ItemId="";
+                    document.getElementById(id).setAttribute("value","");
+                }
+                */
+            }
+        });         
+    }
+}

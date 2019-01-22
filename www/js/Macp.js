@@ -29,6 +29,9 @@ var WithCollectQuestion;
 var extendedProperties=null;
 var isSwitchLanguage = false;
 var navbarTitle;
+var currentSearchType;
+var currentSearchParams;
+var currentSearchItem;
 //var isRefreshingEvent=false;
 
 var myApp=new Framework7({ swipeBackPage : false, statusbarOverlay:true, tapHold: true,swipePanel: 'left',fastClicksDelayBetweenClicks : 10 }) ;
@@ -245,11 +248,8 @@ myApp.onPageInit('editScreen', function (page) {
     myApp.params.swipePanel=false;
     myApp.showPreloader();
     if(fromNewInput===true)
-        document.getElementById("backButton").style.display = "none"; 
-    pageTitleElement=document.getElementById("title_editScreen");
-    pageTitleElement.textContent=itemRef;
-    setTemplate_HeaderData('editScreen');
-    loadEditScreen(itemId);
+        document.getElementById("backButton").style.display = "none";     
+    loadEditScreen(itemId, currentItem);
     
 }); 
 myApp.onPageInit('newInputScreen', function (page) {
@@ -274,6 +274,9 @@ myApp.onPageInit('searchResultScreen', function (page) {
     myApp.showPreloader();
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetSearchResultPage';
     console.log("URL",url);
+    currentSearchItem=currentItem; 
+    currentSearchParams=searchParams;
+    currentSearchType="searchResult";
     lunchSearchResult(url); 
 });  
 myApp.onPageInit('executeTaskScreen', function (page) {
@@ -331,7 +334,8 @@ function GetRelatedItemScreen()
         contentType: "text/plain",                             
         dataType: "json",                            
         data: data,         
-        success: function(data) {  
+        success: function(data) { 
+            manageAutoCompleteComponent("my-relatedItemPopup-form",divId);   
             loadJSFile("js/RelatedItemScreen.js");
             document.getElementById("relatedItemForm").innerHTML=data.content;
             $('#relatedItem-toolbarContent').append(data.buttonsDiv);
@@ -362,13 +366,13 @@ function loadNewInputPage(){
     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetNewInputScreen';
     GetNewInputScreen(url);
 }  
-function loadEditScreen(itemId){
+function loadEditScreen(itemId, item){
     var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetEditScreen';
-    GetEditScreen(url,itemId);
+    GetEditScreen(url,itemId, item);
 } 
-function GetEditScreen(url,itemId){ 
+function GetEditScreen(url,itemId, item){ 
      var data="{"+      
-        "\"screenName\":\""+currentItem+"\","+
+        "\"screenName\":\""+item+"\","+
         "\"screenParent\":\"\","+ 
         "\"taskId\":\""+TaskId+"\"," +
         "\"userData\":"+sessionStorage.getItem("userData")+","+  
@@ -385,17 +389,49 @@ function GetEditScreen(url,itemId){
                     contentType: "text/plain",                          
                     data: data,        
                     success: function(data) { 
-                        console.log(data);
-                        document.getElementById("editScreenForm").innerHTML=data.content;
-                        $('#edit-toolbarContent').append(data.buttonsDiv);
-                        divId = data.divId;
-                        engine = data.screenEngine;                        
-                        docMenu=(data.DocumentMenu);
-                        loadJSFile("js/EditScreen.js");
-                        loadJSFile("js/WorkflowManager.js");
-                        loadJSFile("js/informativeGridInfiniteScroll.js");
-                        myApp.attachInfiniteScroll($$('.informativeGrid-infinite-scroll'));
-                        myApp.hidePreloader();
+                        var elms = document.querySelectorAll("#editScreenForm");
+            console.log(elms.length);
+            console.log(elms);
+            if(elms.length>1)
+            {
+                var ourEelement=elms[elms.length-1];
+                ourEelement.innerHTML=data.content;
+                console.log($('#edit-toolbarContent__'+itemId));
+                $('#edit-toolbarContent__'+itemId).append(data.buttonsDiv);
+                pageTitleElement=document.getElementById("title_editScreen__"+itemId);
+                pageTitleElement.textContent=itemRef;
+                setTemplate_HeaderData('editScreen__'+itemId);
+            }    
+            else
+            {
+                if(document.getElementById("title_editScreen")!=null)
+                    {
+                 document.getElementById("editScreenForm").innerHTML=data.content;
+                $('#edit-toolbarContent').append(data.buttonsDiv);
+                pageTitleElement=document.getElementById("title_editScreen");
+                pageTitleElement.textContent=itemRef;
+                setTemplate_HeaderData('editScreen');
+                    }
+                else
+                    {
+                var ourEelement=elms[elms.length-1];
+                ourEelement.innerHTML=data.content;
+                console.log($('#edit-toolbarContent__'+itemId));
+                $('#edit-toolbarContent__'+itemId).append(data.buttonsDiv);
+                pageTitleElement=document.getElementById("title_editScreen__"+itemId);
+                pageTitleElement.textContent=itemRef;
+                setTemplate_HeaderData('editScreen__'+itemId); 
+                    }
+            }
+    engine = data.screenEngine;                                
+    divId = data.divId;     
+    manageAutoCompleteComponent("my-mainData-form__"+itemId,item);         
+    loadJSFile("js/EditScreen.js");
+    loadJSFile("js/WorkflowManager.js");
+    loadJSFile("js/informativeGridInfiniteScroll.js");
+    myApp.attachInfiniteScroll($$('.informativeGrid-infinite-scroll'));
+    myApp.hidePreloader();
+    RelatedItemType=$(".selectedTab").text(); 
                     },
                     error: function(e) {
                         myApp.hidePreloader();               
@@ -417,6 +453,7 @@ function GetNewInputScreen(url){
                     success: function(data) {     
                         document.getElementById("newInputForm").innerHTML=data.content;
                         document.getElementById("newInput-toolbarContent").innerHTML=data.button;
+                        manageAutoCompleteComponent("my-newInput-form",currentItem);
                         loadJSFile("js/NewInputScreen.js");
                       //  loadJSFile("js/FormatUtils.js");
                          myApp.hidePreloader();
@@ -439,6 +476,7 @@ function GetSearchPage(url){
         data: data,
                     success: function(data) { 
                         document.getElementById("searchForm").innerHTML=data.content;
+                        manageAutoCompleteComponent("my-search-form",currentItem);
                         loadJSFile("js/SearchScreen.js");
                       //  loadJSFile("js/FormatUtils.js");
                         loadJSFile("js/accounting.js");
@@ -652,14 +690,27 @@ function logoutAction(){
     );
        
 }
-function lunchSearchResult(url){           
+function lunchSearchResult(url){ 
+    if(currentSearchType=="searchResult")
+    {
+        screenWidth=window.innerWidth; 
+        screenHeight=window.innerHeight-90;
+    }
+    else
+    {
+        screenWidth=window.innerWidth*0.80;
+        screenWidth=Math.floor(screenWidth); 
+        screenHeight=window.innerHeight*0.73;
+        screenHeight=Math.floor(screenHeight); 
+    }          
      var data="{"+    
         "\"userData\":"+sessionStorage.getItem("userData")+","+ 
-        "\"item\":\""+currentItem+"\","+
-        "\"searchParams\":"+searchParams+","+
+        "\"item\":\""+currentSearchItem+"\","+
+        "\"searchParams\":"+currentSearchParams+","+
         "\"start\":\"0\","+
         "\"limit\":\"30\","+      
         "\"windowWidth\":\""+window.innerWidth+"\","+
+        "\"searchScreenType\":\""+currentSearchType+"\","+
         "\"windowHeight\":\""+(window.innerHeight-90)+"\"}";  
     console.log("SearchParams",data);          
     $.ajax({             
@@ -669,17 +720,26 @@ function lunchSearchResult(url){
         dataType: "json",                            
         data: data,         
         success: function(data) {   
-            
-            document.getElementById("searchResult").innerHTML=data.dataGrid;  
+              if(currentSearchType=="searchResult")
+            {
+                document.getElementById("searchResult").innerHTML=data.dataGrid; 
+                loadJSFile("js/SearchResultScreen.js");       
+                var tasksTableElement =document.getElementById("tasksTableElement");
+                myApp.attachInfiniteScroll(tasksTableElement);      
+            }
+            else
+            {
+                myApp.popup("<div class='popup' style='width:80% !important; height:80% !important; left:10% !important; top:10% !important; margin-left:0px !important; margin-top:0px !important; margin-right:0px !important; overflow:hidden'>"+data.dataGrid+"</div>");
+                var tasksTableElement =document.getElementById("tasksTableElementOnPopon");
+                myApp.attachInfiniteScroll(tasksTableElement);  
+            }
+            var tasksTableElement =document.getElementById("tasksTableElement");
+            myApp.attachInfiniteScroll(tasksTableElement);
             totalRowNumber=data.TotalRows;
-            console.log(totalRowNumber);
-             var tasksTableElement =document.getElementById("tasksTableElement");
-             myApp.attachInfiniteScroll(tasksTableElement);
             loadJSFile("js/infiniteScroll.js");
             loadJSFile("js/WorkflowManager.js");
-            loadJSFile("js/SearchResultScreen.js");
-            myApp.hidePreloader();
-            
+           
+            myApp.hidePreloader();            
         },   
         error: function(e) { 
             console.log(e.message);  
@@ -813,21 +873,22 @@ function GetExecuteTaskScreen(url){
                     document.getElementById("executeTaskContent").innerHTML=data.content;
                     itemId=data.itemId;
                     stopWFMessage=data.stopWFMessage;
-                     eligibility=data.eligibility;
+                    eligibility=data.eligibility;
                     WithCollectQuestion=data.WithCollectQuestion;
-                     currentItem=data.screenName;
-                     document.getElementById("executeTaskContent").innerHTML=data.content;
-                     pageTitleElement=document.getElementById("title_executeTaskScreen");
-                     pageTitleElement.textContent=data.itemShortName;
-                     itemRef=data.itemShortName;
-                     $('#executeTask-toolbarContent').append(data.buttonsDiv);
-                        divId = data.divId;
-                        engine = data.screenEngine;    
+                    currentItem=data.screenName;
+                    manageAutoCompleteComponent("my-mainData-form__"+itemId,currentItem);
+                    document.getElementById("executeTaskContent").innerHTML=data.content;
+                    pageTitleElement=document.getElementById("title_executeTaskScreen");
+                    pageTitleElement.textContent=data.itemShortName;
+                    itemRef=data.itemShortName;
+                    $('#executeTask-toolbarContent').append(data.buttonsDiv);
+                    divId = data.divId;
+                    engine = data.screenEngine;    
                     docMenu=(data.DocumentMenu);
                     extendedProperties=data.ExtendedProperties;    
                     myApp.hidePreloader();
                     manageInstructionGuideResponse(data);
-                     myApp.hidePreloader();
+                    myApp.hidePreloader();
                 }
             else if(data.status==="item not found")
                 {
