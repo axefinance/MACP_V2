@@ -1,11 +1,8 @@
 var SearchScreen_JSFlag;    
 
-$$('.search-form-to-data').on('click', function(){
- launchSearch();
-}); 
-
-function launchSearch()
+function launchSearch(item)
 {
+        currentItem=item;
     var isValidForm = requiredFormComponent('form');
    /*  if(!isValidForm)
     {

@@ -25,9 +25,9 @@ $$('.infinite-scroll').on('infinite', function () {
         }      
       
         var data="{"+    
-          "\"item\":\""+currentItem+"\","+
+          "\"item\":\""+currentSearchItem+"\","+
           "\"userData\":"+sessionStorage.getItem("userData")+","+
-          "\"searchParams\":"+searchParams+","+
+          "\"searchParams\":"+currentSearchParams+","+
           "\"start\":\""+lastIndex+"\","+
           "\"limit\":\"10\","+      
           "\"windowWidth\":\""+window.innerWidth+"\","+
