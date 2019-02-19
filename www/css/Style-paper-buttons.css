@@ -158,6 +158,13 @@
     content : "\f014";
     font-size:20px;
 }
+
+.selectButton:before{
+    font-family: FontAwesome !important;
+    color: #fff !important;
+    content : "\f058";
+    font-size:20px;
+}
 .homeIcon:before{
     font-family: FontAwesome !important;
     color: #fff !important;

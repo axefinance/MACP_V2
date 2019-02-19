@@ -424,7 +424,8 @@ function GetEditScreen(url,itemId, item){
                     }
             }
     engine = data.screenEngine;                                
-    divId = data.divId;     
+    divId = data.divId;  
+    docMenu=(data.DocumentMenu);   
     manageAutoCompleteComponent("my-mainData-form__"+itemId,item);         
     loadJSFile("js/EditScreen.js");
     loadJSFile("js/WorkflowManager.js");
