@@ -62,13 +62,13 @@ function poponComponentClick(item, idComponent,formId, displayproperty) {
             error: function (e) {
                 myApp.hidePreloader();
             }
-        }); 
+        });
     }
     else {
         var Htmllist = "";
         for (var i = 0 ; i < items.length; i++) {
             var item=items[i].replace(" ","");
-            Htmllist = Htmllist + '<li  onclick="handle();"><label class="label-radio item-content">' +
+            Htmllist = Htmllist + '<li  onclick="handle(\''+item+'\');"><label class="label-radio item-content">' +
                   '<input type="radio" name="my-radio" value="' + item + '">' +
         '<div class="item-inner">' +
               '<div class="item-title">' + item + '</div>' +
@@ -95,12 +95,9 @@ function poponComponentClick(item, idComponent,formId, displayproperty) {
 
     }
 }
-function handle() {
-   
-    var formToData=JSON.stringify(myApp.formToData("#searchOnPopon-choicItem-form"));
-    obj = JSON.parse(formToData);
+function handle(PoponItem) {
      myApp.closeModal();
-    PoponComponentItem=obj["my-radio"]; 
+    PoponComponentItem=PoponItem;
     mainView.router.load({ url: "poponComponentScreen.html", reload: false });
         myApp.showPreloader();
         var url = "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GenerateSearchOnPoponScreen";
