@@ -17,12 +17,17 @@ function saveNewInputEvent(screenName){
     var isValidForm = requiredFormComponent(formId); 
     if(isValidForm)
     {
+      var popupWidth = window.innerWidth * 0.80;
+      var popunHeight = 95;
+      popupWidth = Math.floor(popupWidth);
       var formData = myApp.formToData('#my-newInput-form');
       var  parameters=JSON.stringify(formData);  
       var data="{"+    
         "\"screenName\":\""+screenName+"\","+
         "\"userData\":"+sessionStorage.getItem("userData")+","+
-        "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
+        "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +
+        "\"windowWidth\":\"" + popupWidth + "\"," +
+        "\"windowHeight\":\"" + popunHeight + "\","+
         "\"parameters\":"+parameters+"}";  
      myApp.showPreloader();
      var url="http://"+sessionStorage.getItem('Ip_config')+":"+sessionStorage.getItem('Ip_port')+"/MobileAPI.svc/SaveNewInputEvent";
@@ -55,9 +60,13 @@ function saveNewInputEvent(screenName){
 
 
 function saveNewInput(parameters,screenName){
-    
+          var popupWidth = window.innerWidth * 0.80;
+          var popunHeight = 95;
+          popupWidth = Math.floor(popupWidth);
       var data="{"+    
         "\"screenName\":\""+screenName+"\","+
+        "\"windowWidth\":\"" + popupWidth + "\"," +
+        "\"windowHeight\":\"" + popunHeight + "\","+
         "\"userData\":"+sessionStorage.getItem("userData")+","+
         "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," + 
         "\"parameters\":"+parameters+"}";  
