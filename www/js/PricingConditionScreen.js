@@ -118,11 +118,17 @@ function savePricingConditionEvent(mainItemId,screenName,relatedItemId){
      var stringify= getGridonPoponsData("#my-relatedItemPopup-form");    
      var url='http://'+sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/SaveConditionEvent';
      var formData = myApp.formToData('#my-relatedItemPopup-form');
+     var popupWidth = window.innerWidth * 0.80;
+     var popunHeight = 95;
+     popupWidth = Math.floor(popupWidth);
      var parameters=JSON.stringify(formData);
      var data="{"+ 
        "\"mainItemId\":\""+mainItemId+"\"," + 
-       "\"screenTag\":\""+screenName+"\"," +        
-       "\"relatedItemId\":\""+relatedItemId+"\"," +  
+       "\"screenTag\":\""+screenName+"\"," +
+       "\"windowWidth\":\"" + popupWidth + "\"," +
+       "\"windowHeight\":\"" + popunHeight + "\","+
+       "\"ipAddress\":\"" + sessionStorage.getItem("Ip_config") + "\"," +
+       "\"relatedItemId\":\""+relatedItemId+"\"," +
        "\"remoteIp\":\""+sessionStorage.getItem('Ip_config')+"\"," + 
        "\"transactionAmountStringList\":\""+transactionAmountStringList+"\"," +      
        "\"transactionAmountFeesListObject\":"+transactionAmountFeesListObject+"," +   
