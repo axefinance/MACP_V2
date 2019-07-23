@@ -303,7 +303,13 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
     }
     function startworkflowButtonEvent(mainItemId) {
            startWorkflow_ButtonAction(mainItemId);
-     } 
+     }
+
+     function chatButtonEvent(relatedItemId, isDuplicateAction,mainItemId,subItem,relatedScreenName)
+    {
+        loadJSFile("js/ChatScreen.js");
+        mainView.router.load({url: 'chatScreen.html',reload:false,ignoreCache:true});
+    }
     function generateDocument(documentName, item, fileType,mainItemId) {
         myApp.showPreloader();
         var url = "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/ExportReport";
@@ -719,7 +725,7 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
              '<div id="title_editScreen__'+mainItemId+'" class="center sliding">Search</div>'+
              '<div class="right">'+
              '<a id="lng_label_editScreen__'+mainItemId+'" class="navbarGlobeIcon link create-language-links-editScreen__'+mainItemId+' navbarButton" aria-hidden="true">'+
-             'EN</a>'+
+             'EN</a><a class="link icon-only navbarMessageIcon"  onclick="openNotificationPopon();"><i id="editScreenNotificationsCount" class="icon f7-icons if-not-md"></i></a>'+
              '<a href="#" class="link icon-only open-panel navbarWestMenuIcon"></a>'+
              '</div>'+
              '</div>'+

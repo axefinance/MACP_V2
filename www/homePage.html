@@ -3,15 +3,20 @@
 <div class="navbar">
   <div class="navbar-inner">
      <div class="left">
-            <a class="navbarUserIcon navbarButton link create-profile-links-homePage" id="userName_label_homePage" aria-hidden="true">
+
+         <a class="navbarUserIcon navbarButton link create-profile-links-homePage" id="userName_label_homePage" aria-hidden="true">
            User</a>
      </div> 
      <div id="title_homePage" class="center sliding"></div>
       
     <div class="right">
-            <a id="lng_label_homePage" class="navbarGlobeIcon link create-language-links-homePage navbarButton" aria-hidden="true">
-           EN</a>
-      <a href="#" class="link icon-only open-panel navbarWestMenuIcon"></a>
+        <a id="lng_label_homePage" class="navbarGlobeIcon link create-language-links-homePage navbarButton" aria-hidden="true">
+            EN</a>
+        <a class="link icon-only navbarMessageIcon" onclick="openNotificationPopon();">
+            <i id="homeScreenNotificationsCount" class="icon f7-icons if-not-md"></i>
+        </a>
+        <a href="#" class="link icon-only open-panel navbarWestMenuIcon"></a>
+
     </div>
   </div>   
 <div class="pages">             

@@ -37,6 +37,7 @@
     padding-right: 5px;
 }
 
+
 .requiredItem .item-title{
     color : #E94B4A !important;
 }
@@ -221,6 +222,12 @@
     font-family: FontAwesome !important;
     color: #2196f3 !important;
     content : "\f013 ";
+    font-size:25px;
+}
+.navbarMessageIcon:before{
+    font-family: FontAwesome !important;
+    color: #2196f3 !important;
+    content : "\f0e0 ";
     font-size:25px;
 }
 .passwordIcon:before{

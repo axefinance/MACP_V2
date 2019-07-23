@@ -1,0 +1,69 @@
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="left">
+            <a href="#" class="back link">
+                <i class="icon icon-back"></i>
+                <span>Back</span>
+            </a>
+            <a class="navbarUserIcon navbarButton link create-profile-links-chatScreen" id="userName_label_chatScreen" aria-hidden="true">
+                User</a>
+        </div>
+        <div id="title_chatScreen" class="center sliding">Search</div>
+
+        <div class="right">
+            <a id="lng_label_chatScreen" class="navbarGlobeIcon link create-language-links-chatScreen navbarButton" aria-hidden="true">
+                EN</a>
+            <a class="link icon-only navbarMessageIcon" onclick="openNotificationPopon();">
+                <i id="chatScreenNotificationsCount" class="icon f7-icons if-not-md"></i>
+            </a>
+            <a href="#" class="link icon-only open-panel navbarWestMenuIcon"></a>
+        </div>
+    </div>
+    <div class="pages">
+        <div data-page="chatScreen" class="page row">
+            <!-- left side-->
+
+            <div class="col-25" style="margin:44px 0 0 0; height: 100%;">
+                <div class="row">
+                    <form data-search-list=".list-block-search" data-search-in=".item-title" class="searchbar searchbar-init">
+                        <div class="searchbar-input">
+                            <input type="search" placeholder="Search">
+                            <a href="#" class="searchbar-clear"></a>
+                        </div>
+                        <a href="#" class="searchbar-cancel">Cancel</a>
+                    </form>
+                    <div class="content-block searchbar-not-found" style="margin:0 0 0 0; height: 100%; width:100%;">
+                        <div class="content-block-inner">No element found...</div>
+                    </div>
+                </div>
+
+                <div class="row" id="contactsList" style="margin:0 0 0 0; height:100%; width:100%; overflow-y:scroll !important;">
+
+                </div>
+            </div>
+            <!-- right side-->
+            <div onscroll="onMessageViewScroll('-15%','0%')" class="col-75 page-content messages-content" id="messagesList" style="background-color: white;position:fixed;top: 10px;right:0px;bottom :30px !important;overflow-y:scroll !important;">
+
+                <div id="messagesView" style="margin-bottom:44px !important;" class="messages">
+
+                </div>
+            </div>
+            <div style="box-shadow:0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12); left:25.3% !important;background-color: whitesmoke;position:fixed;right:0px !important;bottom :0px" class="col-75 toolbar toolbar-bottom messagebar">
+                <div class="toolbar-inner row">
+                    <div class="messagebar-area col-90">
+                        <textarea id="messageContent" placeholder="Message"></textarea>
+                    </div>
+                    <a class="link col-10" href="#" onclick="sendCommunication();">Send</a>
+                </div>
+                <div class="messagebar-sheet"></div>
+            </div>
+            <div id="selectedUsers" class="col-75 selectedUsers" style="overflow-y:scroll !important;box-shadow:0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12); left:25.3% !important;margin-top:44px !important; display: block;position: fixed !important;transition: top 0.3s;z-index: 99999 !important; opacity : 1; background-color: whitesmoke; height: 15%; padding:10px;">
+                <!--ChipView-->
+                <div class="block block-strong" id="reciepientsView">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -27,13 +27,15 @@ var gTaskId=0;
 var gExecutedWorkflowName;
 var gEngine;
 var gTargetTab;
-var gInstructionGuide; 
+var gNotificationCount;
+var gInstructionGuide;
 var gIsWithCollectQuestion; 
 var gExtendedProperties=null;
 var gIsSwitchLanguage = false;
 var gIsRelatedFromLink="false";
 var gCurrentSearchItem;
 var gCurrentSearchType;
+var gScreenType;
 var myApp=new Framework7({ swipeBackPage : false, statusbarOverlay:true, tapHold: true,swipePanel: 'left',fastClicksDelayBetweenClicks : 10 }) ;
 var db = openDatabase('mydb', '1.0', 'Test DB', 2 * 1024 * 1024);
 var mainView = myApp.addView('.view-main', {
@@ -53,9 +55,82 @@ $$('.firstWS-confirm-ok-cancel').on('click', function () {
       }
     );
     
-});   
+});
+
+function openNotificationPopon(){
+var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetChatScreen";
+     var data="{"+
+        "\"screenName\":null,"+
+        "\"mainItemId\":null,"+
+        "\"userData\":"+sessionStorage.getItem("userData")+"}";
+    $.ajax({
+        type: 'POST',
+        url: url,
+        contentType: "text/plain",
+        dataType: "json",
+        data: data,
+        success: function(data) {
+
+        var popupContent="<div onscroll='onMessageViewScroll(\"-20%\",\"3%\")' class='page-content messages-content' id='messagesList' style='background-color: white;top: 10px;right:0px;bottom :30px !important;overflow-y:scroll !important;'>";
+        popupContent+="<div id='messagesView' style='margin-bottom:44px !important;' class='messages'>";
+        popupContent+=data.chatMessages;
+        popupContent+="</div></div>";
+        popupContent+="<div id='selectedUsers' class='selectedUsers' style='top:3%;overflow-y:scroll !important;box-shadow:0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);position: fixed !important;transition: top 0.3s;z-index: 99999 !important; opacity : 1; background-color: whitesmoke; height: 15%; padding:10px;top: 3%;left: 1%;width: 96%;'>";
+        popupContent+="<div class='block block-strong' id='reciepientsView'></div></div>";
+
+
+    createPopup(popupContent,"","10%","10%","80%","80%");
+				$(".popup-container").animate({
+					scrollTop: $('#messagesView').get(0).scrollHeight
+				}, 2000);
+
+            myApp.hidePreloader();
+        },
+        error: function(e) {
+            myApp.hidePreloader();
+            errorMessage(e.message);
+        }
+    });
+}
+
+
+myApp.onPageInit('chatScreen', function (page) {
+    gTaskId = 0;
+    myApp.params.swipePanel=false;
+    myApp.showPreloader();
+    gScreenType = "chatScreen";
+    setScreenHeaderContent('chatScreen',gPageTitleContent);
+    GetChatScreen();
+
+});
+function GetChatScreen(){
+     var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GetChatScreen";
+     var data="{"+
+        "\"screenName\":\""+gScreenName+"\","+
+        "\"mainItemId\":\""+gMainItemId+"\","+
+        "\"userData\":"+sessionStorage.getItem("userData")+"}";
+    $.ajax({
+        type: 'POST',
+        url: url,
+        contentType: "text/plain",
+        dataType: "json",
+        data: data,
+        success: function(data) {
+            document.getElementById("messagesView").innerHTML=data.chatMessages;
+
+            document.getElementById("contactsList").innerHTML = data.contactsList;
+            myApp.hidePreloader();
+        },
+        error: function(e) {
+            myApp.hidePreloader();
+            errorMessage(e.message);
+        }
+    });
+}
+
 myApp.onPageInit('attachmentScreen', function (page) {
     gTaskId = 0;
+    gScreenType = "attachmentScreen";
     setScreenHeaderContent(attachmentScreen,gPageTitleContent);
     myApp.params.swipePanel=false;
     myApp.showPreloader(); 
@@ -90,12 +165,12 @@ function GetAttachmentScreen(screenName,mainItemId,subItem){
             errorMessage(e.message);
         }            
     });  
-} 
+}
 function checkInternetConnection() {
     var networkState = navigator.connection.type; 
     if (networkState !== Connection.NONE) 
         return true;
-    return false;
+    return true;
 }
 function isScreenInCache(screenName){
     var history=mainView.history;
@@ -133,6 +208,7 @@ myApp.onPageReinit('homePage', function (page) {
         gTransactionConditionId = 0;
         document.getElementById("tasks").innerHTML=null;
         document.getElementById("homePage-toolbarContent").innerHTML=null;
+        gScreenType = "homeScreen";
         setScreenHeaderContent('homePage',gHomePageTab);
         reInitHomePage();
     }
@@ -218,7 +294,8 @@ myApp.onPageInit('WSConfigurationScreen', function (page) {
     loadJSFile("js/WSConfigurationScreen.js");
 });   
 myApp.onPageInit('homePage', function (page) {   
-    myApp.params.swipePanel=false;    
+    myApp.params.swipePanel=false;
+    gScreenType = "homeScreen";
     setScreenHeaderContent("homePage",gPageTitleContent);
     loadTaskList();
 });                  
@@ -226,6 +303,7 @@ myApp.onPageInit('searchScreen', function (page) {
     gHomeBackButton.style.visibility="visible";    
     myApp.params.swipePanel=false;
     myApp.showPreloader();
+    gScreenType = "searchScreen";
     setScreenHeaderContent('searchScreen',gPageTitleContent);
     loadsearchScreen();
   
@@ -234,6 +312,7 @@ myApp.onPageInit('teamTasksScreen', function (page) {
     gTaskId = 0;
     myApp.params.swipePanel=false;
     myApp.showPreloader();
+    gScreenType = "teamTasksScreen";
     setScreenHeaderContent('teamTasks',gTeamTasksTabLabel);
     GetTeamTasks();
     
@@ -242,11 +321,12 @@ myApp.onPageInit('editScreen', function (page) {
     gTaskId = 0;
     myApp.params.swipePanel=false;
     InitEditScreen(gScreenName,gSubItem,gMainItemId);
+    gScreenType = "editScreen";
     setScreenHeaderContent('editScreen__'+gMainItemId,gPageTitleContent);
-    
 }); 
 myApp.onPageInit('newInputScreen', function (page) {
-    gHomeBackButton.style.visibility="visible"; 
+    gHomeBackButton.style.visibility="visible";
+    gScreenType = "newInputScreen";
     setScreenHeaderContent('newInputScreen',gPageTitleContent);
     myApp.params.swipePanel=false;   
     myApp.showPreloader();
@@ -255,6 +335,7 @@ myApp.onPageInit('newInputScreen', function (page) {
 myApp.onPageInit('searchResultScreen', function (page) {
     gHomeBackButton.style.visibility="visible";
     myApp.params.swipePanel=false;
+    gScreenType = "searchResultScreen";
     setScreenHeaderContent('searchResultScreen',gPageTitleContent);
     myApp.showPreloader();
     gCurrentSearchType="searchResult";
@@ -262,6 +343,7 @@ myApp.onPageInit('searchResultScreen', function (page) {
 });  
 myApp.onPageInit('executeTaskScreen', function (page) {
     gHomeBackButton.style.visibility="visible";
+    gScreenType = "executeTaskScreen";
     setScreenHeaderContent('executeTaskScreen',gPageTitleContent);
     myApp.params.swipePanel=false;
     myApp.showPreloader();
@@ -270,6 +352,7 @@ myApp.onPageInit('executeTaskScreen', function (page) {
 myApp.onPageInit('relatedItemScreen', function (page) {
    
     gHomeBackButton.style.visibility="visible";
+    gScreenType = "relatedItemScreen";
     setScreenHeaderContent('relatedItemScreen',gPageTitleContent+" : "+ RelatedItemType);
     myApp.params.swipePanel=false;
     InitRelatedItemScreen(gScreenName,gMainItemId,gRelatedItemId);
@@ -277,6 +360,7 @@ myApp.onPageInit('relatedItemScreen', function (page) {
 });
 myApp.onPageInit('pricingConditionScreen', function (page) {
     gHomeBackButton.style.visibility="visible";
+    gScreenType = "pricingConditionScreen";
     setScreenHeaderContent("pricingConditionScreen",gPageTitleContent+" : "+ RelatedItemType);
     myApp.params.swipePanel=false;
     myApp.showPreloader();
@@ -284,12 +368,14 @@ myApp.onPageInit('pricingConditionScreen', function (page) {
 }); 
 myApp.onPageInit('relatedScreen', function (page) {
     gHomeBackButton.style.visibility="visible";
+    gScreenType = "relatedScreen";
     setScreenHeaderContent('relatedScreen',gPageTitleContent);
     myApp.params.swipePanel=false;
     loadScreen(gScreenName,mainItemIdForLink,mainItemForLink,"classicre");  
 });
 myApp.onPageInit('quickInputDetailsScreen', function (page) {
-    var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GenerateExistingItemQIScreen"; 
+    var url= "http://" + sessionStorage.getItem('Ip_config') + ":" + sessionStorage.getItem('Ip_port') + "/MobileAPI.svc/GenerateExistingItemQIScreen";
+    gScreenType = "quickInputDetailsScreen";
     setScreenHeaderContent('quickInputDetailsScreen',gPageTitleContent);
      var data="{"+    
         "\"screenWidth\":\""+window.innerWidth+"\","+
@@ -323,6 +409,7 @@ myApp.onPageInit('quickInputDetailsScreen', function (page) {
 myApp.onPageInit('quickInputPopon', function (page) {
     gHomeBackButton.style.visibility="visible";   
     myApp.params.swipePanel=false;
+    gScreenType = "quickInputPopon";
     setScreenHeaderContent("quickInputPopon",gPageTitleContent);
     myApp.showPreloader();
     loadQuickInputPopon(gScreenName);
@@ -460,7 +547,7 @@ function GetHomePageScripts(){
     $("script[src='js/Macp.js']").remove();
     $("script[src='js/Macp.js']").remove();
     $("script[src='js/homePage.js']").remove();
-    loadJSFile("js/homePage.js"); 
+    loadJSFile("js/homePage.js");
 }
 function GenerateResponseArray(element){ 
     var res = element.split(",");
@@ -494,6 +581,9 @@ function GetHomePage(url) {
         data: data,     
         success: function(data) {            
             document.getElementById("tasks").innerHTML=data.TasksContent;
+            gNotificationCount = data.NotificationCount;
+            //if(data.NotificationCount!="0")
+            //    document.getElementById(gScreenType+"NotificationsCount").innerHTML="<span class='badge color-red'>"+data.NotificationCount+"</span>";
             document.getElementById("westMenu").innerHTML=data.WestMenuContent;
             document.getElementById("homePage-toolbarContent").innerHTML=data.buttonsDiv;
             sessionStorage.setItem("Languages",data.Languages);
@@ -516,6 +606,7 @@ function GetHomePage(url) {
                
 }  
 function GetTeamTasks(url) {
+
     var data="{"+  
          "\"windowWidth\":\""+window.innerWidth+"\","+
          "\"userData\":"+sessionStorage.getItem("userData")+","+ 
@@ -578,6 +669,7 @@ function switchLanguage(property){
                 }
                 gHomePageTab=data.homePageTab;
                 gTeamTasksTabLabel=data.teamTasksTab;
+                gScreenType = "homeScreenPopon";
                 setScreenHeaderContent('homePage',gHomePageTab);
             },
             error: function(e) {               
@@ -605,6 +697,10 @@ function logoutAction(){
    );
        
 }
+
+
+
+
 function lunchSearchResult(subItem,searchParams){  
     var url='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/GetSearchResultPage';    
     var screenHeight;

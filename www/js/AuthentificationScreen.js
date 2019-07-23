@@ -1,6 +1,10 @@
 
 function onClickLoginButton(){
-      try {
+    try {
+
+//initiateSignalR();
+
+
           var login = document.getElementById('userName').value;
           var password = document.getElementById('password').value;
           if(login==="")
@@ -9,9 +13,11 @@ function onClickLoginButton(){
               password='""';
           myApp.showPreloader();
           var url ='http://'+ sessionStorage.getItem('Ip_config')+':'+sessionStorage.getItem('Ip_port')+'/MobileAPI.svc/Authentication';
-          parseDataGet(url,login,password);   
+          parseDataGet(url,login,password);
           }
-          catch(e){}
+    catch (e) {
+        console.log(e);
+    }
 }
    
 function manageAuthentifaction(result)
@@ -27,6 +33,7 @@ function manageAuthentifaction(result)
                      gPageTitleContent=result.homePageTab;
                      gHomePageTab=result.homePageTab;
                      gTeamTasksTabLabel=result.teamTasksTab;
+                     initiateNotification();
                     mainView.router.load({url: 'homePage.html',ignoreCache: true,reload: true});
                    sessionStorage.setItem("dateFormat",result.dateFormat);
                      break;
