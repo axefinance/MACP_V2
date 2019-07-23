@@ -1,34 +1,33 @@
 {
-    "prepare_queue": {
-        "installed": [],
-        "uninstalled": []
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "com.axefinance.axecreditportal.macp"
     },
-    "config_munge": {
-        "files": {}
+    "cordova-plugin-file": {
+      "PACKAGE_NAME": "com.axefinance.axecreditportal.macp"
     },
-    "installed_plugins": {
-        "cordova-plugin-device": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
-        },
-        "cordova-plugin-splashscreen": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
-        },
-        "cordova-plugin-statusbar": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
-        },
-        "cordova-plugin-file": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
-        },
-        "cordova-plugin-inappbrowser": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
-        },
-        "cordova-plugin-network-information": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
-        }
+    "cordova-plugin-inappbrowser": {
+      "PACKAGE_NAME": "com.axefinance.axecreditportal.macp"
     },
-    "dependent_plugins": {
-        "cordova-plugin-compat": {
-            "PACKAGE_NAME": "io.cordova.hellocordova"
-        }
+    "cordova-plugin-network-information": {
+      "PACKAGE_NAME": "com.axefinance.axecreditportal.macp"
+    },
+    "cordova-plugin-splashscreen": {
+      "PACKAGE_NAME": "com.axefinance.axecreditportal.macp"
+    },
+    "cordova-plugin-statusbar": {
+      "PACKAGE_NAME": "com.axefinance.axecreditportal.macp"
+    },
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "com.axefinance.axecreditportal.macp"
     }
+  },
+  "dependent_plugins": {}
 }

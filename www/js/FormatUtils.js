@@ -2,7 +2,7 @@ var ForematUtils_JSFlag;
 var InfoButton_ItemId;
 
 function createPopup(popupContainer,popupToolbar,top,left,width,height){
-    var popupHtml='<div class="popup macp-popup" style="padding-top:10px !important; overflow-y: hidden; border-radius: 15px; background : #f1f1f1 !important;top : '+top+' !important; left : '+left+' !important; width : '+width+' !important; height : '+height+' !important;';
+    var popupHtml='<div class="popup macp-popup" style="padding-top:10px !important; overflow-y: scroll !important; border-radius: 15px; background : #f1f1f1 !important;top : '+top+' !important; left : '+left+' !important; width : '+width+' !important; height : '+height+' !important;';
     if(popupToolbar==="")
     {
     popupHtml=popupHtml+' padding-bottom:10px !important;';
@@ -157,7 +157,6 @@ function errorMessage(message){
  var connectionState=checkInternetConnection();
     if(!connectionState)                                                   
         myApp.alert("please check your internet connection");
-
    else if(connectionState && message.readyState!==null)
             myApp.alert("please check your internet connection");
     else
@@ -794,6 +793,9 @@ function createLogoutPopover(screen){
 } 
 function setTemplate_HeaderData(screenName,title){
     var user = JSON.parse(sessionStorage.getItem('userData'));
+    if(gNotificationCount!=undefined && gNotificationCount!="0")
+                document.getElementById(gScreenType+"NotificationsCount").innerHTML="<span class='badge color-red'>"+gNotificationCount+"</span>";
+
     document.getElementById("userName_label"+"_"+screenName).textContent=user.user_name;
     document.getElementById("lng_label"+"_"+screenName).textContent=user.culture_language;
    var titleElement=document.getElementById("title_"+screenName);

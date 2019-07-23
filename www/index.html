@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
    <head data-noxhrfix>
       <!-- Required meta tags-->
@@ -17,7 +17,10 @@
       <link href="css/Style-paper-buttons.css" rel="stylesheet" type="text/css">
       <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
       <link rel="stylesheet" href="css/app.css">
-      <script type="application/javascript" src="js/jquery.min.js"></script>  
+      <script type="text/javascript" src="js/Jquery/jquery-3.4.1.min.js"></script>
+      <script type="text/javascript" src="js/Jquery/jquery.signalR-2.4.1.min.js"></script>
+      <script type="text/javascript" src="js/hubs.js"></script>
+      <script type="text/javascript" src="js/SignalRSetup.js"></script>
       <script src="cordova.js"></script>          <!-- phantom library, needed for Cordova api calls, added during build -->
       <!--  <script src='xhr.js'></script>
          <script src="intelxdk.js"></script> -->
@@ -38,7 +41,7 @@
                <div class="navbar-inner">  
                   <div class="center sliding">Authentication</div>
                   <div class="right">
-                     <a href="WSConfigurationScreen.html" class="link icon-only navbarWSConfigIcon"></a> 
+                     <a href="WSConfigurationScreen.html" class="link icon-only navbarWSConfigIcon"></a>
                   </div>
                </div>
             </div> 
@@ -57,7 +60,7 @@
                                  <div class="item-media"><a aria-hidden="true" class="navbarUserIcon"></a></div>
                                  <div class="item-inner">
                                     <div class="item-input"> 
-                                       <input id="userName"   type="text" placeholder="Username"  id="userName">
+                                       <input id="userName"   type="text" placeholder="Username"  id="userName" value="administrator"  text="administrator">
                                     </div>
                                  </div>
                               </div>
@@ -67,7 +70,7 @@
                                  <div class="item-media"><a aria-hidden="true" class="passwordIcon"></a></div>
                                  <div class="item-inner">
                                     <div class="item-input">
-                                          <input id="password" placeholder="Password" type="password" spellcheck="false">
+                                          <input id="password" placeholder="Password" type="password" spellcheck="false" value="azerty1234*"  text="azerty1234*">
                                     </div>
                                  </div>
                               </div>
@@ -162,5 +165,7 @@
       <script type="text/javascript" src="js/linksUtil.js"></script> 
        <script type="text/javascript" src="js/PoponComponentUtils.js"></script> 
        <script type="text/javascript" src="js/EditScreen.js"></script>  
+       <script type="text/javascript" src="js/WSConfigurationScreen.js"></script>  
+       <script type="text/javascript" src="js/ChatScreen.js"></script>
    </body>
 </html>

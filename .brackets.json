@@ -1,0 +1,11 @@
+{
+    "jscodehints.detectedExclusions": [
+        "D:/MACP F7/MACP_V2/www/js/AuthentificationScreen.js",
+        "D:/MACP F7/MACP_V2/www/js/informativeGridInfiniteScroll.js",
+        "D:/MACP F7/MACP_V2/www/js/NewInputScreen.js",
+        "D:/MACP F7/MACP_V2/www/js/WorkflowManager.js",
+        "D:/MACP F7/MACP_V2/www/js/Macp.js",
+        "D:/MACP F7/MACP_V2/www/js/FormatUtils.js",
+        "D:/MACP F7/MACP_V2/www/js/EditScreen.js"
+    ]
+}
