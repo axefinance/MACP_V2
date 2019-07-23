@@ -157,9 +157,8 @@ function errorMessage(message){
  var connectionState=checkInternetConnection();
     if(!connectionState)                                                   
         myApp.alert("please check your internet connection");
-
-   /*else if(connectionState && message.readyState!==null && message.readyState===4)
-            myApp.alert("please check your internet connection");*/
+   else if(connectionState && message.readyState!==null)
+            myApp.alert("please check your internet connection");
     else
         {
             if(message ===undefined ||message == "")                
@@ -723,6 +722,18 @@ function manageAutoCompleteComponent(formId,item){
 function generateSaveCommentDeviationPopup(dataMessage,saveEventHendler){
     var popupContent='<div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">' + dataMessage + '</br></br><br><br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="enableSaveDeviationButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick='+saveEventHendler+' id="saveDeviationCommentButton" style="width:50%; margin-left:50%">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()" style="width:50%;">No</a></div></div>';
     createPopup(popupContent,"","25%","25%","50%","50%");
+}
+
+
+function generateCEHGridPopup(dataMessage,saveEventHendler,isWithDeviation, dataTitle){
+var popupContent;
+if(isWithDeviation)
+    popupContent='<div class="content-block-title"><b>'+ dataTitle +'<b></div><div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">' + dataMessage + '</br></br><br><br></div><div class="list-block" ><ul><li class="align-top"><div class="item-content"><div class="item-media"></div><div class="item-inner"><div class="item-input"><textarea id="deviationComment" onkeyup="enableSaveDeviationButton(this)"></textarea></div></div></div></li></ul></<div><br><br><div class="row"><div class="col-50"><a href="#" class="button button-fill disabled" onclick='+saveEventHendler+' id="saveDeviationCommentButton" style="width:50%; margin-left:50%">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()" style="width:50%;">No</a></div></div>';
+    else
+        popupContent='<div class="content-block-title"><b>'+ dataTitle +'<b></div><div class="content-block-title" style="word-wrap: break-word !important;white-space : inherit !important;">' + dataMessage + '</br></br><br><br></div><br><br>'+
+        '<div class="row"><div class="col-50"><a href="#" class="button button-fill" onclick='+saveEventHendler+' id="saveDeviationCommentButton" style="width:50%; margin-left:50%">Yes</a></div><div class="col-50"><a href="#" class="button button-fill active" onclick="myApp.closeModal()" style="width:50%;">No</a></div></div>';
+
+    createPopup(popupContent,"","10%","10%","80%","80%");
 }
 function enableSaveDeviationButton(textarea){
     var saveDeviationCommentButton=document.getElementById("saveDeviationCommentButton");

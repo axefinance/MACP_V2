@@ -550,9 +550,14 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
     }
     function UpdateItem(parentItemId,screenName) {
       var stringify= getGridonPoponsData("#my-mainData-form");
+      var popupWidth = window.innerWidth * 0.80;
+      var popunHeight = 95;
+      popupWidth = Math.floor(popupWidth);
         var data = "{" +
             "\"mainItemId\":\"" + parentItemId + "\"," +
             "\"screenName\":\"" + screenName + "\"," +
+            "\"windowWidth\":\"" + popupWidth + "\"," +
+            "\"windowHeight\":\"" + popunHeight + "\","+
             "\"userData\":"+sessionStorage.getItem("userData")+"," +
             "\"stringify\":"+stringify+"," +
             "\"parameters\":" + Parameters + "}";
@@ -589,9 +594,14 @@ function loadRelatedItemPopup(relatedItemId, isDuplicateAction,mainItemId,subIte
         }
     function UpdateItemEvent(parentItemId,subItem,screenName) {
     var stringify= getGridonPoponsData("#my-mainData-form__"+parentItemId);
+    var popupWidth = window.innerWidth * 0.80;
+    var popunHeight = 95;
+    popupWidth = Math.floor(popupWidth);
         var data = "{" +
             "\"mainItemId\":\"" + parentItemId + "\"," +
             "\"screenName\":\"" + screenName + "\"," +
+            "\"windowWidth\":\"" + popupWidth + "\"," +
+            "\"windowHeight\":\"" + popunHeight + "\","+
             "\"userData\":"+sessionStorage.getItem("userData")+","+
             "\"ipAddress\":\""+sessionStorage.getItem("Ip_config")+"\"," +  
             "\"stringify\":"+stringify+"," +

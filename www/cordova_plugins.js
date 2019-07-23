@@ -230,6 +230,7 @@ module.exports.metadata =
   "cordova-plugin-device": "1.1.2",
   "cordova-plugin-file": "4.2.0",
   "cordova-plugin-inappbrowser": "1.4.0",
+
   "cordova-plugin-network-information": "1.2.1",
   "cordova-plugin-splashscreen": "3.2.2",
   "cordova-plugin-statusbar": "2.1.3",

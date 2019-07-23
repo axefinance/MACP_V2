@@ -12,12 +12,17 @@ function relatedItemSaveButtonClick(msg,msgTitle,mainItemId,screenName,relatedIt
 function UpdateRelatedItemEvent(mainItemId,screenName,relatedItemId) {
             if (isDuplicate === "isDuplicate")
                 relatedItemId = 0;
+                	var popupWidth = window.innerWidth * 0.80;
+                	var popunHeight = 95;
+                	popupWidth = Math.floor(popupWidth);
             var data = "{" +
                "\"mainItemId\":\"" + mainItemId + "\"," +
                "\"relatedItemId\":\"" + relatedItemId + "\"," +
                "\"screenName\":\"" + screenName + "\"," +
                "\"ipAddress\":\"" + sessionStorage.getItem("Ip_config") + "\"," +
                "\"userData\":"+sessionStorage.getItem("userData")+"," +
+               		"\"windowWidth\":\"" + popupWidth + "\"," +
+               		"\"windowHeight\":\"" + popunHeight + "\","+
                "\"parameters\":" + Parameters + "}";
             myApp.showPreloader();
             var url = 'http://' + sessionStorage.getItem('Ip_config') + ':' + sessionStorage.getItem('Ip_port') + '/MobileAPI.svc/SaveRelatedItemEvent';
@@ -55,11 +60,16 @@ function UpdateRelatedItemEvent(mainItemId,screenName,relatedItemId) {
 function UpdateRelatedItem(screenName,mainItemId,relatedItemId) {
             if (isDuplicate === "isDuplicate")
                 updateId = 0;
+                                	var popupWidth = window.innerWidth * 0.80;
+                                	var popunHeight = 95;
+                                	popupWidth = Math.floor(popupWidth);
             var data = "{" +
                "\"mainItemId\":\"" + mainItemId + "\"," +
                "\"relatedItemId\":\"" + relatedItemId + "\"," +
                "\"screenName\":\"" + screenName + "\"," +
                "\"userData\":"+sessionStorage.getItem("userData")+"," +
+               "\"windowWidth\":\"" + popupWidth + "\"," +
+               "\"windowHeight\":\"" + popunHeight + "\","+
                "\"ipAddress\":\"" + sessionStorage.getItem("Ip_config") + "\"," +
                "\"parameters\":" + Parameters + "}";
             myApp.showPreloader();
@@ -115,6 +125,25 @@ function manageSaveRelatedItemResponse(data,screenName,mainItemId,relatedItemId)
                             generateSaveCommentDeviationPopup(data.message,saveEventHendler);
                             break;
                         }
+                    case "blockingGrid":
+                        {
+                            createPopup(data.message,"","10%","10%","80%","80%");
+                            break;
+                        }
+                        case "deviationGrid":
+                        {
+                            var saveEventHendler='saveBeforeUpdateRelatedItem_DeviationComment(\''+screenName+'\',\''+mainItemId+'\',\''+relatedItemId+'\');';
+                            generateCEHGridPopup(data.message,saveEventHendler,true, data.dataTitle);
+                            break;
+                        }
+                        case "optionalGrid":
+                        {
+                            var saveEventHendler='saveBeforeUpdateRelatedItem_DeviationComment(\''+screenName+'\',\''+mainItemId+'\',\''+relatedItemId+'\');';
+                            generateCEHGridPopup(data.message,saveEventHendler,false, data.dataTitle);
+                            break;
+                        }
+
+
                 }
             } 
             else {
@@ -142,7 +171,9 @@ function saveProcessEngineComment_enabledButton(textarea) {
         };
 
 function saveBeforeUpdateRelatedItem_DeviationComment(item,mainItemId,relatedItemId) {
-            var comment = document.getElementById("deviationComment").value;
+var comment;
+if(document.getElementById("deviationComment")!=null)
+            comment = document.getElementById("deviationComment").value;
             var updateId = relatedItemId;
             if (isDuplicate === "isDuplicate")
                 updateId = 0;
